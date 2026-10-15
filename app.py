@@ -5,30 +5,22 @@ import streamlit as st
 
 st.set_page_config(page_title="Loteria Eliud 14 Juegos", layout="wide", page_icon="🎰")
 
-# ===== CONTADOR DE VISITAS =====
 contador_file = "visitas.txt"
 if "visitado" not in st.session_state:
     st.session_state["visitado"] = True
     try:
-        if os.path.exists(contador_file):
-            with open(contador_file, "r") as f:
-                total = int(f.read().strip() or 0)
-        else:
-            total = 0
+        total = int(open(contador_file,"r").read().strip() or 0) if os.path.exists(contador_file) else 0
         total += 1
-        with open(contador_file, "w") as f:
-            f.write(str(total))
+        open(contador_file,"w").write(str(total))
     except:
         total = 1
 else:
     try:
-        with open(contador_file, "r") as f:
-            total = int(f.read().strip() or 0)
+        total = int(open(contador_file,"r").read().strip() or 0)
     except:
         total = 1
 visitas_total = total
 
-# ===== BANNER CON CONTADOR =====
 st.markdown(f"""
 <style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
 .ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
@@ -134,9 +126,10 @@ with col1:
                 except: pass
             with zipfile.ZipFile(z) as zz:
                 for name in zz.namelist():
-                    if name.lower().endswith((".jpg",".jpeg",".png",".webp")):
+                    if name.lower().endswith((".jpg",".jpeg",".png",".webp",".jfif")):
                         data=zz.read(name)
-                        open(os.path.join(tmp, os.path.basename(name)),"wb").write(data)
+                        out_path=os.path.join(tmp, os.path.basename(name))
+                        open(out_path,"wb").write(data)
             files=cargar_files(tmp)
     st.divider()
     div=st.number_input("Div", value=1, min_value=0, max_value=30, step=1)
@@ -146,7 +139,7 @@ with col1:
     color=st.color_picker("Color", "#FF00FF")
     ancho=st.text_input("Ancho cm","21"); alto=st.text_input("Alto cm","35"); dpi=st.text_input("DPI","300")
     st.divider()
-    juegos=st.number_input("Cantidad de juegos (hojas)", value=1, min_value=1, max_value=100, step=1)
+    juegos=st.number_input("Cantidad de juegos", value=1, min_value=1, max_value=100, step=1)
     tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL 3500"], horizontal=True)
 
 if files and len(files)>=10:
@@ -162,7 +155,6 @@ if files and len(files)>=10:
                 Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
                 final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
                 st.session_state["orig"]=orig; st.session_state["final"]=final
-            else: st.error("No se pudo")
     with cgen:
         if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True):
             uso_global={}
@@ -184,10 +176,7 @@ if "orig" in st.session_state:
 
 if "lista_final" in st.session_state and st.session_state["lista_final"]:
     st.divider()
-    st.subheader(f"📦 {len(st.session_state['lista_final'])} Juegos")
-    cols=st.columns(3)
-    for i, im in enumerate(st.session_state["lista_final"][:3]):
-        cols[i%3].image(im, caption=f"Juego {i+1}", use_container_width=True)
+    st.subheader(f"📦 {len(st.session_state['lista_final'])} Juegos listos")
     pdf_bytes=io.BytesIO()
     finales=st.session_state["lista_final"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig"]
     finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=95)
