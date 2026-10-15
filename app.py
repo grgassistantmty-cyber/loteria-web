@@ -1,17 +1,23 @@
-import os, random, io, zipfile
+import os, random, io, zipfile, time, threading
 from datetime import datetime
 from PIL import Image
 import streamlit as st
 
-st.set_page_config(page_title="Loteria Eliud 14 Juegos", layout="wide", page_icon="🎰")
+st.set_page_config(page_title="Loteria Eliud PRO", layout="wide", page_icon="🎰")
+
+@st.cache_resource
+def get_lock():
+    return threading.Lock()
+lock = get_lock()
 
 contador_file = "visitas.txt"
 if "visitado" not in st.session_state:
     st.session_state["visitado"] = True
     try:
-        total = int(open(contador_file,"r").read().strip() or 0) if os.path.exists(contador_file) else 0
-        total += 1
-        open(contador_file,"w").write(str(total))
+        with lock:
+            total = int(open(contador_file,"r").read().strip() or 0) if os.path.exists(contador_file) else 0
+            total += 1
+            open(contador_file,"w").write(str(total))
     except:
         total = 1
 else:
@@ -21,13 +27,35 @@ else:
         total = 1
 visitas_total = total
 
+if "uso_global" not in st.session_state:
+    st.session_state["uso_global"] = {}
+
 st.markdown(f"""
 <style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
 .ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
 .contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}</style>
-<div class="banner"><h1>🎰 GENERADOR 4 CARTAS - 3,3,2,2 ROTADOS 🎰</h1><h3>Creado por Eliud Monsivais - WhatsApp 8115566250</h3>
+<div class="banner"><h1>🎰 GENERADOR PRO - ANTI-TRABA 🎰</h1><h3>Eliud Monsivais - WhatsApp 8115566250</h3>
 <a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
-<span class="contador">👁️ Visitas: {visitas_total} | Hoy: {datetime.now().strftime('%d/%m/%Y')}</span></div><br>
+<span class="contador">👁️ Visitas: {visitas_total} | PRO v3 con instrucciones</span></div><br>
+""", unsafe_allow_html=True)
+
+# ==== INSTRUCCIONES ====
+st.markdown("""
+<div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
+<h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
+<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja (Baraja 1, 2, 3...) y si quieres cambia el color de fondo y los márgenes.
+</div>
+<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+<b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b><br>👉 Espera a que la barra azul llegue a <b>100%</b> (tarda 5-10 seg por juego)<br>👉 Si quieres ver solo 1 antes, dale primero en <b>👀 PREVIEW</b>
+</div>
+<div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
+<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Cuando termine, ABAJO se activan 2 botones:<br>
+✅ <b>⬇️ PDF JUEGOS</b> = 1 solo PDF con todos los juegos para imprimir<br>
+✅ <b>⬇️ ZIP JPGs</b> = Imágenes sueltas de cada juego<br>
+👉 Dale clic y se descarga automático
+</div>
+</div><br>
 """, unsafe_allow_html=True)
 
 RIGHT=[3,7,11,15]; LEFT=[0,4,8,12]; TOP=[0,1,2,3]; BOTTOM=[12,13,14,15]
@@ -60,16 +88,16 @@ def crear_carta(data16, cw_card, ch_card, div, g, asp):
             base.paste(im,(x,y))
         except: pass
     carta.paste(base,(g,g)); return carta
-
-uso_global={}
 def no_chocan(a,b,la,lb):
     for i,j in zip(la,lb):
         if a[i]==b[j]: return False
     return True
 def generar_logica(baraja):
-    global uso_global
-    if not uso_global: uso_global={f:0 for f in baraja}
-    for _ in range(5000):
+    uso = st.session_state["uso_global"]
+    if not uso:
+        uso = {f:0 for f in baraja}
+        st.session_state["uso_global"] = uso
+    for _ in range(3000):
         conteo={}; cartas=[[None]*16 for _ in range(4)]; pos_fig={}; ok=True
         base54=baraja.copy(); random.shuffle(base54)
         huecos=[3,3,2,2]; random.shuffle(huecos)
@@ -79,7 +107,7 @@ def generar_logica(baraja):
             for pos in range(16):
                 if pos in huecos_carta[c]: continue
                 fig=base54[idx]; cartas[c][pos]=fig; pos_fig[fig]=pos_fig.get(fig,set())|{pos}; conteo[fig]=conteo.get(fig,0)+1; idx+=1
-        segunda=baraja.copy(); random.shuffle(segunda); segunda.sort(key=lambda x:(uso_global.get(x,0), random.random()))
+        segunda=baraja.copy(); random.shuffle(segunda); segunda.sort(key=lambda x:(uso.get(x,0), random.random()))
         for c in range(4):
             usados=set([f for f in cartas[c] if f])
             for pos in huecos_carta[c]:
@@ -94,12 +122,12 @@ def generar_logica(baraja):
         if not no_chocan(cartas[1],cartas[3],BOTTOM,TOP): continue
         if not no_chocan(cartas[2],cartas[3],RIGHT,LEFT): continue
         if any(v>2 for v in conteo.values()): continue
-        for f,cnt in conteo.items(): uso_global[f]=uso_global.get(f,0)+cnt
+        for f,cnt in conteo.items(): uso[f]=uso.get(f,0)+cnt
+        st.session_state["uso_global"]=uso
         return cartas
     return None
-
-def generar_hoja(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None):
-    W_orig=3500; cw_tmp=((W_orig-sep_v)//2 - g*2 - 3*div)//4; ch_tmp=int(cw_tmp*asp); card_h=ch_tmp*4+div*3+g*2
+def generar_hoja(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None, W_orig=2500):
+    cw_tmp=((W_orig-sep_v)//2 - g*2 - 3*div)//4; ch_tmp=int(cw_tmp*asp); card_h=ch_tmp*4+div*3+g*2
     H_orig=card_h*2+sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
     sheet=Image.new("RGB",(W_orig,H_orig), color)
     for idx,d16 in enumerate(cartas_data):
@@ -111,6 +139,7 @@ def generar_hoja(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None)
 barajas=listar_barajas()
 col1,col2=st.columns([1,2.5])
 with col1:
+    st.markdown("### 1️⃣ Elige baraja")
     modo=st.radio("Origen", ["Integrada","ZIP"])
     files=None
     if modo=="Integrada" and barajas:
@@ -132,59 +161,81 @@ with col1:
                         open(out_path,"wb").write(data)
             files=cargar_files(tmp)
     st.divider()
+    st.markdown("### Ajustes (opcional)")
     div=st.number_input("Div", value=1, min_value=0, max_value=30, step=1)
-    sep_v=st.number_input("Sep V", value=20, min_value=0, max_value=500, step=1)
-    sep_h=st.number_input("Sep H", value=20, min_value=0, max_value=500, step=1)
+    sep_v=st.number_input("Sep V", value=20, min_value=0, max_value=200, step=1)
+    sep_h=st.number_input("Sep H", value=20, min_value=0, max_value=200, step=1)
     marco=st.number_input("Marco", value=2, min_value=0, max_value=30, step=1)
     color=st.color_picker("Color", "#FF00FF")
     ancho=st.text_input("Ancho cm","21"); alto=st.text_input("Alto cm","35"); dpi=st.text_input("DPI","300")
     st.divider()
-    juegos=st.number_input("Cantidad de juegos", value=1, min_value=1, max_value=100, step=1)
-    tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL 3500"], horizontal=True)
+    st.markdown("### 2️⃣ Cuántos juegos?")
+    calidad=st.radio("Calidad", ["PRO 2500px (Rápido)", "MAX 3500px (Lento)"], index=0)
+    W_usar = 2500 if "2500" in calidad else 3500
+    juegos=st.number_input("Cantidad (máx 10)", value=2, min_value=1, max_value=10, step=1)
+    tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True)
+    if st.button("🔄 Resetear memoria"):
+        st.session_state["uso_global"]={}; st.success("Memoria reseteada")
 
-if files and len(files)>=10:
-    asp=get_aspecto(files)
-    st.info(f"Cartas: {len(files)} | Juegos: {juegos} | Visitas: {visitas_total}")
-    cprev,cgen=st.columns(2)
-    with cprev:
-        if st.button("👀 VER 1 PREVIEW", use_container_width=True):
-            uso_global={}
-            cartas=generar_logica(files)
-            if cartas:
-                orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp)
-                Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
-                final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
-                st.session_state["orig"]=orig; st.session_state["final"]=final
-    with cgen:
-        if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True):
-            uso_global={}
-            lista_final=[]; lista_orig=[]; bar=st.progress(0)
-            for j in range(juegos):
-                cartas=generar_logica(files)
-                if not cartas: continue
-                orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp)
-                Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
-                final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
-                lista_orig.append(orig); lista_final.append(final)
-                bar.progress((j+1)/juegos)
-            st.session_state["lista_final"]=lista_final; st.session_state["lista_orig"]=lista_orig
+with col2:
+    if files and len(files)>=10:
+        asp=get_aspecto(files)
+        st.info(f"✅ Baraja lista: {len(files)} cartas | Calidad: {W_usar}px | Visitas: {visitas_total}")
+        st.markdown("### 2️⃣ Genera aquí")
+        cprev,cgen=st.columns(2)
+        with cprev:
+            if st.button("👀 PASO 2A: VER 1 PREVIEW", use_container_width=True):
+                with lock:
+                    cartas=generar_logica(files)
+                    if cartas:
+                        orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
+                        Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                        final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                        st.session_state["orig"]=orig; st.session_state["final"]=final
+                    else: st.error("Intenta de nuevo")
+        with cgen:
+            if st.button(f"🎰 PASO 2B: GENERAR {juegos} JUEGOS", type="primary", use_container_width=True):
+                if lock.locked():
+                    st.warning("⏳ Hay otra persona generando, espera 5 seg y vuelve a darle")
+                else:
+                    with lock:
+                        lista_final=[]; lista_orig=[]; bar=st.progress(0); msg=st.empty()
+                        for j in range(juegos):
+                            msg.text(f"⏳ Generando {j+1}/{juegos}... no cierres la página")
+                            cartas=generar_logica(files)
+                            if not cartas: continue
+                            orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                            lista_orig.append(orig); lista_final.append(final)
+                            bar.progress((j+1)/juegos)
+                            time.sleep(0.1)
+                        st.session_state["lista_final"]=lista_final; st.session_state["lista_orig"]=lista_orig
+                        msg.empty(); st.success(f"✅ {len(lista_final)} juegos listos - Baja a PASO 3")
+    else:
+        st.warning("👈 Primero elige una baraja en la izquierda")
 
 if "orig" in st.session_state:
     c1,c2=st.columns(2)
-    with c1: st.image(st.session_state["orig"], caption="ORIGINAL 3500", use_container_width=True)
-    with c2: st.image(st.session_state["final"], caption=f"RESIZE {ancho}x{alto}", use_container_width=True)
+    with c1: st.image(st.session_state["orig"], caption="ORIGINAL", use_container_width=True)
+    with c2: st.image(st.session_state["final"], caption="RESIZE", use_container_width=True)
 
 if "lista_final" in st.session_state and st.session_state["lista_final"]:
     st.divider()
-    st.subheader(f"📦 {len(st.session_state['lista_final'])} Juegos listos")
+    st.markdown("""
+    <div style="background:#d4edda;border:2px solid green;padding:16px;border-radius:14px;text-align:center">
+    <h2 style="color:green;margin:0">✅ PASO 3 - ¡LISTO! DESCARGA ABAJO:</h2>
+    <p style="margin:5px 0">Tu PDF y ZIP ya están listos, dale clic:</p>
+    </div><br>
+    """, unsafe_allow_html=True)
     pdf_bytes=io.BytesIO()
     finales=st.session_state["lista_final"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig"]
-    finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=95)
+    finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
     zip_bytes=io.BytesIO()
-    with zipfile.ZipFile(zip_bytes, "w") as zf:
+    with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
         for i, im in enumerate(finales):
-            b=io.BytesIO(); im.save(b, format="JPEG", quality=95)
+            b=io.BytesIO(); im.save(b, format="JPEG", quality=92)
             zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
     d1,d2=st.columns(2)
-    with d1: st.download_button(f"⬇️ PDF {len(finales)} JUEGOS", pdf_bytes.getvalue(), f"loteria_{len(finales)}_juegos.pdf", "application/pdf", use_container_width=True)
-    with d2: st.download_button(f"⬇️ ZIP {len(finales)} JPGs", zip_bytes.getvalue(), f"loteria_{len(finales)}_juegos.zip", "application/zip", use_container_width=True)
+    with d1: st.download_button(f"⬇️ PASO 3A: PDF {len(finales)} JUEGOS", pdf_bytes.getvalue(), f"loteria_{len(finales)}_juegos.pdf", "application/pdf", use_container_width=True, type="primary")
+    with d2: st.download_button(f"⬇️ PASO 3B: ZIP {len(finales)} JPGs", zip_bytes.getvalue(), f"loteria_{len(finales)}_juegos.zip", "application/zip", use_container_width=True)
