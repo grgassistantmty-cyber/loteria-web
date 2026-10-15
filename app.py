@@ -1,13 +1,41 @@
 import os, random, io, zipfile
+from datetime import datetime
 from PIL import Image
 import streamlit as st
 
-st.set_page_config(page_title="Loteria Eliud 3,3,2,2", layout="wide", page_icon="🎰")
-st.markdown("""
-<style>.banner{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}
-.ws{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}</style>
+st.set_page_config(page_title="Loteria Eliud 14 Juegos", layout="wide", page_icon="🎰")
+
+# ===== CONTADOR DE VISITAS =====
+contador_file = "visitas.txt"
+if "visitado" not in st.session_state:
+    st.session_state["visitado"] = True
+    try:
+        if os.path.exists(contador_file):
+            with open(contador_file, "r") as f:
+                total = int(f.read().strip() or 0)
+        else:
+            total = 0
+        total += 1
+        with open(contador_file, "w") as f:
+            f.write(str(total))
+    except:
+        total = 1
+else:
+    try:
+        with open(contador_file, "r") as f:
+            total = int(f.read().strip() or 0)
+    except:
+        total = 1
+visitas_total = total
+
+# ===== BANNER CON CONTADOR =====
+st.markdown(f"""
+<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
+.ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
+.contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}</style>
 <div class="banner"><h1>🎰 GENERADOR 4 CARTAS - 3,3,2,2 ROTADOS 🎰</h1><h3>Creado por Eliud Monsivais - WhatsApp 8115566250</h3>
-<a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a></div><br>
+<a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
+<span class="contador">👁️ Visitas: {visitas_total} | Hoy: {datetime.now().strftime('%d/%m/%Y')}</span></div><br>
 """, unsafe_allow_html=True)
 
 RIGHT=[3,7,11,15]; LEFT=[0,4,8,12]; TOP=[0,1,2,3]; BOTTOM=[12,13,14,15]
@@ -46,7 +74,6 @@ def no_chocan(a,b,la,lb):
     for i,j in zip(la,lb):
         if a[i]==b[j]: return False
     return True
-
 def generar_logica(baraja):
     global uso_global
     if not uso_global: uso_global={f:0 for f in baraja}
@@ -90,7 +117,7 @@ def generar_hoja(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None)
     return sheet
 
 barajas=listar_barajas()
-col1,col2=st.columns([1,2])
+col1,col2=st.columns([1,2.5])
 with col1:
     modo=st.radio("Origen", ["Integrada","ZIP"])
     files=None
@@ -118,28 +145,57 @@ with col1:
     marco=st.number_input("Marco", value=2, min_value=0, max_value=30, step=1)
     color=st.color_picker("Color", "#FF00FF")
     ancho=st.text_input("Ancho cm","21"); alto=st.text_input("Alto cm","35"); dpi=st.text_input("DPI","300")
+    st.divider()
+    juegos=st.number_input("Cantidad de juegos (hojas)", value=1, min_value=1, max_value=100, step=1)
+    tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL 3500"], horizontal=True)
 
 if files and len(files)>=10:
     asp=get_aspecto(files)
-    st.info(f"Cartas: {len(files)} | Aspecto: {asp:.2f} - Te deja poner de 0 a 500 como quieras")
-    if st.button("👀 VER 2 PREVIEWS", type="primary", use_container_width=True):
-        uso_global={}; cartas=generar_logica(files)
-        if cartas:
-            orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp)
-            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
-            final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
-            st.session_state["cartas"]=cartas; st.session_state["orig"]=orig; st.session_state["final"]=final
-        else: st.error("No se pudo, intenta otra vez")
+    st.info(f"Cartas: {len(files)} | Juegos: {juegos} | Visitas: {visitas_total}")
+    cprev,cgen=st.columns(2)
+    with cprev:
+        if st.button("👀 VER 1 PREVIEW", use_container_width=True):
+            uso_global={}
+            cartas=generar_logica(files)
+            if cartas:
+                orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp)
+                Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
+                st.session_state["orig"]=orig; st.session_state["final"]=final
+            else: st.error("No se pudo")
+    with cgen:
+        if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True):
+            uso_global={}
+            lista_final=[]; lista_orig=[]; bar=st.progress(0)
+            for j in range(juegos):
+                cartas=generar_logica(files)
+                if not cartas: continue
+                orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp)
+                Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                final=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf))
+                lista_orig.append(orig); lista_final.append(final)
+                bar.progress((j+1)/juegos)
+            st.session_state["lista_final"]=lista_final; st.session_state["lista_orig"]=lista_orig
 
 if "orig" in st.session_state:
     c1,c2=st.columns(2)
     with c1: st.image(st.session_state["orig"], caption="ORIGINAL 3500", use_container_width=True)
     with c2: st.image(st.session_state["final"], caption=f"RESIZE {ancho}x{alto}", use_container_width=True)
-    b1=io.BytesIO(); st.session_state["orig"].save(b1,format="JPEG",quality=95)
-    b2=io.BytesIO(); st.session_state["final"].save(b2,format="JPEG",quality=95,dpi=(int(dpi),int(dpi)))
-    b3=io.BytesIO(); st.session_state["final"].save(b3,format="PDF")
-    d1,d2,d3=st.columns(3)
-    d1.download_button("JPG ORIGINAL", b1.getvalue(), "original_3500.jpg", "image/jpeg", use_container_width=True)
-    d2.download_button(f"JPG {ancho}x{alto}", b2.getvalue(), f"resize_{ancho}x{alto}.jpg", "image/jpeg", use_container_width=True)
-    d3.download_button("PDF", b3.getvalue(), f"resize_{ancho}x{alto}.pdf", "application/pdf", use_container_width=True)
-    st.markdown("""<br><div class="banner"><h2>Creado por Eliud Monsivais</h2><a class="ws" href="https://wa.me/528115566250">WhatsApp 8115566250</a></div>""", unsafe_allow_html=True)
+
+if "lista_final" in st.session_state and st.session_state["lista_final"]:
+    st.divider()
+    st.subheader(f"📦 {len(st.session_state['lista_final'])} Juegos")
+    cols=st.columns(3)
+    for i, im in enumerate(st.session_state["lista_final"][:3]):
+        cols[i%3].image(im, caption=f"Juego {i+1}", use_container_width=True)
+    pdf_bytes=io.BytesIO()
+    finales=st.session_state["lista_final"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig"]
+    finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=95)
+    zip_bytes=io.BytesIO()
+    with zipfile.ZipFile(zip_bytes, "w") as zf:
+        for i, im in enumerate(finales):
+            b=io.BytesIO(); im.save(b, format="JPEG", quality=95)
+            zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
+    d1,d2=st.columns(2)
+    with d1: st.download_button(f"⬇️ PDF {len(finales)} JUEGOS", pdf_bytes.getvalue(), f"loteria_{len(finales)}_juegos.pdf", "application/pdf", use_container_width=True)
+    with d2: st.download_button(f"⬇️ ZIP {len(finales)} JPGs", zip_bytes.getvalue(), f"loteria_{len(finales)}_juegos.zip", "application/zip", use_container_width=True)
