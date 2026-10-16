@@ -1,41 +1,50 @@
-import os, random, io, zipfile, threading
+import os, random, io, zipfile, threading, datetime
 from PIL import Image
 import streamlit as st
-st.set_page_config(page_title="Loteria Eliud PRO - Catalogo", layout="wide", page_icon="🎰")
+
+st.set_page_config(page_title="Loteria Eliud PRO", layout="wide", page_icon="🎰")
+
 @st.cache_resource
 def get_lock():
     return threading.Lock()
 lock = get_lock()
+
 contador_file = "/data/visitas.txt"
 os.makedirs("/data", exist_ok=True)
 if "visitado" not in st.session_state:
-    st.session_state["visitado"] = True
+    st.session_state["visitado"]=True
     try:
         with lock:
-            total = int(open(contador_file,"r").read().strip() or 0) if os.path.exists(contador_file) else 0
-            total += 1
+            total=int(open(contador_file,"r").read().strip() or 0) if os.path.exists(contador_file) else 0
+            total+=1
             open(contador_file,"w").write(str(total))
     except:
-        total = 1
+        total=1
 else:
     try:
-        total = int(open(contador_file,"r").read().strip() or 0)
+        total=int(open(contador_file,"r").read().strip() or 0)
     except:
-        total = 1
-visitas_total = total
-if "uso_global_4x4" not in st.session_state:
-    st.session_state["uso_global_4x4"] = {}
-if "uso_global_5x5" not in st.session_state:
-    st.session_state["uso_global_5x5"] = {}
+        total=1
+visitas_total=total
+
 if "vista" not in st.session_state:
-    st.session_state["vista"] = "catalogo"
-params = st.query_params
+    st.session_state["vista"]="catalogo"
+if "uso_global_4x4" not in st.session_state:
+    st.session_state["uso_global_4x4"]={}
+if "uso_global_5x5" not in st.session_state:
+    st.session_state["uso_global_5x5"]={}
+
+params=st.query_params
 if "vista" in params and params["vista"] in ["catalogo","4x4","5x5","12portada"]:
-    st.session_state["vista"] = params["vista"]
-def ir_a(vista):
-    st.session_state["vista"] = vista
-    st.query_params["vista"] = vista
+    st.session_state["vista"]=params["vista"]
+
+def ir_a(v):
+    st.session_state["vista"]=v
+    st.query_params["vista"]=v
     st.rerun()
+
+EXCEL_COLORS = {1:"#000000",2:"#FFFFFF",3:"#FF0000",4:"#00FF00",5:"#0000FF",6:"#FFFF00",7:"#FF00FF",8:"#00FFFF",9:"#800000",10:"#008000",11:"#000080",12:"#808000",13:"#800080",14:"#008080",15:"#C0C0C0",16:"#808080",17:"#9999FF",18:"#993366",19:"#FFFFCC",20:"#CCFFFF",21:"#660066",22:"#FF8080",23:"#0066CC",24:"#CCCCFF",25:"#000080",26:"#FF00FF",27:"#FFFF00",28:"#00FFFF",29:"#800080",30:"#800000",31:"#008080",32:"#0000FF",33:"#00CCFF",34:"#CCFFCC",35:"#FFFF99",36:"#99CCFF",37:"#FF99CC",38:"#CC99FF",39:"#FFCC99",40:"#3366FF",41:"#33CCCC",42:"#99CC00",43:"#FFCC00",44:"#FF9900",45:"#FF6600",46:"#666699",47:"#969696",48:"#003366",49:"#339966",50:"#003300",51:"#333300",52:"#993300",53:"#993366",54:"#333399",55:"#333333",56:"#000000"}
+
 def banner_top(titulo):
     return f"""
 <style>
@@ -49,40 +58,26 @@ def banner_top(titulo):
 <h1>🎰 {titulo} 🎰</h1>
 <h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
 <a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
-<span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span>
-<div class="apoyo">
-💖 <b>Se aceptan aportaciones voluntarias</b> 💖<br>
-Si te sirvió el generador, apóyame con lo que gustes para seguir mejorándolo y mantener el servidor.<br>
-<b>Banco: SPIN by OXXO</b><br>
-<b>CLABE: 728969000164073671</b> - Eliud Monsivais<br>
-<button class="copybtn" onclick="navigator.clipboard.writeText('728969000164073671'); alert('¡CLABE copiada! 728969000164073671')">📋 Copiar CLABE</button><br>
-🙏 ¡Muchas gracias por tu apoyo!
-</div>
-</div><br>
-"""
+<span class="contador">👁️ Visitas: {visitas_total}</span>
+<div class="apoyo">💖 <b>Se aceptan aportaciones voluntarias</b> 💖<br>Banco: SPIN by OXXO<br><b>CLABE: 728969000164073671</b> - Eliud Monsivais<br>
+<button class="copybtn" onclick="navigator.clipboard.writeText('728969000164073671'); alert('¡CLABE copiada!')">📋 Copiar CLABE</button><br>🙏 ¡Muchas gracias por tu apoyo!</div>
+</div><br>"""
 
 def instrucciones_html():
-    return """
-<div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
-<h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
-<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
-<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja y si quieres cambia color de fondo.
-</div>
-<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
-<b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b> y espera al 100%
-</div>
-<div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
-<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Abajo se activan: PDF y ZIP para descargar
-</div>
-</div><br>
-"""
+    return """<div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
+<h2>📋 INSTRUCCIONES</h2><b>PASO 1:</b> Elige baraja<br><b>PASO 2:</b> Dale GENERAR y espera 100%<br><b>PASO 3:</b> Descarga PDF y ZIP</div><br>"""
+
 def listar_barajas():
     if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
+
 def cargar_files(path, limite=54):
     exts=(".png",".jpg",".jpeg",".webp",".jfif")
+    if not path or not os.path.exists(path): return []
     files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
-    files.sort(); return files[:limite]
+    files.sort()
+    return files[:limite]
+
 def cm_to_px(cm,dpi): return int(float(cm)/2.54*int(dpi))
 def get_aspecto(files):
     asp=[]
@@ -95,7 +90,10 @@ def no_chocan(a,b,la,lb):
     for i,j in zip(la,lb):
         if a[i]==b[j]: return False
     return True
+
 RIGHT4=[3,7,11,15]; LEFT4=[0,4,8,12]; TOP4=[0,1,2,3]; BOTTOM4=[12,13,14,15]
+RIGHT5=[4,9,14,19,24]; LEFT5=[0,5,10,15,20]; TOP5=[0,1,2,3,4]; BOTTOM5=[20,21,22,23,24]
+
 def crear_carta_4x4(data16, cw_card, ch_card, div, g, asp):
     carta=Image.new("RGB",(cw_card,ch_card),"black")
     fw=cw_card-g*2; fh=ch_card-g*2; base=Image.new("RGB",(fw,fh),"black")
@@ -103,13 +101,13 @@ def crear_carta_4x4(data16, cw_card, ch_card, div, g, asp):
     for i in range(min(16,len(data16))):
         r=i//4; c=i%4; x=c*(cw+div); y=y0+r*(ch+div)
         try:
-            im=Image.open(data16[i]).convert("RGB").resize((cw,ch), Image.LANCZOS)
-            base.paste(im,(x,y))
+            im=Image.open(data16[i]).convert("RGB").resize((cw,ch), Image.LANCZOS); base.paste(im,(x,y))
         except: pass
     carta.paste(base,(g,g)); return carta
+
 def generar_logica_4x4(baraja):
-    uso = st.session_state["uso_global_4x4"]
-    if not uso: uso = {f:0 for f in baraja}; st.session_state["uso_global_4x4"] = uso
+    uso=st.session_state["uso_global_4x4"]
+    if not uso: uso={f:0 for f in baraja}; st.session_state["uso_global_4x4"]=uso
     for _ in range(3000):
         conteo={}; cartas=[[None]*16 for _ in range(4)]; pos_fig={}; ok=True
         base54=baraja.copy(); random.shuffle(base54)
@@ -138,6 +136,7 @@ def generar_logica_4x4(baraja):
         for f,cnt in conteo.items(): uso[f]=uso.get(f,0)+cnt
         st.session_state["uso_global_4x4"]=uso; return cartas
     return None
+
 def generar_hoja_4x4(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None, W_orig=2500):
     cw_tmp=((W_orig-sep_v)//2 - g*2 - 3*div)//4; ch_tmp=int(cw_tmp*asp); card_h=ch_tmp*4+div*3+g*2
     H_orig=card_h*2+sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
@@ -147,19 +146,19 @@ def generar_hoja_4x4(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=N
         sheet.paste(crear_carta_4x4(d16,cw,ch,div,g,asp),(x,y))
     if final_size: sheet=sheet.resize(final_size, Image.LANCZOS)
     return sheet
-RIGHT5=[4,9,14,19,24]; LEFT5=[0,5,10,15,20]; TOP5=[0,1,2,3,4]; BOTTOM5=[20,21,22,23,24]
+
 def crear_carta_5x5(data25, card_w, card_h, div_interno, g_negro, aspecto):
     G=g_negro; DIV=div_interno; carta=Image.new("RGB",(card_w, card_h),"black")
     fw=card_w-G*2; fh=card_h-G*2; base=Image.new("RGB",(fw,fh),"black")
     cw=(fw-DIV*4)//5; ch=int(cw*aspecto); th=ch*5+DIV*4; y0=(fh-th)//2
     for idx in range(min(25,len(data25))):
         r=idx//5; c=idx%5; x0=c*(cw+DIV); y0f=y0 + r*(ch+DIV)
-        try:
-            im=Image.open(data25[idx]).convert("RGB").resize((cw,ch), Image.LANCZOS); base.paste(im,(x0,y0f))
+        try: im=Image.open(data25[idx]).convert("RGB").resize((cw,ch), Image.LANCZOS); base.paste(im,(x0,y0f))
         except: pass
     carta.paste(base,(G,G)); return carta
+
 def generar_logica_5x5(baraja_files):
-    uso = st.session_state["uso_global_5x5"]
+    uso=st.session_state["uso_global_5x5"]
     if not uso: uso={f:0 for f in baraja_files}; st.session_state["uso_global_5x5"]=uso
     for _ in range(5000):
         conteo={}; cartas_data=[[None]*25 for _ in range(4)]; pos_por_figura={}; ok=True
@@ -176,7 +175,6 @@ def generar_logica_5x5(baraja_files):
             usados=set([f for f in cartas_data[c] if f is not None])
             for pos in huecos_por_carta[c]:
                 base=[f for f in segunda_lista if f not in usados and conteo.get(f,0)<2 and pos not in pos_por_figura.get(f,set())]
-                if not base: base=[f for f in baraja_files if f not in usados and conteo.get(f,0)<2 and pos not in pos_por_figura.get(f,set())]
                 if not base: base=[f for f in baraja_files if f not in usados and conteo.get(f,0)<2]
                 if not base: ok=False; break
                 eleg=base[0]; cartas_data[c][pos]=eleg; pos_por_figura[eleg]=pos_por_figura.get(eleg,set())|{pos}; conteo[eleg]=conteo.get(eleg,0)+1; usados.add(eleg)
@@ -191,6 +189,7 @@ def generar_logica_5x5(baraja_files):
         for f,cnt in conteo.items(): uso[f]=uso.get(f,0)+cnt
         st.session_state["uso_global_5x5"]=uso; return cartas_data
     return None
+
 def generar_hoja_5x5(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negro, aspecto, final_size=None, W_orig=3500):
     cw_tmp=((W_orig-sep_v)//2 - g_negro*2 - 4*div_interno)//5; ch_tmp=int(cw_tmp*aspecto); card_h_real=ch_tmp*5 + div_interno*4 + g_negro*2
     H_orig=card_h_real*2 + sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
@@ -200,49 +199,52 @@ def generar_hoja_5x5(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negr
         sheet.paste(crear_carta_5x5(d25, cw, ch, div_interno, g_negro, aspecto),(x,y))
     if final_size: sheet=sheet.resize(final_size, Image.LANCZOS)
     return sheet
-def crear_carta_imagen_16(data16, card_w, div_interno, sample_aspect):
-    card_h=int(card_w*sample_aspect)
-    img=Image.new("RGB",(card_w, card_h),"black")
-    inner_w=card_w-4; inner_h=card_h-4
-    base=Image.new("RGB",(inner_w, inner_h),"black")
-    cw=(inner_w - div_interno*3)//4; ch=int(cw*sample_aspect)
-    th=ch*4 + div_interno*3; y0=(inner_h - th)//2
-    for i in range(16):
-        if i>=len(data16): break
-        r=i//4; c=i%4; x=c*(cw+div_interno); y=y0 + r*(ch+div_interno)
+
+# === LOGICA 12 CARTAS CON PORTADA - TU ORIGINAL PULIDO ===
+def crear_carta_imagen_16(data16, card_w=1000, div_interno=8, sample_aspect=1.45):
+    cell_w=card_w//4; cell_h=int(cell_w*sample_aspect)
+    img=Image.new("RGB",(card_w, cell_h*4),"black")
+    target_w=cell_w-div_interno; target_h=cell_h-div_interno
+    for idx,ruta in enumerate(data16):
         try:
-            im=Image.open(data16[i]).convert("RGB").resize((cw,ch), Image.LANCZOS)
-            base.paste(im,(x,y))
-        except: pass
-    img.paste(base,(2,2)); return img
+            im=Image.open(ruta).convert("RGB")
+            iw,ih=im.size; scale=max(target_w/iw, target_h/ih)
+            nw,nh=int(iw*scale), int(ih*scale)
+            im=im.resize((nw,nh), Image.LANCZOS)
+            left=(nw-target_w)//2; top=(nh-target_h)//2
+            im=im.crop((left,top,left+target_w,top+target_h))
+        except:
+            im=Image.new("RGB",(target_w,target_h),"white")
+        col=idx%4; row=idx//4; x=col*cell_w+div_interno//2; y=row*cell_h+div_interno//2
+        img.paste(im,(x,y))
+    return img
+
 def generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_cover_path, favorita_baraja_path, color_entre, div_interno, sep_entre):
     try:
-        with Image.open(baraja_files[0]) as s: asp = s.size[1]/s.size[0]
-    except: asp = 1.45
+        with Image.open(baraja_files[0]) as s: asp=s.size[1]/s.size[0]
+    except: asp=1.45
     card_w=1000; card_h=int(card_w*asp)
-    grid_pos = [(2,0),(3,0),(2,1),(3,1),(0,2),(1,2),(2,2),(3,2),(0,3),(1,3),(2,3),(3,3)]
+    grid_pos=[(2,0),(3,0),(2,1),(3,1),(0,2),(1,2),(2,2),(3,2),(0,3),(1,3),(2,3),(3,3)]
     vecinos={}
     for i,(r,c) in enumerate(grid_pos):
         lst=[]
         for j,(r2,c2) in enumerate(grid_pos):
             if i==j: continue
-            if r==r2 and c==c2+1: lst.append((j, RIGHT4, LEFT4))
-            if r==r2 and c==c2-1: lst.append((j, LEFT4, RIGHT4))
-            if c==c2 and r==r2+1: lst.append((j, BOTTOM4, TOP4))
-            if c==c2 and r==r2-1: lst.append((j, TOP4, BOTTOM4))
+            if r==r2 and c==c2+1: lst.append((j,RIGHT4,LEFT4))
+            if r==r2 and c==c2-1: lst.append((j,LEFT4,RIGHT4))
+            if c==c2 and r==r2+1: lst.append((j,BOTTOM4,TOP4))
+            if c==c2 and r==r2-1: lst.append((j,TOP4,BOTTOM4))
         vecinos[i]=lst
-    otros = [f for f in baraja_files if f!= favorita_baraja_path][:53]
+    otros=[f for f in baraja_files if f!=favorita_baraja_path][:53]
     for _ in range(2000):
-        posiciones_fav = random.sample(range(16), 12)
-        random.shuffle(otros)
-        pool=[]
+        posiciones_fav=random.sample(range(16),12)
+        random.shuffle(otros); pool=[]
         for f in otros[:21]: pool.extend([f]*4)
         for f in otros[21:]: pool.extend([f]*3)
         random.shuffle(pool)
         pool_idx=0; cartas_data=[]; ok=True
         for idx_carta in range(12):
-            fav_pos = posiciones_fav[idx_carta]
-            carta_ok=False
+            fav_pos=posiciones_fav[idx_carta]; carta_ok=False
             for _ in range(60):
                 top=[None]*16; top[fav_pos]=favorita_baraja_path
                 usados=set([favorita_baraja_path]); temp_idx=pool_idx; temp_pool=pool[:]; fail=False
@@ -252,54 +254,65 @@ def generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_cover_path, fav
                     for k in range(temp_idx, len(temp_pool)):
                         if temp_pool[k] not in usados:
                             top[pos]=temp_pool[k]; usados.add(temp_pool[k])
-                            temp_pool[k], temp_pool[temp_idx] = temp_pool[temp_idx], temp_pool[k]
+                            temp_pool[k], temp_pool[temp_idx]=temp_pool[temp_idx], temp_pool[k]
                             temp_idx+=1; encontrado=True; break
                     if not encontrado: fail=True; break
                 if fail: continue
                 choque=False
-                for j, la, lb in vecinos[idx_carta]:
+                for j,la,lb in vecinos[idx_carta]:
                     if j < len(cartas_data):
                         if not no_chocan(cartas_data[j], top, la, lb): choque=True; break
                 if choque: continue
                 pool=temp_pool; pool_idx=temp_idx; cartas_data.append(top); carta_ok=True; break
             if not carta_ok: ok=False; break
         if not ok: continue
-        W = 4*card_w + 3*sep_entre; H = 4*card_h + 3*sep_entre
+        W=4*card_w+3*sep_entre; H=4*card_h+3*sep_entre
         sheet=Image.new("RGB",(W,H), color_entre)
         try:
             imc=Image.open(portada_cover_path).convert("RGB")
             tw=2*card_w+sep_entre; th=2*card_h+sep_entre; sc=max(tw/imc.size[0], th/imc.size[1])
             imc=imc.resize((int(imc.size[0]*sc), int(imc.size[1]*sc)), Image.LANCZOS)
             imc=imc.crop(((imc.size[0]-tw)//2, (imc.size[1]-th)//2, (imc.size[0]-tw)//2+tw, (imc.size[1]-th)//2+th))
-        except: imc=Image.new("RGB",(2*card_w+sep_entre, 2*card_h+sep_entre),"gold")
+        except:
+            imc=Image.new("RGB",(2*card_w+sep_entre, 2*card_h+sep_entre),"gold")
         sheet.paste(imc,(0,0))
-        for idx, data16 in enumerate(cartas_data):
-            r,c = grid_pos[idx]
+        for idx,data16 in enumerate(cartas_data):
+            r,c=grid_pos[idx]
             if r<2 and c<2: continue
             x=c*(card_w+sep_entre); y=r*(card_h+sep_entre)
             sheet.paste(crear_carta_imagen_16(data16, card_w=card_w, div_interno=div_interno, sample_aspect=asp),(x,y))
         return sheet
     return None
+
+def limpiar_nombre(path_img, idx):
+    raw=os.path.splitext(os.path.basename(path_img))[0]
+    clean=raw.replace("_"," ").replace("-"," ").strip().upper()
+    clean=' '.join([w for w in clean.split() if not w.isdigit()]).strip()
+    if not clean: clean=f"CARTA {idx}"
+    return clean
+
 # CATALOGO
-if st.session_state.vista == "catalogo":
+if st.session_state.vista=="catalogo":
     st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
     c1,c2,c3=st.columns(3)
     with c1:
         if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_container_width=True)
-        st.markdown("### 4x4")
-        if st.button("ENTRAR A 4x4", use_container_width=True, type="primary", key="b4"): ir_a("4x4")
+        st.markdown("### 4x4 - 16 imgs")
+        if st.button("🎰 ENTRAR A 4x4", use_container_width=True, type="primary"): ir_a("4x4")
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
-        st.markdown("### 5x5 ROTADO")
-        if st.button("ENTRAR A 5x5", use_container_width=True, key="b5"): ir_a("5x5")
+        st.markdown("### 5x5 - 25 imgs ROTADO")
+        if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
     with c3:
         if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
-        st.markdown("### 12 CON PORTADA PULIDO")
-        if st.button("ENTRAR A 12 CARTAS", use_container_width=True, key="b12"): ir_a("12portada")
+        st.markdown("### 12 CARTAS CON PORTADA - 1 PREFERIDA")
+        if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
     st.stop()
-if st.session_state.vista == "4x4":
+
+if st.session_state.vista=="4x4":
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
     st.markdown(banner_top("GENERADOR 4 CARTAS 4X4"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html(), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
@@ -317,7 +330,7 @@ if st.session_state.vista == "4x4":
     with col2:
         if files:
             asp=get_aspecto(files)
-            if st.button(f"GENERAR {juegos} JUEGOS 4x4", type="primary", use_container_width=True, key="gen4"):
+            if st.button(f"🎰 GENERAR {juegos} JUEGOS 4x4", type="primary", use_container_width=True, key="gen4"):
                 with lock:
                     lista_final=[]; lista_orig=[]; bar=st.progress(0)
                     for j in range(juegos):
@@ -335,12 +348,14 @@ if st.session_state.vista == "4x4":
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"PDF {len(finales)} 4x4", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"ZIP {len(finales)} 4x4", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)} 4x4", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)} 4x4", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-if st.session_state.vista == "5x5":
+
+if st.session_state.vista=="5x5":
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
-    st.markdown(banner_top("GENERADOR 5x5"), unsafe_allow_html=True)
+    st.markdown(banner_top("GENERADOR 5x5 4 CARTAS - 54+46 ROTADO"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html(), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
@@ -358,7 +373,7 @@ if st.session_state.vista == "5x5":
     with col2:
         if files:
             asp=get_aspecto(files)
-            if st.button(f"GENERAR {juegos} JUEGOS 5x5", type="primary", use_container_width=True, key="gen5"):
+            if st.button(f"🎰 GENERAR {juegos} JUEGOS 5x5", type="primary", use_container_width=True, key="gen5"):
                 with lock:
                     lista_final=[]; lista_orig=[]; bar=st.progress(0)
                     for j in range(juegos):
@@ -376,51 +391,132 @@ if st.session_state.vista == "5x5":
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_5x5_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"PDF {len(finales)} 5x5", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"ZIP {len(finales)} 5x5", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)} 5x5", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)} 5x5", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-if st.session_state.vista == "12portada":
+
+# 12 CON PORTADA - CON SU LOGICA Y CONTROLES ORIGINALES
+if st.session_state.vista=="12portada":
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
-    st.markdown(banner_top("GENERADOR 12 CARTAS CON PORTADA - PULIDO"), unsafe_allow_html=True)
+    st.markdown(banner_top("GENERADOR 12 CARTAS CON PORTADA - 1 PREFERIDA ROTADA"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html(), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
-        portada_cover="portadas/1-portada-12-cartas.jpg" if os.path.exists("portadas/1-portada-12-cartas.jpg") else ""
-        modo=st.radio("Baraja", ["Integrada","ZIP"], key="modo12")
-        files=None
-        if modo=="Integrada" and barajas:
-            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel12")
-            path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
-            files=cargar_files(path_sel, 54)
-        fav_path=""
-        if files:
-            fav_name=st.selectbox("Favorita", [os.path.basename(f) for f in files], key="fav12")
-            fav_path=[f for f in files if os.path.basename(f)==fav_name][0]
-        div=st.number_input("Div interno", value=4, key="div12"); sep=st.number_input("Sep", value=25, key="sep12")
-        color=st.color_picker("Color", "#FF00FF", key="color12")
-        ancho=st.text_input("Ancho cm","28", key="ancho12"); alto=st.text_input("Alto cm","43", key="alto12"); dpi=st.text_input("DPI","300", key="dpi12")
-        juegos=st.number_input("Juegos 12", value=1, min_value=1, max_value=10, key="j12")
+        st.markdown("### 1) BARAJAS INCLUIDAS")
+        modo_baraja=st.radio("Fuente", ["INCLUIDAS","IMPORTADAS ZIP"], key="fuente12")
+        baraja_files=[]; portada_files=[]
+        baraja_nombre="baraja"; portada_nombre="portada"
+        if modo_baraja=="INCLUIDAS":
+            if barajas:
+                sel_b=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel_b_12")
+                path_b=[p for p in barajas if os.path.basename(p)==sel_b][0]
+                baraja_files=cargar_files(path_b,54)
+                baraja_nombre=sel_b
+            if os.path.exists("portadas"):
+                port_dirs=[os.path.join("portadas",d) for d in os.listdir("portadas") if os.path.isdir(os.path.join("portadas",d))]
+                if port_dirs:
+                    sel_p=st.selectbox("Portada", [os.path.basename(p) for p in port_dirs], key="sel_p_12")
+                    path_p=[p for p in port_dirs if os.path.basename(p)==sel_p][0]
+                    portada_files=cargar_files(path_p,54)
+                    portada_nombre=sel_p
+                else:
+                    # si portadas son archivos sueltos
+                    port_files=cargar_files("portadas",54)
+                    if port_files:
+                        portada_files=port_files
+                        portada_nombre="portadas"
+        else:
+            zb=st.file_uploader("ZIP Baraja 54", type=["zip"], key="zip_b_12")
+            if zb:
+                tmp="/tmp/baraja12"; os.makedirs(tmp, exist_ok=True)
+                with zipfile.ZipFile(zb) as zz:
+                    for name in zz.namelist():
+                        if name.lower().endswith((".jpg",".jpeg",".png",".webp")):
+                            open(os.path.join(tmp, os.path.basename(name)),"wb").write(zz.read(name))
+                baraja_files=cargar_files(tmp,54)
+            zp=st.file_uploader("ZIP Portada 54", type=["zip"], key="zip_p_12")
+            if zp:
+                tmp2="/tmp/portada12"; os.makedirs(tmp2, exist_ok=True)
+                with zipfile.ZipFile(zp) as zz:
+                    for name in zz.namelist():
+                        if name.lower().endswith((".jpg",".jpeg",".png",".webp")):
+                            open(os.path.join(tmp2, os.path.basename(name)),"wb").write(zz.read(name))
+                portada_files=cargar_files(tmp2,54)
+
+        st.markdown("### MODO DE GENERACIÓN")
+        modo_gen=st.radio("Modo", ["UNA - Solo 1 hoja (elegir #)","TODAS - 54 hojas"], key="modo_gen_12")
+        num_fav=st.number_input("Número favorita (1-54)", value=46, min_value=1, max_value=54, key="num_fav_12")
+
+        st.markdown("### COLOR DE FONDO")
+        lista_excel=[f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()]
+        sel_excel=st.selectbox("Color Excel", lista_excel, index=2, key="excel_12")
+        hex_excel=EXCEL_COLORS.get(int(sel_excel.split("-")[0].strip()), "#FF0000")
+        color_entre=st.color_picker("Color HEX", hex_excel, key="color_12")
+
+        st.markdown("### AJUSTES")
+        div_interno=st.number_input("Div. interna", value=8, min_value=1, max_value=30, key="div_12")
+        sep_entre=st.number_input("Sep. entre cartas", value=40, min_value=0, max_value=300, key="sep_12")
+        ancho=st.text_input("Ancho cm tabloide","28", key="ancho12"); alto=st.text_input("Alto cm tabloide","43", key="alto12"); dpi=st.text_input("DPI","300", key="dpi12")
+
     with col2:
-        if files and portada_cover and fav_path:
-            asp=get_aspecto(files)
-            if st.button(f"GENERAR {juegos} TABLOIDES 12", type="primary", use_container_width=True, key="gen12"):
-                with lock:
-                    lista_final=[]; bar=st.progress(0)
-                    for j in range(juegos):
-                        sheet=generar_tabloide_12_con_portada_PULIDO(files, portada_cover, fav_path, color, div, sep)
-                        if not sheet: continue
-                        Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
-                        final=sheet.resize((Wf,Hf), Image.LANCZOS)
-                        lista_final.append(final); bar.progress((j+1)/juegos)
-                    st.session_state["lista_final12"]=lista_final
+        if baraja_files and portada_files:
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁 VISTA PREVIA", use_container_width=True, key="prev12"):
+                    with lock:
+                        idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
+                        sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_entre, div_interno, sep_entre)
+                        if sheet:
+                            st.session_state["orig12"]=sheet
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            st.session_state["final12"]=sheet.resize((Wf,Hf), Image.LANCZOS)
+                            st.session_state["fav_actual"]=idx
+            with cgen:
+                if st.button("🖼 EXPORTAR A JPG / PDF TABLOIDE", type="primary", use_container_width=True, key="gen12"):
+                    with lock:
+                        lista_final=[]; lista_nombres=[]; bar=st.progress(0)
+                        if "UNA" in modo_gen:
+                            idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
+                            lista=[(portada_files[idx], baraja_files[idx])]
+                        else:
+                            n=min(len(baraja_files), len(portada_files),54)
+                            lista=[(portada_files[i], baraja_files[i]) for i in range(n)]
+                        for i,(cover_path,fav_path) in enumerate(lista,1):
+                            sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, cover_path, fav_path, color_entre, div_interno, sep_entre)
+                            if not sheet: continue
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=sheet.resize((Wf,Hf), Image.LANCZOS)
+                            lista_final.append(final)
+                            lista_nombres.append(limpiar_nombre(fav_path,i))
+                            bar.progress(i/len(lista))
+                        st.session_state["lista_final12"]=lista_final
+                        st.session_state["lista_nombres12"]=lista_nombres
+
+            if "orig12" in st.session_state:
+                st.image(st.session_state["orig12"], caption=f"ORIGINAL Preview #{st.session_state.get('fav_actual',0)+1}", use_container_width=True)
+                st.image(st.session_state["final12"], caption="RESIZE Preview", use_container_width=True)
+
             if "lista_final12" in st.session_state and st.session_state["lista_final12"]:
-                finales=st.session_state["lista_final12"]
-                for i, im in enumerate(finales): st.image(im, caption=f"Tabloide 12 #{i+1}", use_container_width=True)
-                pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=95)
+                finales=st.session_state["lista_final12"]; nombres=st.session_state["lista_nombres12"]
+                for i,im in enumerate(finales):
+                    st.image(im, caption=f"{i+1:02d} - {nombres[i]}", use_container_width=True)
+                pdf_bytes=io.BytesIO()
+                if len(finales)==1:
+                    finales[0].save(pdf_bytes, format="PDF", resolution=300, quality=95)
+                else:
+                    finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], resolution=300, quality=95)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
-                    for i, im in enumerate(finales):
-                        b=io.BytesIO(); im.save(b, format="JPEG", quality=95); zf.writestr(f"tabloide_12_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"PDF {len(finales)} 12", pdf_bytes.getvalue(), f"tabloides_12_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"ZIP {len(finales)} 12", zip_bytes.getvalue(), f"tabloides_12_{len(finales)}.zip", "application/zip", use_container_width=True)
+                    fecha=datetime.datetime.now().strftime("%Y%m%d_%H%M")
+                    for i,im in enumerate(finales):
+                        b=io.BytesIO(); im.save(b, format="JPEG", quality=95, dpi=(300,300))
+                        zf.writestr(f"{i+1:02d} - {nombres[i]} - {fecha}.jpg", b.getvalue())
+                d1,d2=st.columns(2)
+                with d1:
+                    st.download_button(f"⬇️ PDF TABLOIDE {len(finales)} HOJAS", pdf_bytes.getvalue(), f"TABLOIDE_12_{len(finales)}_{baraja_nombre}_{portada_nombre}.pdf", "application/pdf", use_container_width=True, type="primary")
+                with d2:
+                    st.download_button(f"⬇️ ZIP JPG {len(finales)} HOJAS", zip_bytes.getvalue(), f"JPG_TABLOIDE_12_{len(finales)}.zip", "application/zip", use_container_width=True)
+        else:
+            st.warning("Selecciona baraja (54) y portada (54) para activar preview")
     st.stop()
