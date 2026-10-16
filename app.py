@@ -9,7 +9,10 @@ def get_lock():
     return threading.Lock()
 lock = get_lock()
 
-contador_file = "visitas.txt"
+# AHORA GUARDA EN /data PARA QUE NO SE BORRE
+contador_file = "/data/visitas.txt"
+os.makedirs("/data", exist_ok=True)
+
 if "visitado" not in st.session_state:
     st.session_state["visitado"] = True
     try:
@@ -29,7 +32,6 @@ visitas_total = total
 if "uso_global" not in st.session_state:
     st.session_state["uso_global"] = {}
 
-# BANNER CON APORTACIONES
 st.markdown(f"""
 <style>
 .banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
