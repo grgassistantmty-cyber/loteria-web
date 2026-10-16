@@ -26,6 +26,47 @@ if "uso_global_4x4" not in st.session_state: st.session_state["uso_global_4x4"] 
 if "uso_global_5x5" not in st.session_state: st.session_state["uso_global_5x5"] = {}
 if "vista" not in st.session_state: st.session_state["vista"] = "catalogo"
 
+def banner_top(titulo):
+    return f"""
+    <style>
+   .banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
+   .ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
+   .contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}
+   .apoyo{{background:#fff3cd;border:2px solid #ffb700;padding:14px;border-radius:12px;margin-top:16px;color:#222;text-align:center;line-height:1.6}}
+   .copybtn{{background:black;color:#ffb700;border:1px solid #ffb700;padding:6px 14px;border-radius:20px;font-weight:bold;cursor:pointer;margin-top:6px}}
+    </style>
+    <div class="banner">
+    <h1>🎰 {titulo} 🎰</h1>
+    <h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
+    <a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
+    <span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span>
+    <div class="apoyo">
+    💖 <b>Se aceptan aportaciones voluntarias</b> 💖<br>
+    Si te sirvió el generador, apóyame con lo que gustes para seguir mejorándolo y mantener el servidor.<br>
+    <b>Banco: SPIN by OXXO</b><br>
+    <b>CLABE: 728969000164073671</b> - Eliud Monsivais<br>
+    <button class="copybtn" onclick="navigator.clipboard.writeText('728969000164073671'); alert('¡CLABE copiada! 728969000164073671')">📋 Copiar CLABE</button><br>
+    🙏 ¡Muchas gracias por tu apoyo!
+    </div>
+    </div><br>
+    """
+
+def instrucciones_html():
+    return """
+    <div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
+    <h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
+    <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+    <b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja y si quieres cambia color de fondo.
+    </div>
+    <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+    <b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b> y espera al 100%
+    </div>
+    <div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
+    <b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Abajo se activan: PDF y ZIP para descargar
+    </div>
+    </div><br>
+    """
+
 def listar_barajas():
     if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
@@ -100,8 +141,7 @@ def generar_hoja_4x4(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=N
 
 RIGHT5=[4,9,14,19,24]; LEFT5=[0,5,10,15,20]; TOP5=[0,1,2,3,4]; BOTTOM5=[20,21,22,23,24]
 def crear_carta_5x5(data25, card_w, card_h, div_interno, g_negro, aspecto):
-    G=g_negro; DIV=div_interno
-    carta=Image.new("RGB",(card_w, card_h),"black")
+    G=g_negro; DIV=div_interno; carta=Image.new("RGB",(card_w, card_h),"black")
     fw=card_w-G*2; fh=card_h-G*2; base=Image.new("RGB",(fw,fh),"black")
     cw=(fw-DIV*4)//5; ch=int(cw*aspecto); th=ch*5+DIV*4; y0=(fh-th)//2
     for idx in range(min(25,len(data25))):
@@ -154,21 +194,23 @@ def generar_hoja_5x5(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negr
 
 # CATALOGO
 if st.session_state.vista == "catalogo":
-    st.markdown(f"""<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}.contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px}}</style><div class="banner"><h1>🎰 CATALOGO LOTERIA ELIUD PRO 🎰</h1><h3>Elige tu juego - Visitas: {visitas_total}</h3></div><br>""", unsafe_allow_html=True)
+    st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
     c1,c2=st.columns(2)
     with c1:
         if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_column_width=True)
-        st.markdown("### 4x4 - 16 imgs - Huecos 3,3,2,2 - 54 Garantizadas")
+        st.markdown("### 4x4 - 16 imgs - Huecos 3,3,2,2")
         if st.button("🎰 ENTRAR A 4x4", use_container_width=True, type="primary"): st.session_state.vista="4x4"; st.rerun()
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_column_width=True)
-        st.markdown("### 5x5 - 25 imgs - 11,11,12,12 ROTADO - 54+46 - NUEVO")
+        st.markdown("### 5x5 - 25 imgs - 11,11,12,12 ROTADO - NUEVO")
         if st.button("🎰 ENTRAR A 5x5", use_container_width=True): st.session_state.vista="5x5"; st.rerun()
     st.stop()
 
+# 4x4
 if st.session_state.vista == "4x4":
     if st.button("⬅️ Volver al Catalogo"): st.session_state.vista="catalogo"; st.rerun()
-    st.markdown(f"""<div style="background:linear-gradient(90deg,#cc0000,#000);padding:12px;border-radius:12px;color:white;text-align:center;border:2px solid gold"><h2>🎰 GENERADOR 4 CARTAS 4X4 🎰 - Visitas: {visitas_total}</h2></div><br>""", unsafe_allow_html=True)
+    st.markdown(banner_top("GENERADOR 4 CARTAS 4X4"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html(), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
@@ -233,9 +275,11 @@ if st.session_state.vista == "4x4":
                 with d2: st.download_button(f"⬇️ ZIP {len(finales)} 4x4", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
 
+# 5x5
 if st.session_state.vista == "5x5":
     if st.button("⬅️ Volver al Catalogo"): st.session_state.vista="catalogo"; st.rerun()
-    st.markdown(f"""<div style="background:linear-gradient(90deg,#0033cc,#000);padding:12px;border-radius:12px;color:white;text-align:center;border:2px solid gold"><h2>🎰 GENERADOR 5x5 4 CARTAS - 54+46 ROTADO 11,11,12,12 🎰 - Visitas: {visitas_total}</h2></div><br>""", unsafe_allow_html=True)
+    st.markdown(banner_top("GENERADOR 5x5 4 CARTAS - 54+46 ROTADO 11,11,12,12"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html(), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
