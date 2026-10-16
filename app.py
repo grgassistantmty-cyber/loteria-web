@@ -34,9 +34,9 @@ st.markdown(f"""
 <style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
 .ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
 .contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}</style>
-<div class="banner"><h1>🎰 GENERADOR PRO - ANTI-TRABA 🎰</h1><h3>Eliud Monsivais - WhatsApp 8115566250</h3>
+<div class="banner"><h1>🎰 GENERADOR 4 CARTAS 4X4 🎰</h1><h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
 <a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
-<span class="contador">👁️ Visitas: {visitas_total} | PRO v3 con instrucciones</span></div><br>
+<span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span></div><br>
 """, unsafe_allow_html=True)
 
 # ==== INSTRUCCIONES ====
@@ -44,13 +44,13 @@ st.markdown("""
 <div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
 <h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
 <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
-<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja (Baraja 1, 2, 3...) y si quieres cambia el color de fondo y los márgenes.
+<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja (Baraja 1, 2, 3...) y si quieres cambia el color de fondo y los márgenes, donde dice ZIP puedes subir tu baraja personal.
 </div>
 <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
 <b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b><br>👉 Espera a que la barra azul llegue a <b>100%</b> (tarda 5-10 seg por juego)<br>👉 Si quieres ver solo 1 antes, dale primero en <b>👀 PREVIEW</b>
 </div>
 <div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
-<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Cuando termine, ABAJO se activan 2 botones:<br>
+<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Cuando termine, desplazate hasta ABAJO del la página y se activan 2 botones:<br>
 ✅ <b>⬇️ PDF JUEGOS</b> = 1 solo PDF con todos los juegos para imprimir<br>
 ✅ <b>⬇️ ZIP JPGs</b> = Imágenes sueltas de cada juego<br>
 👉 Dale clic y se descarga automático
