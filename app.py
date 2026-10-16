@@ -37,7 +37,45 @@ def ir_a(vista):
     st.query_params["vista"] = vista
     st.rerun()
 def banner_top(titulo):
-    return f"<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}</style><div class='banner'><h1>{titulo}</h1><h3>Eliud 8115566250</h3><span>Visitas: {visitas_total}</span></div><br>"
+    return f"""
+<style>
+.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
+.ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
+.contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}
+.apoyo{{background:#fff3cd;border:2px solid #ffb700;padding:14px;border-radius:12px;margin-top:16px;color:#222;text-align:center;line-height:1.6}}
+.copybtn{{background:black;color:#ffb700;border:1px solid #ffb700;padding:6px 14px;border-radius:20px;font-weight:bold;cursor:pointer;margin-top:6px}}
+</style>
+<div class="banner">
+<h1>🎰 {titulo} 🎰</h1>
+<h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
+<a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
+<span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span>
+<div class="apoyo">
+💖 <b>Se aceptan aportaciones voluntarias</b> 💖<br>
+Si te sirvió el generador, apóyame con lo que gustes para seguir mejorándolo y mantener el servidor.<br>
+<b>Banco: SPIN by OXXO</b><br>
+<b>CLABE: 728969000164073671</b> - Eliud Monsivais<br>
+<button class="copybtn" onclick="navigator.clipboard.writeText('728969000164073671'); alert('¡CLABE copiada! 728969000164073671')">📋 Copiar CLABE</button><br>
+🙏 ¡Muchas gracias por tu apoyo!
+</div>
+</div><br>
+"""
+
+def instrucciones_html():
+    return """
+<div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
+<h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
+<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja y si quieres cambia color de fondo.
+</div>
+<div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
+<b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b> y espera al 100%
+</div>
+<div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
+<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Abajo se activan: PDF y ZIP para descargar
+</div>
+</div><br>
+"""
 def listar_barajas():
     if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
