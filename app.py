@@ -1,5 +1,4 @@
 import os, random, io, zipfile, time, threading
-from datetime import datetime
 from PIL import Image
 import streamlit as st
 
@@ -30,30 +29,42 @@ visitas_total = total
 if "uso_global" not in st.session_state:
     st.session_state["uso_global"] = {}
 
+# BANNER CON APORTACIONES
 st.markdown(f"""
-<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
+<style>
+.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}}
 .ws{{background:#25D366;color:white!important;padding:10px 24px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block}}
-.contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}</style>
-<div class="banner"><h1>🎰 GENERADOR 4 CARTAS 4X4 🎰</h1><h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
+.contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}}
+.apoyo{{background:#fff3cd;border:2px solid #ffb700;padding:14px;border-radius:12px;margin-top:16px;color:#222;text-align:center;line-height:1.6}}
+.copybtn{{background:black;color:#ffb700;border:1px solid #ffb700;padding:6px 14px;border-radius:20px;font-weight:bold;cursor:pointer;margin-top:6px}}
+</style>
+<div class="banner">
+<h1>🎰 GENERADOR 4 CARTAS 4X4 🎰</h1>
+<h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3>
 <a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br>
-<span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span></div><br>
+<span class="contador">👁️ Visitas: {visitas_total} | Por favor lea detenidamente las instrucciones</span>
+<div class="apoyo">
+💖 <b>Se aceptan aportaciones voluntarias</b> 💖<br>
+Si te sirvió el generador, apóyame con lo que gustes para seguir mejorándolo y mantener el servidor.<br>
+<b>Banco: SPIN by OXXO</b><br>
+<b>CLABE: 728969000164073671</b> - Eliud Monsivais<br>
+<button class="copybtn" onclick="navigator.clipboard.writeText('728969000164073671'); alert('¡CLABE copiada! 728969000164073671')">📋 Copiar CLABE</button><br>
+🙏 ¡Muchas gracias por tu apoyo!
+</div>
+</div><br>
 """, unsafe_allow_html=True)
 
-# ==== INSTRUCCIONES ====
 st.markdown("""
 <div style="background:#fffbe6;border:2px dashed #ffaa00;padding:18px;border-radius:14px;color:black">
 <h2 style="margin-top:0">📋 INSTRUCCIONES - LEE ESTO PRIMERO:</h2>
 <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
-<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja (Baraja 1, 2, 3...) y si quieres cambia el color de fondo y los márgenes, donde dice ZIP puedes subir tu baraja personal.
+<b style="color:#cc0000">PASO 1 - ELIGE:</b><br>👉 Selecciona tu baraja y si quieres cambia color de fondo.
 </div>
 <div style="background:white;padding:12px;border-radius:10px;border:1px solid #ddd;margin-bottom:10px">
-<b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b><br>👉 Espera a que la barra azul llegue a <b>100%</b> (tarda 5-10 seg por juego)<br>👉 Si quieres ver solo 1 antes, dale primero en <b>👀 PREVIEW</b>
+<b style="color:#cc0000">PASO 2 - GENERA:</b><br>👉 Dale clic en el botón negro <b>🎰 GENERAR X JUEGOS</b> y espera al 100%
 </div>
 <div style="background:#d4edda;padding:12px;border-radius:10px;border:1px solid #28a745">
-<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Cuando termine, desplazate hasta ABAJO del la página y se activan 2 botones:<br>
-✅ <b>⬇️ PDF JUEGOS</b> = 1 solo PDF con todos los juegos para imprimir<br>
-✅ <b>⬇️ ZIP JPGs</b> = Imágenes sueltas de cada juego<br>
-👉 Dale clic y se descarga automático
+<b style="color:green">PASO 3 - DESCARGA:</b><br>👉 Abajo se activan: PDF y ZIP para descargar
 </div>
 </div><br>
 """, unsafe_allow_html=True)
@@ -63,11 +74,14 @@ RIGHT=[3,7,11,15]; LEFT=[0,4,8,12]; TOP=[0,1,2,3]; BOTTOM=[12,13,14,15]
 def listar_barajas():
     if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
+
 def cargar_files(path):
     exts=(".png",".jpg",".jpeg",".webp",".jfif")
     files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
     files.sort(); return files[:54]
+
 def cm_to_px(cm,dpi): return int(float(cm)/2.54*int(dpi))
+
 def get_aspecto(files):
     asp=[]
     for p in files[:10]:
@@ -75,6 +89,7 @@ def get_aspecto(files):
             with Image.open(p) as im: asp.append(im.size[1]/im.size[0])
         except: pass
     return sum(asp)/len(asp) if asp else 1.42
+
 def crear_carta(data16, cw_card, ch_card, div, g, asp):
     carta=Image.new("RGB",(cw_card,ch_card),"black")
     fw=cw_card-g*2; fh=ch_card-g*2
@@ -88,10 +103,12 @@ def crear_carta(data16, cw_card, ch_card, div, g, asp):
             base.paste(im,(x,y))
         except: pass
     carta.paste(base,(g,g)); return carta
+
 def no_chocan(a,b,la,lb):
     for i,j in zip(la,lb):
         if a[i]==b[j]: return False
     return True
+
 def generar_logica(baraja):
     uso = st.session_state["uso_global"]
     if not uso:
@@ -126,6 +143,7 @@ def generar_logica(baraja):
         st.session_state["uso_global"]=uso
         return cartas
     return None
+
 def generar_hoja(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None, W_orig=2500):
     cw_tmp=((W_orig-sep_v)//2 - g*2 - 3*div)//4; ch_tmp=int(cw_tmp*asp); card_h=ch_tmp*4+div*3+g*2
     H_orig=card_h*2+sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
@@ -195,13 +213,12 @@ with col2:
                     else: st.error("Intenta de nuevo")
         with cgen:
             if st.button(f"🎰 PASO 2B: GENERAR {juegos} JUEGOS", type="primary", use_container_width=True):
-                if lock.locked():
-                    st.warning("⏳ Hay otra persona generando, espera 5 seg y vuelve a darle")
+                if lock.locked(): st.warning("⏳ Hay otra persona generando, espera 5 seg")
                 else:
                     with lock:
                         lista_final=[]; lista_orig=[]; bar=st.progress(0); msg=st.empty()
                         for j in range(juegos):
-                            msg.text(f"⏳ Generando {j+1}/{juegos}... no cierres la página")
+                            msg.text(f"⏳ Generando {j+1}/{juegos}... no cierres")
                             cartas=generar_logica(files)
                             if not cartas: continue
                             orig=generar_hoja(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
@@ -212,30 +229,24 @@ with col2:
                             time.sleep(0.1)
                         st.session_state["lista_final"]=lista_final; st.session_state["lista_orig"]=lista_orig
                         msg.empty(); st.success(f"✅ {len(lista_final)} juegos listos - Baja a PASO 3")
-    else:
-        st.warning("👈 Primero elige una baraja en la izquierda")
+    else: st.warning("👈 Primero elige una baraja en la izquierda")
 
-if "orig" in st.session_state:
-    c1,c2=st.columns(2)
-    with c1: st.image(st.session_state["orig"], caption="ORIGINAL", use_container_width=True)
-    with c2: st.image(st.session_state["final"], caption="RESIZE", use_container_width=True)
+    if "orig" in st.session_state:
+        c1,c2=st.columns(2)
+        with c1: st.image(st.session_state["orig"], caption="ORIGINAL", use_container_width=True)
+        with c2: st.image(st.session_state["final"], caption="RESIZE", use_container_width=True)
 
-if "lista_final" in st.session_state and st.session_state["lista_final"]:
-    st.divider()
-    st.markdown("""
-    <div style="background:#d4edda;border:2px solid green;padding:16px;border-radius:14px;text-align:center">
-    <h2 style="color:green;margin:0">✅ PASO 3 - ¡LISTO! DESCARGA ABAJO:</h2>
-    <p style="margin:5px 0">Tu PDF y ZIP ya están listos, dale clic:</p>
-    </div><br>
-    """, unsafe_allow_html=True)
-    pdf_bytes=io.BytesIO()
-    finales=st.session_state["lista_final"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig"]
-    finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
-    zip_bytes=io.BytesIO()
-    with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
-        for i, im in enumerate(finales):
-            b=io.BytesIO(); im.save(b, format="JPEG", quality=92)
-            zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
-    d1,d2=st.columns(2)
-    with d1: st.download_button(f"⬇️ PASO 3A: PDF {len(finales)} JUEGOS", pdf_bytes.getvalue(), f"loteria_{len(finales)}_juegos.pdf", "application/pdf", use_container_width=True, type="primary")
-    with d2: st.download_button(f"⬇️ PASO 3B: ZIP {len(finales)} JPGs", zip_bytes.getvalue(), f"loteria_{len(finales)}_juegos.zip", "application/zip", use_container_width=True)
+    if "lista_final" in st.session_state and st.session_state["lista_final"]:
+        st.divider()
+        st.markdown("""<div style="background:#d4edda;border:2px solid green;padding:16px;border-radius:14px;text-align:center"><h2 style="color:green;margin:0">✅ PASO 3 - ¡LISTO! DESCARGA ABAJO:</h2></div><br>""", unsafe_allow_html=True)
+        pdf_bytes=io.BytesIO()
+        finales=st.session_state["lista_final"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig"]
+        finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
+        zip_bytes=io.BytesIO()
+        with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
+            for i, im in enumerate(finales):
+                b=io.BytesIO(); im.save(b, format="JPEG", quality=92)
+                zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
+        d1,d2=st.columns(2)
+        with d1: st.download_button(f"⬇️ PASO 3A: PDF {len(finales)} JUEGOS", pdf_bytes.getvalue(), f"loteria_{len(finales)}_juegos.pdf", "application/pdf", use_container_width=True, type="primary")
+        with d2: st.download_button(f"⬇️ PASO 3B: ZIP {len(finales)} JPGs", zip_bytes.getvalue(), f"loteria_{len(finales)}_juegos.zip", "application/zip", use_container_width=True)
