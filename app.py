@@ -382,22 +382,22 @@ if st.session_state.vista=="catalogo":
     c1,c2,c3=st.columns(3)
     with c1:
         if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_container_width=True)
-        st.markdown("### 4x4 - 16 dibujos")
-        st.info("Lotería NORMAL, 4 cartas por hoja. La que más se vende. Fácil de jugar.")
+        st.markdown("### 4 Cartas 4x4 sencillas (sin dobles)")
+        st.info("Puedes generar planillas de 4 cartas 4x4 senciillas sin dobles y siempre las 54 por hoja.")
         st.caption(f"👀 {get_contador('visita_4x4')} visitas | 🎰 {get_contador('4x4')} usos")
-        if st.button("🎰 ENTRAR A 4x4 - NORMAL", use_container_width=True, type="primary"): ir_a("4x4")
+        if st.button("🎰 ENTRAR A 4 Cartas 4x4 sencillas (sin dobles)", use_container_width=True, type="primary"): ir_a("4x4")
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
-        st.markdown("### 5x5 - 25 dibujos ROTADO")
-        st.info("Lotería 5x5, .")
+        st.markdown("### 4 Cartas 5x5 sencillas (sin dobles)")
+        st.info("uedes generar planillas de 4 cartas 4x4 senciillas sin dobles y siempre las 54 por hoja")
         st.caption(f"👀 {get_contador('visita_5x5')} visitas | 🎰 {get_contador('5x5')} usos")
-        if st.button("🎰 ENTRAR A 5x5 - GRANDE", use_container_width=True): ir_a("5x5")
+        if st.button("🎰 ENTRAR A 4 Cartas 5x5 sencillas (sin dobles)", use_container_width=True): ir_a("5x5")
     with c3:
         if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
-        st.markdown("### 12 CARTAS CON PORTADA")
+        st.markdown("### 12 CARTAS CON 1 PORTADA")
         st.info("1 hoja TABLOIDE con 12 cartas + tu portada arriba con 1 dibujo preferido en grande.")
         st.caption(f"👀 {get_contador('visita_12portada')} visitas | 🎰 {get_contador('12portada')} usos")
-        if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
+        if st.button("🎰 ENTRAR A 12 CARTAS CON 1 PORTADA", use_container_width=True): ir_a("12portada")
     st.stop()
 
 if st.session_state.vista=="4x4":
