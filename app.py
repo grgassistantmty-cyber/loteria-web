@@ -112,10 +112,10 @@ def instrucciones_html(vista="general"):
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px">
         <b>1) 4x4 - 16 figuras por carta:</b> Lotería NORMAL de toda la vida. 16 imágenes por carta, 4 cartas por hoja, salen las 54. <b>LA MÁS USADA.</b></div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px">
-        <b>2) 5x5 - 25 figuras por carta:</b> Lotería GRANDE, 25 imágenes por carta, se ve más grande. Ideal para personas que no ven bien.</div>
+        <b>2) 5x5 - 25 figuras por carta:</b> .</div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;">
         <b>3) 12 CARTAS CON PORTADA:</b> Hoja tamaño TABLOIDE con 12 cartas + portada con tu imagen favorita en grande.</div>
-        <br><span style="background:yellow; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:19px">👉 ABAJO PICA EL BOTÓN VERDE "ENTRAR"</span>
+        <br><span style="background:yellow; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:19px">👉 ABAJO PICA EL BOTÓN "ENTRAR"</span>
         </div><br>
         """
     else:
@@ -125,10 +125,10 @@ def instrucciones_html(vista="general"):
         <b>📁 Origen / Baraja:</b> Aquí eliges qué dibujos usar. Puedes usar las que ya tengo (Integrada) o subir tu propia baraja.<br>
         <b>📤 Sube tu propia baraja:</b> Si tienes tus propios dibujos, súbelos en ZIP (las 54 fotos en un zip) o súbelas sueltas una por una. ¡Tiene que ser 54 fotos!<br>
         <b>🎨 Div / División:</b> Es el grosor de la línea blanca que separa los dibujitos DENTRO de la carta. Si lo subes, se ven más separaditos.<br>
-        <b>↔️ Sep V / Sep H:</b> Es el espacio ENTRE carta y carta. Vertical y Horizontal. Si lo subes, dejas más aire entre las 4 cartas.<br>
-        <b>⬛ Marco:</b> Es el borde negrito alrededor de cada carta. Déjalo en 2 si no sabes.<br>
+        <b>↔️ Sep V / Sep H:</b> Es el espacio ENTRE carta y carta. Vertical y Horizontal. Si lo subes, dejas más espacio entre las 4 cartas.<br>
+        <b>⬛ Marco:</b> Es el borde negrito alrededor de cada carta.<br>
         <b>🎨 Color:</b> Color de fondo de la hoja. Elige el que combine con tu baraja.<br>
-        <b>📏 Ancho / Alto / DPI:</b> Tamaño para imprimir. Déjalo en 21x35 y 300 DPI, ya sale bonito para imprenta.<br><br>
+        <b>📏 Ancho / Alto / DPI:</b> Tamaño para imprimir. puedes elegir tamaño en centímetros y calidad DPI, ya sale bonito para imprenta.<br><br>
         <div style="background:#e8ffe8; padding:12px; border-radius:10px; border:2px solid green">
         <b>PASO 1:</b> Elige baraja o sube la tuya<br>
         <b>PASO 2:</b> Dale a <b>👁️ VISTA PREVIA</b> para ver cómo queda sin descargar<br>
@@ -393,7 +393,7 @@ if st.session_state.vista=="catalogo":
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
         st.markdown("### 4 Cartas 5x5 sencillas (sin dobles)")
-        st.info("Planillas de 4 cartas 5x5 sencillas, ideal para letra grande.")
+        st.info("Planillas de 4 cartas 5x5 sencillas sin dobles y siempre las 54 por hoja.")
         st.caption(f"👀 {get_contador('visita_5x5')} visitas | 🎰 {get_contador('5x5')} usos")
         if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
     with c3:
