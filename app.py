@@ -458,6 +458,8 @@ if st.session_state.vista=="catalogo":
         st.caption(f"👀 {get_contador('visita_12portada')} | 🎰 {get_contador('12portada')}")
         if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
     with c4:
+        if os.path.exists("portadas/portada_10-4x4-dobles.jpg"):
+            st.image("portadas/portada_10-4x4-dobles.jpg", use_container_width=True)
         st.markdown("### 10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2)")
         st.info("10 cartas por hoja. 52 imgs x3 + 2 imgs x2 =160 casillas. ¡Las 54 garantizadas!")
         st.caption(f"👀 {get_contador('visita_10dobles')} | 🎰 {get_contador('10dobles')}")
