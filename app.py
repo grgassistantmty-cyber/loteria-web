@@ -57,11 +57,11 @@ def copiar_clabe_component():
     components.html("""
     <div style="text-align:center; margin-top:10px">
         <input id="clabe" value="728969000164073671" style="position:absolute; left:-9999px;">
-        <button onclick="navigator.clipboard.writeText(document.getElementById('clabe').value); document.getElementById('msg').innerHTML='✅ ¡Copiada! Ya puedes pegar en tu app del banco';" 
-        style="background:gold; color:black; border:none; padding:12px 22px; border-radius:25px; font-weight:bold; cursor:pointer; font-size:17px; box-shadow: 2px 2px 5px #999;">
+        <button onclick="navigator.clipboard.writeText(document.getElementById('clabe').value); document.getElementById('msg').innerHTML='✅ ¡Copiada!';" 
+        style="background:gold; color:black; border:none; padding:12px 22px; border-radius:25px; font-weight:bold; cursor:pointer; font-size:17px;">
         📋 COPIAR CLABE - PICA AQUÍ
         </button>
-        <div id="msg" style="color:green; font-weight:bold; margin-top:8px; font-size:16px;"></div>
+        <div id="msg" style="color:green; font-weight:bold; margin-top:8px;"></div>
     </div>
     """, height=90)
 
@@ -84,23 +84,35 @@ def banner_top(titulo):
     <span class="contador2">📊 USOS | 4x4: 👀{get_contador('visita_4x4')}/🎰{get_contador('4x4')} | 5x5: 👀{get_contador('visita_5x5')}/🎰{get_contador('5x5')} | 12: 👀{get_contador('visita_12portada')}/🎰{get_contador('12portada')}</span>
     <div class="apoyo">
     💖 <b style="font-size:20px">¿TE GUSTÓ MI TRABAJO? ¡APÓYAME VOLUNTARIAMENTE!</b> 💖<br>
-    Esta página es <b>100% GRATIS para ti</b>, pero a mí me cuesta <b>pagar el servidor cada mes</b> para que esté prendida 24 horas.<br>
-    Si te sirvió y quieres apoyarme con <b>$5, $10, $20, $50, $100 pesitos</b>, lo que nazca de tu corazón ❤️, te lo agradezco muchísimo 🙏<br><br>
-    <b>BANCO: SPIN by OXXO (OXXO)</b><br>
-    <span style="font-size:22px; letter-spacing:1px; background:black; color:gold; padding:8px 14px; border-radius:8px; display:inline-block; margin:6px 0;">CLABE: 728969000164073671</span><br>
+    Esta página es <b>100% GRATIS</b>, pero a mí me cuesta <b>pagar el servidor cada mes</b>.<br>
+    Si te sirvió y quieres apoyarme con <b>$5, $10, $20, $50, $100 pesitos</b>, te lo agradezco muchísimo 🙏<br>
+    <b>BANCO: SPIN by OXXO</b><br>
+    <span style="font-size:22px; background:black; color:gold; padding:8px 14px; border-radius:8px;">CLABE: 728969000164073671</span><br>
     A nombre de: <b>Eliud Monsivais</b><br>
-    Puedes transferir desde BBVA, Banorte, Azteca o depositar en OXXO.<br>
-    ¡DIOS TE BENDIGA Y GRACIAS POR TU APOYO!
     </div>
     </div><br>
     """
 
-def banner_facebook():
-    return """
+def banner_facebook(): return """
     <div style="background:#e7f3ff; border:3px solid #1877F2; border-radius:14px; padding:18px; text-align:center; margin-bottom:15px">
     <h3 style="color:#1877F2; margin:0">🔵 ¡ÚNETE A MI GRUPO DE FACEBOOK!</h3>
-    <p style="color:black; font-size:17px; margin:8px 0">Aquí subo <b>barajas nuevas GRATIS</b>, doy tips y te ayudo si tienes dudas.!</p>
-    <a href="https://www.facebook.com/groups/1646464953556819" target="_blank" style="background:#1877F2; color:white; padding:14px 32px; border-radius:25px; text-decoration:none; font-weight:bold; display:inline-block; font-size:19px">👉 ENTRAR AL GRUPO AHORA</a>
+    <p style="color:black; font-size:17px;">Aquí subo <b>barajas nuevas GRATIS</b> y te ayudo con dudas.</p>
+    <a href="https://www.facebook.com/groups/1646464953556819" target="_blank" style="background:#1877F2; color:white; padding:14px 32px; border-radius:25px; text-decoration:none; font-weight:bold; display:inline-block; font-size:19px">👉 ENTRAR AL GRUPO</a>
+    </div>
+    """
+
+def banner_venta_offline():
+    return """
+    <div style="background:linear-gradient(90deg,#000,#4b0000); border:3px solid gold; border-radius:16px; padding:20px; text-align:center; color:white; margin:20px 0">
+    <h2 style="color:gold; margin:0">💻 ¿QUIERES USARLO SIN INTERNET Y SIN LÍMITES?</h2>
+    <p style="font-size:18px; line-height:1.6; margin:12px 0">
+    Si te interesa alguno de los generadores para usarlo desde la <b>comodidad de tu casa, sin necesidad de internet</b>,<br>
+    sin límite de juegos y sin límite de PDFs, con todas tus barajas guardadas...<br><br>
+    <b style="color:#25D366; font-size:20px">¡CONTÁCTANOS POR WHATSAPP O POR EL GRUPO DE FACEBOOK QUE ESTÁ ARRIBA!</b><br>
+    Te podemos enviar el generador en versión offline para tu computadora (Windows).<br>
+    Ideal para imprentas y vendedoras que generan mucho.
+    </p>
+    <a href="https://wa.me/528115566250" style="background:#25D366; color:white; padding:14px 32px; border-radius:30px; text-decoration:none; font-weight:bold; font-size:20px; display:inline-block">📲 PEDIR INFORMES DE VERSIÓN SIN LÍMITES</a>
     </div>
     """
 
@@ -108,66 +120,58 @@ def instrucciones_html(vista="general"):
     if vista=="catalogo":
         return """
         <div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black; font-size:18px">
-        <h2 style="text-align:center">📋 CÓMO USAR - EXPLICACIÓN FÁCIL PARA TODAS</h2>
+        <h2 style="text-align:center">📋 CÓMO USAR</h2>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px">
-        <b>1) 4x4 - 16 figuras por carta:</b> Lotería NORMAL de toda la vida. 16 imágenes por carta, 4 cartas por hoja, salen las 54. <b>LA MÁS USADA.</b></div>
+        <b>1) 4x4 - 16 figuras:</b> Lotería NORMAL, 4 cartas por hoja.</div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px">
-        <b>2) 5x5 - 25 figuras por carta:</b> .</div>
+        <b>2) 5x5 - 25 figuras:</b> Lotería con 25 imágenes por carta.</div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;">
-        <b>3) 12 CARTAS CON PORTADA:</b> Hoja tamaño TABLOIDE con 12 cartas + portada con tu imagen favorita en grande.</div>
-        <br><span style="background:yellow; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:19px">👉 ABAJO PICA EL BOTÓN "ENTRAR"</span>
+        <b>3) 12 CON PORTADA:</b> Hoja TABLOIDE con 12 cartas + portada.</div>
         </div><br>
         """
     else:
         return f"""
-        <div style="background:#fffbe6;border:2px solid #ffaa00;padding:20px;border-radius:14px;color:black; font-size:17px">
-        <h2>💡 ¿PARA QUÉ SIRVE CADA BOTÓN? - {vista}</h2>
-        <b>📁 Origen / Baraja:</b> Aquí eliges qué dibujos usar. Puedes usar las que ya tengo (Integrada) o subir tu propia baraja.<br>
-        <b>📤 Sube tu propia baraja:</b> Si tienes tus propios dibujos, súbelos en ZIP (las 54 fotos en un zip) o súbelas sueltas una por una. ¡Tiene que ser 54 fotos!<br>
-        <b>🎨 Div / División:</b> Es el grosor de la línea blanca que separa los dibujitos DENTRO de la carta. Si lo subes, se ven más separaditos.<br>
-        <b>↔️ Sep V / Sep H:</b> Es el espacio ENTRE carta y carta. Vertical y Horizontal. Si lo subes, dejas más espacio entre las 4 cartas.<br>
-        <b>⬛ Marco:</b> Es el borde negrito alrededor de cada carta.<br>
-        <b>🎨 Color:</b> Color de fondo de la hoja. Elige el que combine con tu baraja.<br>
-        <b>📏 Ancho / Alto / DPI:</b> Tamaño para imprimir. puedes elegir tamaño en centímetros y calidad DPI, ya sale bonito para imprenta.<br><br>
-        <div style="background:#e8ffe8; padding:12px; border-radius:10px; border:2px solid green">
-        <b>PASO 1:</b> Elige baraja o sube la tuya<br>
-        <b>PASO 2:</b> Dale a <b>👁️ VISTA PREVIA</b> para ver cómo queda sin descargar<br>
-        <b>PASO 3:</b> Si te gusta, dale a <b>🎰 GENERAR</b> y espera al 100%<br>
-        <b>PASO 4:</b> Descarga PDF y ZIP abajo
-        </div>
+        <div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black; font-size:17px">
+        <h3>💡 PARA QUÉ ES CADA COSA - {vista}</h3>
+        <b>📁 Baraja:</b> Elige tus dibujos. O sube tu propia baraja en ZIP o fotos sueltas.<br>
+        <b>🎨 Div:</b> Grosor de la línea blanca DENTRO de la carta.<br>
+        <b>↔️ Sep V / Sep H:</b> Espacio ENTRE las 4 cartas.<br>
+        <b>⬛ Marco:</b> Borde negro alrededor de la carta.<br>
+        <b>🎨 Color:</b> Color de fondo de la hoja.<br><br>
+        <b>👁️ Primero dale VISTA PREVIA, si te gusta, ahora sí GENERAR y DESCARGAR</b>
         </div><br>
         """
 
 def listar_barajas():
     if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
-
 def cargar_files(path, limite=54):
     exts=(".png",".jpg",".jpeg",".webp",".jfif")
     if not path or not os.path.exists(path): return []
     files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
     files.sort(); return files[:limite]
-
 def cargar_zip_temporal(uploaded_zip, carpeta_tmp, limite=54):
     try:
         os.makedirs(carpeta_tmp, exist_ok=True)
-        for f in os.listdir(carpeta_tmp): os.remove(os.path.join(carpeta_tmp,f))
+        for f in os.listdir(carpeta_tmp): 
+            try: os.remove(os.path.join(carpeta_tmp,f))
+            except: pass
         with zipfile.ZipFile(uploaded_zip) as zz:
             for name in zz.namelist():
                 if name.lower().endswith((".jpg",".jpeg",".png",".webp",".jfif")):
                     open(os.path.join(carpeta_tmp, os.path.basename(name)),"wb").write(zz.read(name))
         return cargar_files(carpeta_tmp, limite)
     except: return []
-
 def cargar_imagenes_sueltas(uploaded_files, carpeta_tmp, limite=54):
     try:
         os.makedirs(carpeta_tmp, exist_ok=True)
-        for f in os.listdir(carpeta_tmp): os.remove(os.path.join(carpeta_tmp,f))
+        for f in os.listdir(carpeta_tmp): 
+            try: os.remove(os.path.join(carpeta_tmp,f))
+            except: pass
         for uf in uploaded_files[:limite]:
             open(os.path.join(carpeta_tmp, uf.name),"wb").write(uf.getbuffer())
         return cargar_files(carpeta_tmp, limite)
     except: return []
-
 def cm_to_px(cm,dpi): return int(float(cm)/2.54*int(dpi))
 def get_aspecto(files):
     asp=[]
@@ -226,7 +230,7 @@ def generar_logica_4x4(baraja):
         st.session_state["uso_global_4x4"]=uso; return cartas
     return None
 
-def generar_hoja_4x4(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None, W_orig=2500):
+def generar_hoja_4x4(cartas_data, color, div, sep_v, sep_h, g, asp, final_size=None, W_orig=1800):
     cw_tmp=((W_orig-sep_v)//2 - g*2 - 3*div)//4; ch_tmp=int(cw_tmp*asp); card_h=ch_tmp*4+div*3+g*2
     H_orig=card_h*2+sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
     sheet=Image.new("RGB",(W_orig,H_orig), color)
@@ -279,7 +283,7 @@ def generar_logica_5x5(baraja_files):
         st.session_state["uso_global_5x5"]=uso; return cartas_data
     return None
 
-def generar_hoja_5x5(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negro, aspecto, final_size=None, W_orig=3500):
+def generar_hoja_5x5(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negro, aspecto, final_size=None, W_orig=2000):
     cw_tmp=((W_orig-sep_v)//2 - g_negro*2 - 4*div_interno)//5; ch_tmp=int(cw_tmp*aspecto); card_h_real=ch_tmp*5 + div_interno*4 + g_negro*2
     H_orig=card_h_real*2 + sep_h; cw=(W_orig-sep_v)//2; ch=(H_orig-sep_h)//2
     sheet=Image.new("RGB",(W_orig, H_orig), color_entre)
@@ -310,7 +314,7 @@ def generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_cover_path, fav
     try:
         with Image.open(baraja_files[0]) as s: asp=s.size[1]/s.size[0]
     except: asp=1.45
-    card_w=1000; card_h=int(card_w*asp)
+    card_w=800; card_h=int(card_w*asp)
     grid_pos=[(2,0),(3,0),(2,1),(3,1),(0,2),(1,2),(2,2),(3,2),(0,3),(1,3),(2,3),(3,3)]
     vecinos={}
     for i,(r,c) in enumerate(grid_pos):
@@ -383,6 +387,7 @@ if st.session_state.vista=="catalogo":
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
     st.markdown(instrucciones_html("catalogo"), unsafe_allow_html=True)
+    st.markdown(banner_venta_offline(), unsafe_allow_html=True)
     c1,c2,c3=st.columns(3)
     with c1:
         if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_container_width=True)
@@ -393,66 +398,63 @@ if st.session_state.vista=="catalogo":
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
         st.markdown("### 4 Cartas 5x5 sencillas (sin dobles)")
-        st.info("Planillas de 4 cartas 5x5 sencillas sin dobles y siempre las 54 por hoja.")
+        st.info("Planillas de 4 cartas 5x5 sencillas")
         st.caption(f"👀 {get_contador('visita_5x5')} visitas | 🎰 {get_contador('5x5')} usos")
         if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
     with c3:
         if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
         st.markdown("### 12 CARTAS CON 1 PORTADA")
-        st.info("1 hoja TABLOIDE con 12 cartas + portada con 1 imagen preferida en grande.")
+        st.info("1 hoja TABLOIDE con 12 cartas + portada")
         st.caption(f"👀 {get_contador('visita_12portada')} visitas | 🎰 {get_contador('12portada')} usos")
         if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
     st.stop()
 
-# ===== 4x4 CON VISTA PREVIA Y SUBIDA =====
+# 4x4 ANTI-CRASH
 if st.session_state.vista=="4x4":
     registrar_entrada_generador("4x4")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
     st.markdown(banner_top("GENERADOR 4 CARTAS 4X4"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
-    st.caption(f"👀 {get_contador('visita_4x4')} visitas | 🎰 {get_contador('4x4')} usos")
+    st.caption(f"👀 {get_contador('visita_4x4')} | 🎰 {get_contador('4x4')}")
     st.markdown(instrucciones_html("4x4"), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
-        modo=st.radio("¿De dónde sacar baraja?", ["Integrada","Subir ZIP (54 fotos)","Subir Fotos Sueltas (54)"], key="modo4")
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo4")
         files=None
         if modo=="Integrada" and barajas:
             sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel4")
             path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
             files=cargar_files(path_sel)
         elif "ZIP" in modo:
-            up=st.file_uploader("Sube tu ZIP con 54 imágenes", type=["zip"], key="zip4")
-            if up: files=cargar_zip_temporal(up, "/tmp/baraja4", 54); st.success(f"✅ {len(files)} imágenes cargadas")
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip4")
+            if up: files=cargar_zip_temporal(up, "/tmp/baraja4", 54); st.success(f"{len(files)} imgs")
         else:
-            ups=st.file_uploader("Sube tus 54 fotos (puedes seleccionar varias)", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs4")
-            if ups: files=cargar_imagenes_sueltas(ups, "/tmp/baraja4s", 54); st.success(f"✅ {len(files)} imágenes cargadas")
-        if files: st.caption(f"Tienes {len(files)} imágenes listas")
-        div=st.number_input("Div - Separación dentro de carta", value=1, key="div4")
-        sep_v=st.number_input("Sep V - Separación vertical entre cartas", value=20, key="sepv4")
-        sep_h=st.number_input("Sep H - Separación horizontal entre cartas", value=20, key="seph4")
-        marco=st.number_input("Marco - Borde negro", value=2, key="marco4")
-        color=st.color_picker("Color de fondo", "#FF00FF", key="color4")
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs4")
+            if ups: files=cargar_imagenes_sueltas(ups, "/tmp/baraja4s", 54); st.success(f"{len(files)} imgs")
+        div=st.number_input("Div", value=1, key="div4"); sep_v=st.number_input("Sep V", value=20, key="sepv4"); sep_h=st.number_input("Sep H", value=20, key="seph4"); marco=st.number_input("Marco", value=2, key="marco4")
+        color=st.color_picker("Color", "#FF00FF", key="color4")
         ancho=st.text_input("Ancho cm","21", key="ancho4"); alto=st.text_input("Alto cm","35", key="alto4"); dpi=st.text_input("DPI","300", key="dpi4")
-        W_usar=2500; juegos=st.number_input("Cuántos juegos?", value=2, min_value=1, max_value=10, key="j4")
+        W_usar=1800
+        juegos=st.number_input("Juegos (máx 3 para no saturar)", value=1, min_value=1, max_value=3, key="j4")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out4")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA - Ver 1 juego", use_container_width=True, key="prev4"):
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev4"):
                     with lock:
                         cartas=generar_logica_4x4(files)
                         if cartas:
                             orig=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
                             Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
                             final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
-                            st.session_state["prev_orig4"]=orig; st.session_state["prev_final4"]=final
+                            st.session_state["prev_final4"]=final
             with cgen:
-                if st.button(f"🎰 GENERAR {juegos} JUEGOS 4x4", type="primary", use_container_width=True, key="gen4"):
-                    inc_contador("4x4", 1); inc_contador("4x4_juegos", juegos)
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen4"):
+                    inc_contador("4x4", 1)
                     with lock:
                         lista_final=[]; lista_orig=[]; bar=st.progress(0)
                         for j in range(juegos):
@@ -463,60 +465,54 @@ if st.session_state.vista=="4x4":
                             final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
                         st.session_state["lista_final4"]=lista_final; st.session_state["lista_orig4"]=lista_orig
-            if "prev_final4" in st.session_state:
-                st.markdown("### 👁️ VISTA PREVIA")
-                st.image(st.session_state["prev_final4"], caption="Vista previa - Así se va a imprimir", use_container_width=True)
+            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa", use_container_width=True)
             if "lista_final4" in st.session_state and st.session_state["lista_final4"]:
                 finales=st.session_state["lista_final4"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4"]
-                st.markdown(f"### ✅ {len(finales)} Juegos Generados")
                 for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
                 pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"⬇️ PDF {len(finales)} 4x4", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"⬇️ ZIP {len(finales)} 4x4", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
 
-# ===== 5x5 CON VISTA PREVIA Y SUBIDA =====
 if st.session_state.vista=="5x5":
     registrar_entrada_generador("5x5")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
     st.markdown(banner_top("GENERADOR 5x5 4 CARTAS"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
-    st.caption(f"👀 {get_contador('visita_5x5')} visitas | 🎰 {get_contador('5x5')} usos")
+    st.caption(f"👀 {get_contador('visita_5x5')} | 🎰 {get_contador('5x5')}")
     st.markdown(instrucciones_html("5x5 GRANDE"), unsafe_allow_html=True)
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
-        modo=st.radio("¿De dónde sacar baraja?", ["Integrada","Subir ZIP (54 fotos)","Subir Fotos Sueltas (54)"], key="modo5")
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo5")
         files=None
         if modo=="Integrada" and barajas:
             sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel5")
             path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
             files=cargar_files(path_sel)
         elif "ZIP" in modo:
-            up=st.file_uploader("Sube tu ZIP con 54 imágenes", type=["zip"], key="zip5")
-            if up: files=cargar_zip_temporal(up, "/tmp/baraja5", 54); st.success(f"✅ {len(files)} imágenes")
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip5")
+            if up: files=cargar_zip_temporal(up, "/tmp/baraja5", 54); st.success(f"{len(files)} imgs")
         else:
-            ups=st.file_uploader("Sube tus 54 fotos", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs5")
-            if ups: files=cargar_imagenes_sueltas(ups, "/tmp/baraja5s", 54); st.success(f"✅ {len(files)} imágenes")
-        div=st.number_input("Div - Separación dentro de carta", value=1, key="div5")
-        sep_v=st.number_input("Sep V - Separación vertical", value=20, key="sepv5")
-        sep_h=st.number_input("Sep H - Separación horizontal", value=20, key="seph5")
-        marco=st.number_input("Marco - Borde negro", value=2, key="marco5")
-        color=st.color_picker("Color de fondo", "#FF00FF", key="color5")
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs5")
+            if ups: files=cargar_imagenes_sueltas(ups, "/tmp/baraja5s", 54); st.success(f"{len(files)} imgs")
+        div=st.number_input("Div", value=1, key="div5"); sep_v=st.number_input("Sep V", value=20, key="sepv5"); sep_h=st.number_input("Sep H", value=20, key="seph5"); marco=st.number_input("Marco", value=2, key="marco5")
+        color=st.color_picker("Color", "#FF00FF", key="color5")
         ancho=st.text_input("Ancho cm","21", key="ancho5"); alto=st.text_input("Alto cm","35", key="alto5"); dpi=st.text_input("DPI","300", key="dpi5")
-        W_usar=3500; juegos=st.number_input("Cuántos juegos?", value=1, min_value=1, max_value=10, key="j5")
+        W_usar=2000
+        juegos=st.number_input("Juegos (máx 3)", value=1, min_value=1, max_value=3, key="j5")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out5")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA - Ver 1 juego", use_container_width=True, key="prev5"):
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev5"):
                     with lock:
                         cartas=generar_logica_5x5(files)
                         if cartas:
@@ -525,8 +521,8 @@ if st.session_state.vista=="5x5":
                             final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             st.session_state["prev_final5"]=final
             with cgen:
-                if st.button(f"🎰 GENERAR {juegos} JUEGOS 5x5", type="primary", use_container_width=True, key="gen5"):
-                    inc_contador("5x5", 1); inc_contador("5x5_juegos", juegos)
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen5"):
+                    inc_contador("5x5", 1)
                     with lock:
                         lista_final=[]; lista_orig=[]; bar=st.progress(0)
                         for j in range(juegos):
@@ -537,23 +533,19 @@ if st.session_state.vista=="5x5":
                             final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
                         st.session_state["lista_final5"]=lista_final; st.session_state["lista_orig5"]=lista_orig
-            if "prev_final5" in st.session_state:
-                st.markdown("### 👁️ VISTA PREVIA")
-                st.image(st.session_state["prev_final5"], caption="Vista previa", use_container_width=True)
+            if "prev_final5" in st.session_state: st.image(st.session_state["prev_final5"], caption="Vista previa", use_container_width=True)
             if "lista_final5" in st.session_state and st.session_state["lista_final5"]:
                 finales=st.session_state["lista_final5"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig5"]
-                st.markdown(f"### ✅ {len(finales)} Juegos")
                 for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
                 pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_5x5_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"⬇️ PDF {len(finales)} 5x5", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"⬇️ ZIP {len(finales)} 5x5", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
 
-# 12 PORTADA - igual que antes
 if st.session_state.vista=="12portada":
     registrar_entrada_generador("12portada")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -565,7 +557,6 @@ if st.session_state.vista=="12portada":
     barajas=listar_barajas()
     col1,col2=st.columns([1,2.5])
     with col1:
-        st.markdown("### 1) BARAJAS")
         modo_baraja=st.radio("Fuente", ["INCLUIDAS","IMPORTADAS ZIP"], key="fuente12")
         baraja_files=[]; portada_files=[]; baraja_nombre="baraja"; portada_nombre="portada"
         if modo_baraja=="INCLUIDAS":
@@ -579,22 +570,19 @@ if st.session_state.vista=="12portada":
                     sel_p=st.selectbox("Portada", [os.path.basename(p) for p in port_dirs], key="sel_p_12")
                     path_p=[p for p in port_dirs if os.path.basename(p)==sel_p][0]
                     portada_files=cargar_files(path_p,54); portada_nombre=sel_p
-                else:
-                    port_files=cargar_files("portadas",54)
-                    if port_files: portada_files=port_files; portada_nombre="portadas"
         else:
             zb=st.file_uploader("ZIP Baraja 54", type=["zip"], key="zip_b_12")
             if zb: baraja_files=cargar_zip_temporal(zb, "/tmp/baraja12", 54)
             zp=st.file_uploader("ZIP Portada 54", type=["zip"], key="zip_p_12")
             if zp: portada_files=cargar_zip_temporal(zp, "/tmp/portada12", 54)
-        modo_gen=st.radio("Modo", ["UNA - Solo 1 hoja (elegir #)","TODAS - 54 hojas"], key="modo_gen_12")
+        modo_gen=st.radio("Modo", ["UNA - Solo 1 hoja","TODAS - 54 hojas"], key="modo_gen_12")
         num_fav=st.number_input("Número favorita (1-54)", value=46, min_value=1, max_value=54, key="num_fav_12")
         lista_excel=[f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()]
         sel_excel=st.selectbox("Color Excel", lista_excel, index=2, key="excel_12")
         hex_excel=EXCEL_COLORS.get(int(sel_excel.split("-")[0].strip()), "#FF0000")
         color_entre=st.color_picker("Color HEX", hex_excel, key="color_12")
-        div_interno=st.number_input("Div. interna - separación dentro de carta", value=8, key="div_12")
-        sep_entre=st.number_input("Sep. entre cartas - espacio entre cartas", value=40, key="sep_12")
+        div_interno=st.number_input("Div. interna", value=8, key="div_12")
+        sep_entre=st.number_input("Sep. entre cartas", value=40, key="sep_12")
         ancho=st.text_input("Ancho cm tabloide","28", key="ancho12"); alto=st.text_input("Alto cm tabloide","43", key="alto12"); dpi=st.text_input("DPI","300", key="dpi12")
     with col2:
         if baraja_files and portada_files:
@@ -608,7 +596,6 @@ if st.session_state.vista=="12portada":
                             st.session_state["orig12"]=sheet
                             Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
                             st.session_state["final12"]=sheet.resize((Wf,Hf), Image.LANCZOS)
-                            st.session_state["fav_actual"]=idx
             with cgen:
                 if st.button("🖼 EXPORTAR TABLOIDE", type="primary", use_container_width=True, key="gen12"):
                     inc_contador("12portada", 1)
@@ -629,8 +616,7 @@ if st.session_state.vista=="12portada":
                             bar.progress(i/len(lista))
                         st.session_state["lista_final12"]=lista_final; st.session_state["lista_nombres12"]=lista_nombres
             if "orig12" in st.session_state:
-                st.image(st.session_state["orig12"], caption=f"ORIGINAL Preview #{st.session_state.get('fav_actual',0)+1}", use_container_width=True)
-                st.image(st.session_state["final12"], caption="RESIZE Preview", use_container_width=True)
+                st.image(st.session_state["final12"], caption="Vista previa - Alta Calidad Final", use_container_width=True)
             if "lista_final12" in st.session_state and st.session_state["lista_final12"]:
                 finales=st.session_state["lista_final12"]; nombres=st.session_state["lista_nombres12"]
                 for i,im in enumerate(finales): st.image(im, caption=f"{i+1:02d} - {nombres[i]}", use_container_width=True)
@@ -644,7 +630,6 @@ if st.session_state.vista=="12portada":
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=95, dpi=(300,300))
                         zf.writestr(f"{i+1:02d} - {nombres[i]} - {fecha}.jpg", b.getvalue())
                 d1,d2=st.columns(2)
-                with d1: st.download_button(f"⬇️ PDF TABLOIDE {len(finales)} HOJAS", pdf_bytes.getvalue(), f"TABLOIDE_12_{len(finales)}_{baraja_nombre}_{portada_nombre}.pdf", "application/pdf", use_container_width=True, type="primary")
-                with d2: st.download_button(f"⬇️ ZIP JPG {len(finales)} HOJAS", zip_bytes.getvalue(), f"JPG_TABLOIDE_12_{len(finales)}.zip", "application/zip", use_container_width=True)
-        else: st.warning("Selecciona baraja (54) y portada (54) para activar preview")
+                with d1: st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"TABLOIDE_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                with d2: st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"TABLOIDE_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
