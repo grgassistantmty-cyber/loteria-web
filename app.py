@@ -115,7 +115,7 @@ def banner_facebook():
     return """
     <div style="background:#e7f3ff; border:3px solid #1877F2; border-radius:14px; padding:18px; text-align:center; margin-bottom:15px">
     <h3 style="color:#1877F2; margin:0">🔵 ¡ÚNETE A MI GRUPO DE FACEBOOK!</h3>
-    <p style="color:black; font-size:17px; margin:8px 0">Aquí subo <b>barajas nuevas GRATIS</b>, doy tips y te ayudo si tienes dudas. ¡Somos más de 20 mil!</p>
+    <p style="color:black; font-size:17px; margin:8px 0">Aquí subo <b>barajas nuevas GRATIS</b>, doy tips y te ayudo si tienes dudas.!</p>
     <a href="https://www.facebook.com/groups/1646464953556819" target="_blank" style="background:#1877F2; color:white; padding:14px 32px; border-radius:25px; text-decoration:none; font-weight:bold; display:inline-block; font-size:19px">👉 ENTRAR AL GRUPO AHORA</a>
     </div>
     """
@@ -131,7 +131,7 @@ def instrucciones_html(vista="general"):
         <i>👉 Ideal si vendes loterías normales.</i>
         </div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px">
-        <b>2) 5x5 - 25 dibujos por carta:</b> Es lotería GRANDE, cada carta tiene 25 imágenes, las letras se ven más grandes. <b>Para señoras que no ven bien.</b><br>
+        <b>2) 5x5 - 25 dibujos por carta:</b> Es lotería GRANDE, cada carta tiene 25 imágenes, . <b>.</b><br>
         <i>👉 Ideal para adultos mayores.</i>
         </div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;">
@@ -389,7 +389,7 @@ if st.session_state.vista=="catalogo":
     with c2:
         if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
         st.markdown("### 5x5 - 25 dibujos ROTADO")
-        st.info("Lotería GRANDE, letra más grande. Ideal para señoras que no ven bien de cerca.")
+        st.info("Lotería 5x5, .")
         st.caption(f"👀 {get_contador('visita_5x5')} visitas | 🎰 {get_contador('5x5')} usos")
         if st.button("🎰 ENTRAR A 5x5 - GRANDE", use_container_width=True): ir_a("5x5")
     with c3:
