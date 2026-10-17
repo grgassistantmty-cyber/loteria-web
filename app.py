@@ -101,7 +101,7 @@ def banner_top(titulo):
     <div class="apoyo">
     💖 <b style="font-size:20px">¿TE GUSTÓ MI TRABAJO? ¡APÓYAME VOLUNTARIAMENTE!</b> 💖<br>
     Esta página es <b>100% GRATIS para ti</b>, pero a mí me cuesta <b>pagar el servidor cada mes</b> para que esté prendida 24 horas.<br>
-    Si te sirvió y quieres apoyarme con <b>$20, $50, $100 pesitos</b>, lo que nazca de tu corazón ❤️, te lo agradezco muchísimo 🙏<br><br>
+    Si te sirvió y quieres apoyarme con <b>$5, $10, $20, $50, $100 pesitos</b>, lo que nazca de tu corazón ❤️, te lo agradezco muchísimo 🙏<br><br>
     <b>BANCO: SPIN by OXXO (OXXO)</b><br>
     <span style="font-size:22px; letter-spacing:1px; background:black; color:gold; padding:8px 14px; border-radius:8px; display:inline-block; margin:6px 0;">CLABE: 728969000164073671</span><br>
     A nombre de: <b>Eliud Monsivais</b><br>
@@ -127,16 +127,16 @@ def instrucciones_html(vista="general"):
         <h2 style="text-align:center">📋 CÓMO USAR - EXPLICACIÓN FÁCIL PARA TODAS</h2>
         <b style="color:red; font-size:20px">TENEMOS 3 GENERADORES, ELIGE UNO SEGÚN LO QUE NECESITES:</b><br><br>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px">
-        <b>1) 4x4 - 16 dibujos por carta:</b> Es la lotería NORMAL, la de toda la vida. Cada carta tiene 16 imágenes. Cada hoja trae 4 cartas. <b>ES LA MÁS USADA.</b><br>
+        <b>1) 4x4 - 16 figuras por carta:</b> Es la lotería NORMAL, la de toda la vida. Cada carta tiene 16 imágenes. Cada hoja trae 4 cartas y siempre salen las 54. <b>ES LA MÁS USADA.</b><br>
         <i>👉 Ideal si vendes loterías normales.</i>
         </div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px">
-        <b>2) 5x5 - 25 dibujos por carta:</b> Es lotería GRANDE, cada carta tiene 25 imágenes, . <b>.</b><br>
-        <i>👉 Ideal para adultos mayores.</i>
+        <b>2) 5x5 - 25 figuras por carta:</b> , . <b>.</b><br>
+        <i>👉 Ideal para juegos en fronteras.</i>
         </div>
         <div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;">
-        <b>3) 12 CARTAS CON PORTADA:</b> Te hace una hoja tamaño TABLOIDE grande con 12 cartas + una portada bonita arriba con el dibujo que tú quieras.<br>
-        <i>👉 Ideal para lotería con tu logo o 1 imagen preferida repetida.</i>
+        <b>3) 12 CARTAS CON PORTADA:</b> Te hace una hoja tamaño TABLOIDE grande con 12 cartas + una portada.<br>
+        <i>👉 Ideal para lotería con 1 imagen preferida repetida.</i>
         </div>
         <br><span style="background:yellow; padding:6px 12px; border-radius:6px; font-weight:bold; font-size:19px">👉 ABAJO PICA EL BOTÓN VERDE "ENTRAR" DEL QUE QUIERAS USAR</span>
         </div><br>
