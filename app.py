@@ -555,6 +555,21 @@ if st.session_state.vista=="catalogo":
         if st.button("🎲 Generar 10 SIN DOBLES", key="go10sin2"):
             st.session_state.vista="10_sin_dobles"
             st.rerun()
+
+    # --- 6) NUEVO - 10 CARTAS SIN DOBLES ---
+    st.markdown("---")
+    st.markdown("#### 🆕 10 CARTAS 4x4 SIN DOBLES - 54 CARTAS")
+    st.caption("👁️ 0 | 🎰 0 - Balanceado 2 a 3 veces")
+    st.markdown('<span style="background-color:#9C27B0;color:white;padding:5px 12px;border-radius:15px;font-size:12px">NUEVO - BALANCE 2-3 - SIN DOBLES</span>', unsafe_allow_html=True)
+    st.write("")
+    try:
+        st.image("portadas/portada_10-4x4-dobles.jpg", width=350)
+    except:
+        pass
+    if st.button("🎰 ENTRAR A 10 SIN DOBLES", key="entrar_10_sin_dobles_catalogo", use_container_width=True):
+        st.session_state.vista="10_sin_dobles"
+        st.rerun()
+
         st.markdown('</div>', unsafe_allow_html=True)
 
 
