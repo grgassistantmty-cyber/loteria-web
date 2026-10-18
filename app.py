@@ -459,36 +459,53 @@ def limpiar_nombre(path_img, idx):
     if not clean: clean=f"CARTA {idx}"
     return clean
 def generar_logica_10_cartas_sin_dobles(baraja, es_nuevo_juego=False):
-    base = baraja.copy(); random.shuffle(base)
-    figuras_dobles = set(base[:2])
-    objetivo = {f: (2 if f in figuras_dobles else 3) for f in base}
-    conteo = {f:0 for f in base}
-    cartas = [[] for _ in range(10)]
-    cartas_set = [set() for _ in range(10)]
-    num_por_carta = [6,6,6,6,5,5,5,5,5,5]
-    random.shuffle(num_por_carta); random.shuffle(base)
-    idx=0
-    for c in range(10):
-        for _ in range(num_por_carta[c]):
-            fig = base[idx]; cartas[c].append(fig); cartas_set[c].add(fig); conteo[fig]+=1; idx+=1
-    for _ in range(5000):
-        cartas_try = [list(c) for c in cartas]
-        set_try = [set(s) for s in cartas_set]
-        conteo_try = dict(conteo)
-        ok=True
+    import random
+    base = baraja.copy()
+    random.shuffle(base)
+    # Objetivo: 52 figuras x3 =156 + 2 figuras x2 =4 => 160 huecos
+    # Si quieres 50x3 + 4x2 también es válido, este lo hace automático 2-3
+    for intento in range(3000):
+        random.shuffle(base)
+        # 2 figuras serán las de 2 veces, resto 3 veces
+        figuras_2_veces = set(random.sample(base, 2))
+        objetivo = {f: (2 if f in figuras_2_veces else 3) for f in base}
+        conteo = {f:0 for f in base}
+        cartas = []
+        cartas_set = []
+        posible = True
         for c in range(10):
-            while len(cartas_try[c]) < 16:
-                cand = [f for f in base if f not in set_try[c] and conteo_try[f] < objetivo[f]]
-                if not cand: cand = [f for f in base if f not in set_try[c] and conteo_try[f] < 3]
-                if not cand: ok=False; break
-                cand.sort(key=lambda x: conteo_try[x])
-                f_eleg = cand[0]
-                cartas_try[c].append(f_eleg); set_try[c].add(f_eleg); conteo_try[f_eleg]+=1
-            if not ok: break
-        if ok and all(len(c)==16 for c in cartas_try):
-            if all(2 <= conteo_try[f] <= 3 for f in base):
-                for c in range(10): random.shuffle(cartas_try[c])
-                return cartas_try, conteo_try
+            carta_actual = []
+            set_actual = set()
+            # 50 intentos para llenar esta carta
+            for _ in range(16):
+                # candidatas que no estén en esta carta y aún no lleguen a su objetivo
+                candidatas = [f for f in base if f not in set_actual and conteo[f] < objetivo[f]]
+                if not candidatas:
+                    # si no hay que cumplan objetivo, busca cualquiera que no esté en carta y <3
+                    candidatas = [f for f in base if f not in set_actual and conteo[f] < 3]
+                if not candidatas:
+                    posible = False
+                    break
+                # elige la menos usada
+                candidatas.sort(key=lambda x: (conteo[x], random.random()))
+                elegida = candidatas[0]
+                carta_actual.append(elegida)
+                set_actual.add(elegida)
+                conteo[elegida] += 1
+            if not posible:
+                break
+            if len(carta_actual) < 16:
+                posible = False
+                break
+            random.shuffle(carta_actual)
+            cartas.append(carta_actual)
+            cartas_set.append(set_actual)
+        if not posible:
+            continue
+        # valida conteo final 2-3
+        if all(2 <= conteo[f] <= 3 for f in base):
+            # valida no dobles dentro de carta (ya validado con set)
+            return cartas, conteo
     return None, None
 
 # ================= CATALOGO =================
