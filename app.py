@@ -455,6 +455,51 @@ def limpiar_nombre(path_img, idx):
     clean=' '.join([w for w in clean.split() if not w.isdigit()]).strip()
     if not clean: clean=f"CARTA {idx}"
     return clean
+
+def generar_logica_10_cartas_sin_dobles(baraja, es_nuevo_juego=False):
+    import random
+    base = baraja.copy()
+    random.shuffle(base)
+    figuras_dobles = set(base[:2])
+    objetivo = {f: (2 if f in figuras_dobles else 3) for f in base}
+    conteo = {f:0 for f in base}
+    cartas = [[] for _ in range(10)]
+    cartas_set = [set() for _ in range(10)]
+    num_por_carta = [6,6,6,6,5,5,5,5,5,5]
+    random.shuffle(num_por_carta)
+    random.shuffle(base)
+    idx=0
+    for c in range(10):
+        for _ in range(num_por_carta[c]):
+            fig = base[idx]
+            cartas[c].append(fig)
+            cartas_set[c].add(fig)
+            conteo[fig]+=1
+            idx+=1
+    for _ in range(5000):
+        cartas_try = [list(c) for c in cartas]
+        set_try = [set(s) for s in cartas_set]
+        conteo_try = dict(conteo)
+        ok=True
+        for c in range(10):
+            while len(cartas_try[c]) < 16:
+                cand = [f for f in base if f not in set_try[c] and conteo_try[f] < objetivo[f]]
+                if not cand:
+                    cand = [f for f in base if f not in set_try[c] and conteo_try[f] < 3]
+                if not cand:
+                    ok=False; break
+                cand.sort(key=lambda x: conteo_try[x])
+                f_eleg = cand[0]
+                cartas_try[c].append(f_eleg)
+                set_try[c].add(f_eleg)
+                conteo_try[f_eleg]+=1
+            if not ok: break
+        if ok and all(len(c)==16 for c in cartas_try):
+            if all(2 <= conteo_try[f] <= 3 for f in base):
+                for c in range(10): random.shuffle(cartas_try[c])
+                return cartas_try, conteo_try
+    return None, None
+
 if st.session_state.vista=="catalogo":
     st.markdown("""<style>.cat-thumb img{max-height:170px !important; object-fit:contain;} .cat-thumb{text-align:center;}</style>""", unsafe_allow_html=True)
     st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
@@ -872,3 +917,19 @@ Total: {len(unicas)}/54
                 with c2d: st.download_button(f"📄 PDF ORIGINAL", pdf_orig, f"ORIGINAL_{layout}_{fecha}.pdf", "application/pdf", width=170)
                 with c3d: st.download_button(f"📄 PDF RESIZE", pdf_res, f"RESIZE_{layout}_{fecha}.pdf", "application/pdf", width=170)
     st.stop()
+
+
+elif st.session_state.vista=="10_sin_dobles":
+    st.header("10 CARTAS 4x4 - SIN DOBLES (2-3 veces)")
+    margen_nuevo = st.number_input("Margen", min_value=0.0, max_value=0.3, value=0.07, step=0.01, key="margen10sin")
+    tam_dpi_nuevo = st.selectbox("Calidad", ["Baja (150dpi)", "Media (300dpi)", "Alta (600dpi)"], index=1, key="dpi10sin")
+    if st.button("🎲 GENERAR NUEVO JUEGO 10 SIN DOBLES", key="gen10sin", use_container_width=True):
+        files = leer_baraja_54()
+        cartas, conteo = generar_logica_10_cartas_sin_dobles(files, es_nuevo_juego=True)
+        if cartas:
+            st.session_state["cartas10sin"] = cartas
+            orig, final = generar_con_resize_10(cartas, margen=margen_nuevo, tam_dpi=tam_dpi_nuevo)
+            st.session_state["prev_final10sin"] = final
+            st.success(f"Balance: {sum(1 for v in conteo.values() if v==3)}x3 y {sum(1 for v in conteo.values() if v==2)}x2")
+    if "prev_final10sin" in st.session_state:
+        st.image(st.session_state["prev_final10sin"], caption="VISTA FINAL", use_container_width=True)
