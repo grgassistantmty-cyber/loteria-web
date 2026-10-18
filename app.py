@@ -90,24 +90,12 @@ def banner_top(titulo):
 def banner_facebook(): return """<div style="background:#e7f3ff; border:3px solid #1877F2; border-radius:14px; padding:18px; text-align:center; margin-bottom:15px"><h3 style="color:#1877F2; margin:0">🔵 ¡ÚNETE A MI GRUPO DE FACEBOOK!</h3><p style="color:black; font-size:17px;">Aquí subo <b>barajas nuevas GRATIS</b> y te ayudo con dudas.</p><a href="https://www.facebook.com/groups/1646464953556819" target="_blank" style="background:#1877F2; color:white; padding:14px 32px; border-radius:25px; text-decoration:none; font-weight:bold; display:inline-block; font-size:19px">👉 ENTRAR AL GRUPO</a></div>"""
 def banner_venta_offline(): return """<div style="background:linear-gradient(90deg,#000,#4b0000); border:3px solid gold; border-radius:16px; padding:20px; text-align:center; color:white; margin:20px 0"><h2 style="color:gold; margin:0">💻 ¿QUIERES USARLO SIN INTERNET Y SIN LÍMITES?</h2><p style="font-size:18px; line-height:1.6; margin:12px 0">Si te interesa alguno de los generadores para usarlo desde la <b>comodidad de tu casa, sin necesidad de internet</b>,<br> sin límite de juegos y sin límite de PDFs, con todas tus barajas guardadas...<br><br><b style="color:#25D366; font-size:20px">¡CONTÁCTANOS POR WHATSAPP O POR EL GRUPO DE FACEBOOK QUE ESTÁ ARRIBA!</b></p><a href="https://wa.me/528115566250" style="background:#25D366; color:white; padding:14px 32px; border-radius:30px; text-decoration:none; font-weight:bold; font-size:20px; display:inline-block">📲 PEDIR INFORMES DE VERSIÓN SIN LÍMITES</a></div>"""
 def instrucciones_html(vista="general"):
-    aviso = '<div style="background:#ffeb3b;border:4px solid black;padding:16px;border-radius:14px;color:black;font-size:22px;text-align:center;font-weight:bold;margin-bottom:14px">👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA</div>'
-    if vista == "catalogo":
-        return aviso + '<div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black;font-size:18px"><h2 style="text-align:center">📋 COMO USAR</h2><div style="background:white;padding:12px;border-radius:10px;border-left:6px solid green;margin-bottom:10px"><b>1) 4x4 - 16 figuras:</b> 4 cartas por hoja.</div><div style="background:white;padding:12px;border-radius:10px;border-left:6px solid blue;margin-bottom:10px"><b>2) 5x5 - 25 figuras:</b> 4 cartas por hoja.</div><div style="background:white;padding:12px;border-radius:10px;border-left:6px solid gold;"><b>3) 10 Cartas 4x4 con Dobles:</b> 10 cartas por hoja.</div><div style="background:white;padding:12px;border-radius:10px;border-left:6px solid #cc0000;"><b>4) 12 CON PORTADA:</b> Tabloide 12 cartas + portada.</div><div style="background:white;padding:12px;border-radius:10px;border-left:6px solid purple;"><b>5) 4x4 DOBLES FIX:</b> 4 cartas por hoja.</div></div><br>'
-    else:
-        return aviso + f'<div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black;font-size:17px"><h3>💡 PARA QUE ES CADA COSA - {vista}</h3><b>Primero ajusta TODO y luego GENERAR VISTA PREVIA</b></div><br>'
-
+    if vista=="catalogo": return """<div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black; font-size:18px"><h2 style="text-align:center">📋 CÓMO USAR</h2><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px"><b>1) 4x4 - 16 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px"><b>2) 5x5 - 25 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid gold;"><b>3) 10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2):</b> 10 cartas por hoja, layout 5x2 / 2x5, ciclos 6 hojas.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;"><b>4) 12 CON PORTADA:</b> Tabloide 12 cartas + portada.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid purple;"><b>5) 4x4 DOBLES AL CENTRO FIX - 54 DOBLES:</b> 4 cartas por hoja, dobles en pos 6 y 7, 14 hojas = ciclo completo, sin huecos rosas, marco parejo 4 lados, con PDF.</div></div><br>"""
+    else: return f"""<div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black; font-size:17px"><h3>💡 PARA QUÉ ES CADA COSA - {vista}</h3><b>📁 Baraja:</b> Elige tus dibujos.<br><b>🎨 Div:</b> Grosor línea blanca DENTRO de la carta.<br><b>↔️ Sep V / Sep H:</b> Espacio ENTRE las cartas.<br><b>⬛ Marco:</b> Borde negro.<br><b>🎨 Color:</b> Fondo hoja.<br><br><b>👁️ Primero VISTA PREVIA, luego GENERAR y DESCARGAR</b></div><br>"""
 def listar_barajas():
-    if not os.path.exists("barajas"): 
-        return []
+    if not os.path.exists("barajas"): return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
-
 def cargar_files(path, limite=54):
-    exts=(".png",".jpg",".jpeg",".webp",".jfif")
-    if not path or not os.path.exists(path): 
-        return []
-    files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
-    files.sort()
-    return files[:limite]
     exts=(".png",".jpg",".jpeg",".webp",".jfif")
     if not path or not os.path.exists(path): return []
     files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
@@ -467,7 +455,7 @@ def limpiar_nombre(path_img, idx):
     clean=' '.join([w for w in clean.split() if not w.isdigit()]).strip()
     if not clean: clean=f"CARTA {idx}"
     return clean
-    if st.session_state.vista=="catalogo":
+if st.session_state.vista=="catalogo":
     st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
@@ -509,7 +497,6 @@ def limpiar_nombre(path_img, idx):
         st.markdown("<span style='background:purple;color:white;padding:4px 8px;border-radius:10px;font-size:12px'>NUEVO - SIN HUECOS - PDF</span>", unsafe_allow_html=True)
         if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", use_container_width=True, type="primary"): ir_a("4x4doblesfix")
     st.stop()
-
 if st.session_state.vista=="4x4":
     registrar_entrada_generador("4x4")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -536,15 +523,14 @@ if st.session_state.vista=="4x4":
         ancho=st.text_input("Ancho cm","21", key="ancho4"); alto=st.text_input("Alto cm","35", key="alto4"); dpi=st.text_input("DPI","300", key="dpi4")
         W_usar=1800
         juegos=st.number_input("Juegos (máx 10)", value=1, min_value=1, max_value=10, key="j4")
-        st.info("💡 ¿Necesitas más de 10 juegos de un jalón? Adquiere la versión COMPLETA para computadora sin internet y sin límites.")
-        st.warning("👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA")
+        st.info("💡 ¿Necesitas más de 10 juegos de un jalón? Adquiere la versión COMPLETA para computadora sin internet y sin límites. Aquí es gratis y está limitado a 10 para que todos puedan probarlo 🙏")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out4")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ GENERAR VISTA PREVIA", use_container_width=True, key="prev4"):
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev4"):
                     with lock:
                         cartas=generar_logica_4x4(files)
                         if cartas:
@@ -564,7 +550,7 @@ if st.session_state.vista=="4x4":
                             final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
                         st.session_state["lista_final4"]=lista_final; st.session_state["lista_orig4"]=lista_orig
-            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa - Despues de ajustar", use_container_width=True)
+            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa", use_container_width=True)
             if "lista_final4" in st.session_state and st.session_state["lista_final4"]:
                 finales=st.session_state["lista_final4"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4"]
                 for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
@@ -576,7 +562,6 @@ if st.session_state.vista=="4x4":
                 st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
                 st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-
 if st.session_state.vista=="5x5":
     registrar_entrada_generador("5x5")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -603,14 +588,14 @@ if st.session_state.vista=="5x5":
         ancho=st.text_input("Ancho cm","21", key="ancho5"); alto=st.text_input("Alto cm","35", key="alto5"); dpi=st.text_input("DPI","300", key="dpi5")
         W_usar=2000
         juegos=st.number_input("Juegos (máx 10)", value=1, min_value=1, max_value=10, key="j5")
-        st.warning("👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA")
+        st.info("💡 ¿Necesitas más de 10 juegos de un jalón? Adquiere la versión COMPLETA para computadora sin internet y sin límites. Aquí es gratis y está limitado a 10 para que todos puedan probarlo 🙏")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out5")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ GENERAR VISTA PREVIA", use_container_width=True, key="prev5"):
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev5"):
                     with lock:
                         cartas=generar_logica_5x5(files)
                         if cartas:
@@ -642,7 +627,6 @@ if st.session_state.vista=="5x5":
                 st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
                 st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-
 if st.session_state.vista=="10dobles":
     registrar_entrada_generador("10dobles")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -669,14 +653,14 @@ if st.session_state.vista=="10dobles":
         color=st.color_picker("Color", "#FF00FF", key="color10")
         ancho=st.text_input("Ancho cm","54", key="ancho10"); alto=st.text_input("Alto cm","35", key="alto10"); dpi=st.text_input("DPI","300", key="dpi10")
         ciclos=st.number_input("Ciclos (1 ciclo=6 hojas)", value=1, min_value=1, max_value=10, key="ciclos10")
-        st.warning("👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA")
+        st.info(f"💡 1 ciclo = 6 hojas para completar las 54 dobles. Aquí limitado a {ciclos} ciclo(s). ¿Necesitas más? Versión COMPLETA sin límites para PC disponible por WhatsApp.")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out10")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ GENERAR VISTA PREVIA", use_container_width=True, key="prev10"):
+                if st.button("👁️ VISTA PREVIA 10C FULL", use_container_width=True, key="prev10"):
                     with lock:
                         st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
                         cartas,dups=generar_logica_10_cartas_54(files, es_nuevo_juego=True)
@@ -697,7 +681,7 @@ if st.session_state.vista=="10dobles":
                                 orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
                                 lista_orig.append(orig); lista_final.append(final); cnt+=1; bar.progress(cnt/total_h)
                         st.session_state["lista_final10"]=lista_final; st.session_state["lista_orig10"]=lista_orig
-            if "prev_final10" in st.session_state: st.image(st.session_state["prev_final10"], caption=f"Vista previa {layout} - Despues de ajustar", use_container_width=True)
+            if "prev_final10" in st.session_state: st.image(st.session_state["prev_final10"], caption=f"Vista previa {layout} - 10C FULL 54xHOJA", use_container_width=True)
             if "lista_final10" in st.session_state and st.session_state["lista_final10"]:
                 finales=st.session_state["lista_final10"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig10"]
                 for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1} - 10 Cartas", use_container_width=True)
@@ -709,7 +693,6 @@ if st.session_state.vista=="10dobles":
                 st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
                 st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-
 if st.session_state.vista=="12portada":
     registrar_entrada_generador("12portada")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -738,6 +721,7 @@ if st.session_state.vista=="12portada":
             zp=st.file_uploader("ZIP Portada 54", type=["zip"], key="zip_p_12")
             if zp: portada_files=cargar_zip_temporal(zp, tempfile.mkdtemp(), 54)
         modo_gen=st.radio("Modo", ["UNA - Solo 1 hoja","TODAS - 54 hojas"], key="modo_gen_12")
+        st.info("💡 En modo GRATIS puedes generar 1 hoja o las 54 de un jalón. Si necesitas hacer cientos sin internet, tenemos la versión COMPLETA para computadora. ¡Pregunta por WhatsApp!")
         num_fav=st.number_input("Número favorita (1-54)", value=46, min_value=1, max_value=54, key="num_fav_12")
         lista_excel=[f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()]
         sel_excel=st.selectbox("Color Excel", lista_excel, index=2, key="excel_12")
@@ -746,12 +730,11 @@ if st.session_state.vista=="12portada":
         div_interno=st.number_input("Div. interna", value=8, key="div_12")
         sep_entre=st.number_input("Sep. entre cartas", value=40, key="sep_12")
         ancho=st.text_input("Ancho cm tabloide","28", key="ancho12"); alto=st.text_input("Alto cm tabloide","43", key="alto12"); dpi=st.text_input("DPI","300", key="dpi12")
-        st.warning("👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA")
     with col2:
         if baraja_files and portada_files:
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁 GENERAR VISTA PREVIA", use_container_width=True, key="prev12"):
+                if st.button("👁 VISTA PREVIA", use_container_width=True, key="prev12"):
                     with lock:
                         idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
                         sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_entre, div_interno, sep_entre)
@@ -778,7 +761,7 @@ if st.session_state.vista=="12portada":
                             lista_final.append(final); lista_nombres.append(limpiar_nombre(fav_path,i))
                             bar.progress(i/len(lista))
                         st.session_state["lista_final12"]=lista_final; st.session_state["lista_nombres12"]=lista_nombres
-            if "orig12" in st.session_state: st.image(st.session_state["final12"], caption="Vista previa - Solo despues de ajustar", use_container_width=True)
+            if "orig12" in st.session_state: st.image(st.session_state["final12"], caption="Vista previa - Alta Calidad Final", use_container_width=True)
             if "lista_final12" in st.session_state and st.session_state["lista_final12"]:
                 finales=st.session_state["lista_final12"]; nombres=st.session_state["lista_nombres12"]
                 for i,im in enumerate(finales): st.image(im, caption=f"{i+1:02d} - {nombres[i]}", use_container_width=True)
@@ -795,7 +778,6 @@ if st.session_state.vista=="12portada":
                 with d1: st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"TABLOIDE_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
                 with d2: st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"TABLOIDE_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
-
 if st.session_state.vista=="4x4doblesfix":
     registrar_entrada_generador("4x4doblesfix")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
@@ -824,14 +806,14 @@ if st.session_state.vista=="4x4doblesfix":
         div=st.number_input("Div", value=1, key="div4dobfix"); sep_v=st.number_input("Sep V", value=80, key="sepv4dobfix"); sep_h=st.number_input("Sep H", value=80, key="seph4dobfix"); marco=st.number_input("Marco", value=6, key="marco4dobfix")
         color=st.color_picker("Color entre cartas", "#FF00FF", key="color4dobfix")
         ancho=st.text_input("Ancho cm (resize)","21", key="ancho4dobfix"); alto=st.text_input("Alto cm (resize)","28", key="alto4dobfix"); dpi=st.text_input("DPI","300", key="dpi4dobfix")
-        st.warning("👁️ PARA VER VISTA PREVIA PRIMERO ELIGE TUS AJUSTES Y LUEGO DA CLIC EN GENERAR VISTA PREVIA")
+        st.info("💡 Limitado a 1 ciclo = 14 hojas. 54 dobles garantizadas + 2 repetidas. Fix sin huecos rosas, marco parejo 4 lados. Con PDF + JPG + info_54_dobles.txt")
         tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out4dobfix")
     with col2:
         if files:
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ GENERAR VISTA PREVIA", use_container_width=True, key="prev4dobfix"):
+                if st.button("👁️ VISTA PREVIA - 2 PREVIEWS", use_container_width=True, key="prev4dobfix"):
                     with lock:
                         hojas_ciclo, dobles, repetidas = generar_ciclo_54_dobles_4x4dob(files)
                         primera = hojas_ciclo[0]
