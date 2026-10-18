@@ -57,7 +57,7 @@ def inc_baraja(baraja_nombre, generador):
     except: pass
 def get_ranking_barajas():
     patron = str(BASE_PATH / "contador_baraja_*.txt")
-    files = [f for f in glob.glob(patron) if not any(f.endswith(f"_{x}.txt") for x in ["4x4","5x5","10dobles","12portada","4x4doblesfix","10_sin_dobles"])]
+    files = [f for f in glob.glob(patron) if not any(f.endswith(f"_{x}.txt") for x in ["4x4","5x5","10dobles","12portada","4x4doblesfix"])]
     ranking=[]
     for fp in files:
         try:
@@ -79,19 +79,18 @@ if "uso_global_10" not in st.session_state: st.session_state["uso_global_10"]={}
 if "uso_como_dup_10" not in st.session_state: st.session_state["uso_como_dup_10"]={}
 if "hash_10" not in st.session_state: st.session_state["hash_10"]=set()
 params=st.query_params
-if "vista" in params and params["vista"] in ["catalogo","4x4","5x5","12portada","10dobles","4x4doblesfix","10_sin_dobles"]:
+if "vista" in params and params["vista"] in ["catalogo","4x4","5x5","12portada","10dobles","4x4doblesfix"]:
     st.session_state["vista"]=params["vista"]
 def ir_a(v): st.session_state["vista"]=v; st.query_params["vista"]=v; st.rerun()
 EXCEL_COLORS = {1:"#000000",2:"#FFFFFF",3:"#FF0000",4:"#00FF00",5:"#0000FF",6:"#FFFF00",7:"#FF00FF",8:"#00FFFF",9:"#800000",10:"#008000",11:"#000080",12:"#808000",13:"#800080",14:"#008080",15:"#C0C0C0",16:"#808080",17:"#9999FF",18:"#993366",19:"#FFFFCC",20:"#CCFFFF",21:"#660066",22:"#FF8080",23:"#0066CC",24:"#CCCCFF",25:"#000080",26:"#FF00FF",27:"#FFFF00",28:"#00FFFF",29:"#800080",30:"#800000",31:"#008080",32:"#0000FF",33:"#00CCFF",34:"#CCFFCC",35:"#FFFF99",36:"#99CCFF",37:"#FF99CC",38:"#CC99FF",39:"#FFCC99",40:"#3366FF",41:"#33CCCC",42:"#99CC00",43:"#FFCC00",44:"#FF9900",45:"#FF6600",46:"#666699",47:"#969696",48:"#003366",49:"#339966",50:"#003300",51:"#333300",52:"#993300",53:"#993366",54:"#333399",55:"#333333",56:"#000000"}
 def copiar_clabe_component():
     components.html("""<div style="text-align:center; margin-top:10px"><input id="clabe" value="728969000164073671" style="position:absolute; left:-9999px;"><button onclick="navigator.clipboard.writeText(document.getElementById('clabe').value); document.getElementById('msg').innerHTML='✅ ¡Copiada!';" style="background:gold; color:black; border:none; padding:12px 22px; border-radius:25px; font-weight:bold; cursor:pointer; font-size:17px;">📋 COPIAR CLABE - PICA AQUÍ</button><div id="msg" style="color:green; font-weight:bold; margin-top:8px;"></div></div>""", height=90)
 def banner_top(titulo):
-    return f"""<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}} .ws{{background:#25D366;color:white!important;padding:12px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;font-size:18px}} .fb{{background:#1877F2;color:white!important;padding:12px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;font-size:18px;margin-top:10px}} .contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}} .contador2{{background:#111;color:#ffd700;padding:8px 14px;border-radius:10px;font-weight:bold;display:inline-block;margin-top:8px;font-size:14px;border:1px solid gold}} .apoyo{{background:linear-gradient(180deg,#fffbe6,#ffe27a);border:3px solid #ffb700;padding:18px;border-radius:14px;margin-top:16px;color:#222;text-align:center;line-height:1.7}}</style><div class="banner"><h1>🎰 {titulo} 🎰</h1><h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3><a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br><a class="fb" href="https://www.facebook.com/groups/1646464953556819" target="_blank">🔵 UNIRME AL GRUPO DE FACEBOOK</a><br><span class="contador">👁️ Visitas: {visitas_total}</span><br><span class="contador2">📊 USOS | 4x4: 👀{get_contador('visita_4x4')}/🎰{get_contador('4x4')} | 5x5: 👀{get_contador('visita_5x5')}/🎰{get_contador('5x5')} | 10C: 👀{get_contador('visita_10dobles')}/🎰{get_contador('10dobles')} | 12: 👀{get_contador('visita_12portada')}/🎰{get_contador('12portada')} | 4x4DOB FIX: 👀{get_contador('visita_4x4doblesfix')}/🎰{get_contador('4x4doblesfix')} | 10SIN: 👀{get_contador('visita_10_sin_dobles')}/🎰{get_contador('10_sin_dobles')}</span><div class="apoyo">💖 <b style="font-size:20px">¿TE GUSTÓ MI TRABAJO? ¡APÓYAME VOLUNTARIAMENTE!</b> 💖<br>Esta página es <b>100% GRATIS</b>, pero a mí me cuesta <b>pagar el servidor cada mes</b>.<br>Si te sirvió y quieres apoyarme con <b>$5, $10, $20, $50, $100 pesitos</b>, te lo agradezco muchísimo 🙏<br><b>BANCO: SPIN by OXXO</b><br><span style="font-size:22px; background:black; color:gold; padding:8px 14px; border-radius:8px;">CLABE: 728969000164073671</span><br>A nombre de: <b>Eliud Monsivais</b><br></div></div><br>"""
+    return f"""<style>.banner{{background:linear-gradient(90deg,#cc0000,#000);padding:18px;border-radius:16px;color:white;text-align:center;border:3px solid gold}} .ws{{background:#25D366;color:white!important;padding:12px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;font-size:18px}} .fb{{background:#1877F2;color:white!important;padding:12px 28px;border-radius:30px;text-decoration:none;font-weight:bold;display:inline-block;font-size:18px;margin-top:10px}} .contador{{background:gold;color:black;padding:6px 14px;border-radius:20px;font-weight:bold;display:inline-block;margin-top:10px;font-size:18px}} .contador2{{background:#111;color:#ffd700;padding:8px 14px;border-radius:10px;font-weight:bold;display:inline-block;margin-top:8px;font-size:14px;border:1px solid gold}} .apoyo{{background:linear-gradient(180deg,#fffbe6,#ffe27a);border:3px solid #ffb700;padding:18px;border-radius:14px;margin-top:16px;color:#222;text-align:center;line-height:1.7}}</style><div class="banner"><h1>🎰 {titulo} 🎰</h1><h3>Creado por: Eliud Monsivais - WhatsApp 8115566250</h3><a class="ws" href="https://wa.me/528115566250">📲 WHATSAPP 8115566250</a><br><a class="fb" href="https://www.facebook.com/groups/1646464953556819" target="_blank">🔵 UNIRME AL GRUPO DE FACEBOOK</a><br><span class="contador">👁️ Visitas: {visitas_total}</span><br><span class="contador2">📊 USOS | 4x4: 👀{get_contador('visita_4x4')}/🎰{get_contador('4x4')} | 5x5: 👀{get_contador('visita_5x5')}/🎰{get_contador('5x5')} | 10C: 👀{get_contador('visita_10dobles')}/🎰{get_contador('10dobles')} | 12: 👀{get_contador('visita_12portada')}/🎰{get_contador('12portada')} | 4x4DOB FIX: 👀{get_contador('visita_4x4doblesfix')}/🎰{get_contador('4x4doblesfix')}</span><div class="apoyo">💖 <b style="font-size:20px">¿TE GUSTÓ MI TRABAJO? ¡APÓYAME VOLUNTARIAMENTE!</b> 💖<br>Esta página es <b>100% GRATIS</b>, pero a mí me cuesta <b>pagar el servidor cada mes</b>.<br>Si te sirvió y quieres apoyarme con <b>$5, $10, $20, $50, $100 pesitos</b>, te lo agradezco muchísimo 🙏<br><b>BANCO: SPIN by OXXO</b><br><span style="font-size:22px; background:black; color:gold; padding:8px 14px; border-radius:8px;">CLABE: 728969000164073671</span><br>A nombre de: <b>Eliud Monsivais</b><br></div></div><br>"""
 def banner_facebook(): return """<div style="background:#e7f3ff; border:3px solid #1877F2; border-radius:14px; padding:18px; text-align:center; margin-bottom:15px"><h3 style="color:#1877F2; margin:0">🔵 ¡ÚNETE A MI GRUPO DE FACEBOOK!</h3><p style="color:black; font-size:17px;">Aquí subo <b>barajas nuevas GRATIS</b> y te ayudo con dudas.</p><a href="https://www.facebook.com/groups/1646464953556819" target="_blank" style="background:#1877F2; color:white; padding:14px 32px; border-radius:25px; text-decoration:none; font-weight:bold; display:inline-block; font-size:19px">👉 ENTRAR AL GRUPO</a></div>"""
 def banner_venta_offline(): return """<div style="background:linear-gradient(90deg,#000,#4b0000); border:3px solid gold; border-radius:16px; padding:20px; text-align:center; color:white; margin:20px 0"><h2 style="color:gold; margin:0">💻 ¿QUIERES USARLO SIN INTERNET Y SIN LÍMITES?</h2><p style="font-size:18px; line-height:1.6; margin:12px 0">Si te interesa alguno de los generadores para usarlo desde la <b>comodidad de tu casa, sin necesidad de internet</b>,<br> sin límite de juegos y sin límite de PDFs, con todas tus barajas guardadas...<br><br><b style="color:#25D366; font-size:20px">¡CONTÁCTANOS POR WHATSAPP O POR EL GRUPO DE FACEBOOK QUE ESTÁ ARRIBA!</b></p><a href="https://wa.me/528115566250" style="background:#25D366; color:white; padding:14px 32px; border-radius:30px; text-decoration:none; font-weight:bold; font-size:20px; display:inline-block">📲 PEDIR INFORMES DE VERSIÓN SIN LÍMITES</a></div>"""
 def instrucciones_html(vista="general"):
-    if vista=="catalogo":
-        return """<div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black; font-size:18px"><h2 style="text-align:center">📋 CÓMO USAR</h2><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px"><b>1) 4x4 - 16 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px"><b>2) 5x5 - 25 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid gold;"><b>3) 10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2):</b> 10 cartas por hoja, layout 5x2 / 2x5, ciclos 6 hojas.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;"><b>4) 12 CON PORTADA:</b> Tabloide 12 cartas + portada.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid purple;"><b>5) 4x4 DOBLES AL CENTRO FIX - 54 DOBLES:</b> 4 cartas por hoja, dobles en pos 6 y 7, 14 hojas = ciclo completo.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #9C27B0;"><b>6) 10 CARTAS 4x4 SIN DOBLES:</b> 10 cartas por hoja, balance 2-3 veces, sin repetir en misma carta.</div></div><br>"""
+    if vista=="catalogo": return """<div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black; font-size:18px"><h2 style="text-align:center">📋 CÓMO USAR</h2><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px"><b>1) 4x4 - 16 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px"><b>2) 5x5 - 25 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid gold;"><b>3) 10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2):</b> 10 cartas por hoja, layout 5x2 / 2x5, ciclos 6 hojas.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;"><b>4) 12 CON PORTADA:</b> Tabloide 12 cartas + portada.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid purple;"><b>5) 4x4 DOBLES AL CENTRO FIX - 54 DOBLES:</b> 4 cartas por hoja, dobles en pos 6 y 7, 14 hojas = ciclo completo, sin huecos rosas, marco parejo 4 lados, con PDF.</div></div><br>"""
     else: return f"""<div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black; font-size:17px"><h3>💡 PARA QUÉ ES CADA COSA - {vista}</h3><b>📁 Baraja:</b> Elige tus dibujos.<br><b>🎨 Div:</b> Grosor línea blanca DENTRO de la carta.<br><b>↔️ Sep V / Sep H:</b> Espacio ENTRE las cartas.<br><b>⬛ Marco:</b> Borde negro.<br><b>🎨 Color:</b> Fondo hoja.<br><br><b>👁️ Primero VISTA PREVIA, luego GENERAR y DESCARGAR</b></div><br>"""
 def listar_barajas():
     if not os.path.exists("barajas"): return []
@@ -259,7 +258,8 @@ def crear_carta_ajustada_10(data16, card_w, card_h, div_interno, g_negro, aspect
     carta.paste(base,(G,G)); return carta
 def generar_logica_10_cartas_54(baraja_files, es_nuevo_juego=False):
     uso_global = st.session_state["uso_global_10"]; uso_como_dup = st.session_state["uso_como_dup_10"]; cartas_hash = st.session_state["hash_10"]
-    if es_nuevo_juego or not uso_global: uso_global={f:0 for f in baraja_files}; uso_como_dup={f:0 for f in baraja_files}; cartas_hash=set()
+    if es_nuevo_juego or not uso_global:
+        uso_global={f:0 for f in baraja_files}; uso_como_dup={f:0 for f in baraja_files}; cartas_hash=set()
     RIGHT=[3,7,11,15]; LEFT=[0,4,8,12]; BOTTOM=[12,13,14,15]; TOP=[0,1,2,3]
     for _ in range(2500):
         orden_dups=sorted(baraja_files, key=lambda x: (uso_como_dup.get(x,0), random.random()))
@@ -363,12 +363,10 @@ def generar_original_fijo_4x4dob(cartas_data, color_entre, div_interno, sep_v, s
     CARD_W = 1100; fw = CARD_W - g_negro*2; cw_cell = (fw - div_interno*3)//4; ch_cell = int(cw_cell * aspecto); CARD_H = ch_cell*4 + div_interno*3 + g_negro*2
     if layout=="1x4":
         W_orig = CARD_W*4 + sep_v*3; H_orig = CARD_H; sheet=Image.new("RGB",(W_orig, H_orig), color_entre)
-        for idx,d16 in enumerate(cartas_data):
-            x=idx*(CARD_W+sep_v); y=0; sheet.paste(crear_carta_ajustada_4x4dob(d16, CARD_W, div_interno, g_negro, aspecto),(x,y))
+        for idx,d16 in enumerate(cartas_data): x=idx*(CARD_W+sep_v); y=0; sheet.paste(crear_carta_ajustada_4x4dob(d16, CARD_W, div_interno, g_negro, aspecto),(x,y))
     else:
         W_orig = CARD_W*2 + sep_v; H_orig = CARD_H*2 + sep_h; sheet=Image.new("RGB",(W_orig, H_orig), color_entre)
-        for idx,d16 in enumerate(cartas_data):
-            col=idx%2; row=idx//2; x=col*(CARD_W+sep_v); y=row*(CARD_H+sep_h); sheet.paste(crear_carta_ajustada_4x4dob(d16, CARD_W, div_interno, g_negro, aspecto),(x,y))
+        for idx,d16 in enumerate(cartas_data): col=idx%2; row=idx//2; x=col*(CARD_W+sep_v); y=row*(CARD_H+sep_h); sheet.paste(crear_carta_ajustada_4x4dob(d16, CARD_W, div_interno, g_negro, aspecto),(x,y))
     return sheet
 def generar_con_resize_4x4dob(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negro, ancho_cm, alto_cm, dpi, aspecto, layout="2x2"):
     orig=generar_original_fijo_4x4dob(cartas_data, color_entre, div_interno, sep_v, sep_h, g_negro, aspecto, layout)
@@ -410,8 +408,7 @@ def generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_cover_path, fav
         vecinos[i]=lst
     otros=[f for f in baraja_files if f!=favorita_baraja_path][:53]
     for _ in range(1500):
-        posiciones_fav=random.sample(range(16),12); random.shuffle(otros)
-        pool=[]
+        posiciones_fav=random.sample(range(16),12); random.shuffle(otros); pool=[]
         for f in otros[:21]: pool.extend([f]*4)
         for f in otros[21:]: pool.extend([f]*3)
         random.shuffle(pool); pool_idx=0; cartas_data=[]; ok=True
@@ -458,59 +455,7 @@ def limpiar_nombre(path_img, idx):
     clean=' '.join([w for w in clean.split() if not w.isdigit()]).strip()
     if not clean: clean=f"CARTA {idx}"
     return clean
-def generar_logica_10_cartas_sin_dobles(baraja, es_nuevo_juego=False):
-    import random
-    base = baraja.copy()
-    random.shuffle(base)
-    # Objetivo: 52 figuras x3 =156 + 2 figuras x2 =4 => 160 huecos
-    # Si quieres 50x3 + 4x2 también es válido, este lo hace automático 2-3
-    for intento in range(3000):
-        random.shuffle(base)
-        # 2 figuras serán las de 2 veces, resto 3 veces
-        figuras_2_veces = set(random.sample(base, 2))
-        objetivo = {f: (2 if f in figuras_2_veces else 3) for f in base}
-        conteo = {f:0 for f in base}
-        cartas = []
-        cartas_set = []
-        posible = True
-        for c in range(10):
-            carta_actual = []
-            set_actual = set()
-            # 50 intentos para llenar esta carta
-            for _ in range(16):
-                # candidatas que no estén en esta carta y aún no lleguen a su objetivo
-                candidatas = [f for f in base if f not in set_actual and conteo[f] < objetivo[f]]
-                if not candidatas:
-                    # si no hay que cumplan objetivo, busca cualquiera que no esté en carta y <3
-                    candidatas = [f for f in base if f not in set_actual and conteo[f] < 3]
-                if not candidatas:
-                    posible = False
-                    break
-                # elige la menos usada
-                candidatas.sort(key=lambda x: (conteo[x], random.random()))
-                elegida = candidatas[0]
-                carta_actual.append(elegida)
-                set_actual.add(elegida)
-                conteo[elegida] += 1
-            if not posible:
-                break
-            if len(carta_actual) < 16:
-                posible = False
-                break
-            random.shuffle(carta_actual)
-            cartas.append(carta_actual)
-            cartas_set.append(set_actual)
-        if not posible:
-            continue
-        # valida conteo final 2-3
-        if all(2 <= conteo[f] <= 3 for f in base):
-            # valida no dobles dentro de carta (ya validado con set)
-            return cartas, conteo
-    return None, None
-
-# ================= CATALOGO =================
 if st.session_state.vista=="catalogo":
-    st.markdown("""<style>.cat-thumb img{max-height:170px !important; object-fit:contain;}</style>""", unsafe_allow_html=True)
     st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
@@ -525,98 +470,404 @@ if st.session_state.vista=="catalogo":
     st.markdown(banner_venta_offline(), unsafe_allow_html=True)
     c1,c2,c3,c4,c5=st.columns(5)
     with c1:
-        if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", width=170)
-        st.markdown("### 1) 4 Cartas 4x4")
+        if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_container_width=True)
+        st.markdown("### 4 Cartas 4x4 sencillas")
         st.caption(f"👀 {get_contador('visita_4x4')} | 🎰 {get_contador('4x4')}")
-        if st.button("🎰 ENTRAR A 4x4", width=170, type="primary"): ir_a("4x4")
+        if st.button("🎰 ENTRAR A 4x4", use_container_width=True, type="primary"): ir_a("4x4")
     with c2:
-        if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", width=170)
-        st.markdown("### 2) 4 Cartas 5x5")
+        if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
+        st.markdown("### 4 Cartas 5x5 sencillas")
         st.caption(f"👀 {get_contador('visita_5x5')} | 🎰 {get_contador('5x5')}")
-        if st.button("🎰 ENTRAR A 5x5", width=170): ir_a("5x5")
+        if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
     with c3:
-        if os.path.exists("portadas/portada_10-4x4-dobles.jpg"): st.image("portadas/portada_10-4x4-dobles.jpg", width=170)
-        st.markdown("### 3) 10 Cartas 4x4 DOBLES")
+        if os.path.exists("portadas/portada_10-4x4-dobles.jpg"): st.image("portadas/portada_10-4x4-dobles.jpg", use_container_width=True)
+        st.markdown("### 10 Cartas 4x4 con Dobles - 54 por Hoja")
         st.caption(f"👀 {get_contador('visita_10dobles')} | 🎰 {get_contador('10dobles')}")
-        if st.button("🎰 ENTRAR A 10 DOBLES", width=170): ir_a("10dobles")
+        if st.button("🎰 ENTRAR A 10 CARTAS DOBLES", use_container_width=True): ir_a("10dobles")
     with c4:
-        if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", width=170)
-        st.markdown("### 4) 12 CON PORTADA")
+        if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
+        st.markdown("### 12 CARTAS CON 1 PORTADA")
         st.caption(f"👀 {get_contador('visita_12portada')} | 🎰 {get_contador('12portada')}")
-        if st.button("🎰 ENTRAR A 12", width=170): ir_a("12portada")
+        if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
     with c5:
-        if os.path.exists("portadas/portada_4x4-dobles-al-centro.jpg"): st.image("portadas/portada_4x4-dobles-al-centro.jpg", width=170)
-        st.markdown("### 5) 4x4 DOBLES FIX")
+        if os.path.exists("portadas/portada_4x4-dobles-al-centro.jpg"): st.image("portadas/portada_4x4-dobles-al-centro.jpg", use_container_width=True)
+        elif os.path.exists("portada_4x4-dobles-al-centro.jpg"): st.image("portada_4x4-dobles-al-centro.jpg", use_container_width=True)
+        st.markdown("### 🆕 4x4 DOBLES AL CENTRO - 54 DOBLES FIX")
         st.caption(f"👀 {get_contador('visita_4x4doblesfix')} | 🎰 {get_contador('4x4doblesfix')}")
-        if st.button("🎰 ENTRAR A 4x4 FIX", width=170, type="primary"): ir_a("4x4doblesfix")
-    
-    # SEGUNDA FILA - SEXTO GENERADOR HASTA ABAJO
-    st.markdown("---")
-    st.subheader("✨ Nuevos generadores - Segunda fila")
-    colA, colB, colC, colD = st.columns(4)
-    with colA:
-        if os.path.exists("portadas/portada_10-4x4-sin-dobles.jpg"): st.image("portadas/portada_10-4x4-sin-dobles.jpg", width=170)
-        elif os.path.exists("portadas/portada_10-4x4-dobles.jpg"): st.image("portadas/portada_10-4x4-dobles.jpg", width=170)
-        st.markdown("### 6) 10 CARTAS 4x4 SIN DOBLES")
-        st.caption(f"👀 {get_contador('visita_10_sin_dobles')} | 🎰 {get_contador('10_sin_dobles')}")
-        st.markdown('<span style="background:#9C27B0;color:white;padding:4px 10px;border-radius:12px;font-size:12px">NUEVO - BALANCE 2-3 - SIN DOBLES</span>', unsafe_allow_html=True)
-        if st.button("🎰 ENTRAR A 10 SIN DOBLES", width=170, type="primary", key="entrar_10_sin_final"):
-            ir_a("10_sin_dobles")
+        st.markdown("<span style='background:purple;color:white;padding:4px 8px;border-radius:10px;font-size:12px'>NUEVO - SIN HUECOS - PDF</span>", unsafe_allow_html=True)
+        if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", use_container_width=True, type="primary"): ir_a("4x4doblesfix")
     st.stop()
-
-# ================= VISTAS GENERADORES (resumidas, usan funciones de arriba) =================
-# Aquí siguen tus vistas 4x4, 5x5, 10dobles, 12portada, 4x4doblesfix igual que las tenías.
-# Para que no se corte, te dejo la vista del nuevo 6to completa:
-
-elif st.session_state.vista=="10_sin_dobles":
-    registrar_entrada_generador("10_sin_dobles")
+if st.session_state.vista=="4x4":
+    registrar_entrada_generador("4x4")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
-    st.markdown(banner_top("10 CARTAS 4x4 SIN DOBLES - BALANCE 2-3"), unsafe_allow_html=True)
+    st.markdown(banner_top("GENERADOR 4 CARTAS 4X4"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True); copiar_clabe_component()
-    st.markdown(instrucciones_html("10_sin_dobles"), unsafe_allow_html=True)
-    st.markdown("#### 🎲 10 CARTAS SIN DOBLES - 160 lugares = 52 figs x3 + 2 figs x2")
-    barajas=listar_barajas()
-    col1,col2=st.columns([1,2.5])
+    st.caption(f"👀 {get_contador('visita_4x4')} | 🎰 {get_contador('4x4')}")
+    st.markdown(instrucciones_html("4x4"), unsafe_allow_html=True)
+    barajas=listar_barajas(); col1,col2=st.columns([1,2.5])
     with col1:
-        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos"], key="modo10sin")
-        files=None; nombre_baraja="Personalizada"
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo4")
+        files=None; nombre_baraja="Baraja_Personalizada"
         if modo=="Integrada" and barajas:
-            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel10sin")
+            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel4")
             path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
             files=cargar_files(path_sel); nombre_baraja=sel
         elif "ZIP" in modo:
-            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip10sin")
-            if up: files=cargar_zip_temporal(up, tempfile.mkdtemp(), 54); nombre_baraja=up.name
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip4")
+            if up: files=cargar_zip_temporal(up, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs"); nombre_baraja=up.name
         else:
-            ups=st.file_uploader("54 fotos", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs10sin")
-            if ups: files=cargar_imagenes_sueltas(ups, tempfile.mkdtemp(), 54)
-        div=st.number_input("Div", value=3, key="div10sin")
-        sep_v=st.number_input("Sep V", value=40, key="sepv10sin")
-        sep_h=st.number_input("Sep H", value=40, key="seph10sin")
-        marco=st.number_input("Marco", value=6, key="marco10sin")
-        color=st.color_picker("Color", "#9C27B0", key="color10sin")
-        ancho=st.text_input("Ancho cm","90", key="ancho10sin")
-        alto=st.text_input("Alto cm","60", key="alto10sin")
-        dpi_sel=st.selectbox("DPI", ["150","300","600"], index=1, key="dpi10sin")
-        layout=st.selectbox("Layout", ["5x2","2x5"], index=0, key="layout10sin")
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs4")
+            if ups: files=cargar_imagenes_sueltas(ups, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs")
+        div=st.number_input("Div", value=1, key="div4"); sep_v=st.number_input("Sep V", value=20, key="sepv4"); sep_h=st.number_input("Sep H", value=20, key="seph4"); marco=st.number_input("Marco", value=2, key="marco4")
+        color=st.color_picker("Color", "#FF00FF", key="color4")
+        ancho=st.text_input("Ancho cm","21", key="ancho4"); alto=st.text_input("Alto cm","35", key="alto4"); dpi=st.text_input("DPI","300", key="dpi4")
+        W_usar=1800
+        juegos=st.number_input("Juegos (máx 10)", value=1, min_value=1, max_value=10, key="j4")
+        st.info("💡 ¿Necesitas más de 10 juegos de un jalón? Adquiere la versión COMPLETA para computadora sin internet y sin límites. Aquí es gratis y está limitado a 10 para que todos puedan probarlo 🙏")
+        tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out4")
     with col2:
-        if files and len(files)>=54:
-            if st.button("🎲 GENERAR NUEVO JUEGO 10 SIN DOBLES", key="gen10sin", use_container_width=True, type="primary"):
-                cartas, conteo = generar_logica_10_cartas_sin_dobles(files, es_nuevo_juego=True)
-                if cartas:
-                    st.session_state["cartas10sin"]=cartas
-                    asp=get_aspecto(files)
-                    orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi_sel, asp, layout)
-                    st.session_state["orig10sin"]=orig; st.session_state["final10sin"]=final
-                    inc_contador("10_sin_dobles"); inc_baraja(nombre_baraja,"10_sin_dobles")
-                    c3=sum(1 for v in conteo.values() if v==3); c2=sum(1 for v in conteo.values() if v==2)
-                    st.success(f"✅ Generado! {c3} figs x3 veces, {c2} figs x2 veces. Sin repetir en misma carta.")
-                else: st.error("No se pudo generar, intenta de nuevo")
-            if "final10sin" in st.session_state:
-                st.image(st.session_state["final10sin"], caption="VISTA PREVIA FINAL 10 SIN DOBLES", use_container_width=True)
-                buf=io.BytesIO(); st.session_state["final10sin"].save(buf, format="PNG")
-                st.download_button("📥 DESCARGAR PNG", buf.getvalue(), file_name="10_cartas_sin_dobles.png", mime="image/png", use_container_width=True)
-        else: st.warning("Selecciona baraja con 54 imágenes")
+        if files:
+            asp=get_aspecto(files)
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev4"):
+                    with lock:
+                        cartas=generar_logica_4x4(files)
+                        if cartas:
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                            st.session_state["prev_final4"]=final
+            with cgen:
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen4"):
+                    inc_contador("4x4", 1); inc_baraja(nombre_baraja, "4x4")
+                    with lock:
+                        lista_final=[]; lista_orig=[]; bar=st.progress(0)
+                        for j in range(juegos):
+                            cartas=generar_logica_4x4(files)
+                            if not cartas: continue
+                            orig=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                            lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
+                        st.session_state["lista_final4"]=lista_final; st.session_state["lista_orig4"]=lista_orig
+            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa", use_container_width=True)
+            if "lista_final4" in st.session_state and st.session_state["lista_final4"]:
+                finales=st.session_state["lista_final4"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4"]
+                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
+                pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
+                zip_bytes=io.BytesIO()
+                with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for i, im in enumerate(finales):
+                        b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
     st.stop()
+if st.session_state.vista=="5x5":
+    registrar_entrada_generador("5x5")
+    if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
+    st.markdown(banner_top("GENERADOR 5x5 4 CARTAS"), unsafe_allow_html=True)
+    st.markdown(banner_facebook(), unsafe_allow_html=True); copiar_clabe_component()
+    st.caption(f"👀 {get_contador('visita_5x5')} | 🎰 {get_contador('5x5')}")
+    st.markdown(instrucciones_html("5x5 GRANDE"), unsafe_allow_html=True)
+    barajas=listar_barajas(); col1,col2=st.columns([1,2.5])
+    with col1:
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo5")
+        files=None; nombre_baraja="Baraja_Personalizada"
+        if modo=="Integrada" and barajas:
+            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel5")
+            path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
+            files=cargar_files(path_sel); nombre_baraja=sel
+        elif "ZIP" in modo:
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip5")
+            if up: files=cargar_zip_temporal(up, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs"); nombre_baraja=up.name
+        else:
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs5")
+            if ups: files=cargar_imagenes_sueltas(ups, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs")
+        div=st.number_input("Div", value=1, key="div5"); sep_v=st.number_input("Sep V", value=20, key="sepv5"); sep_h=st.number_input("Sep H", value=20, key="seph5"); marco=st.number_input("Marco", value=2, key="marco5")
+        color=st.color_picker("Color", "#FF00FF", key="color5")
+        ancho=st.text_input("Ancho cm","21", key="ancho5"); alto=st.text_input("Alto cm","35", key="alto5"); dpi=st.text_input("DPI","300", key="dpi5")
+        W_usar=2000
+        juegos=st.number_input("Juegos (máx 10)", value=1, min_value=1, max_value=10, key="j5")
+        st.info("💡 ¿Necesitas más de 10 juegos de un jalón? Adquiere la versión COMPLETA para computadora sin internet y sin límites. Aquí es gratis y está limitado a 10 para que todos puedan probarlo 🙏")
+        tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out5")
+    with col2:
+        if files:
+            asp=get_aspecto(files)
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev5"):
+                    with lock:
+                        cartas=generar_logica_5x5(files)
+                        if cartas:
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                            st.session_state["prev_final5"]=final
+            with cgen:
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen5"):
+                    inc_contador("5x5", 1); inc_baraja(nombre_baraja, "5x5")
+                    with lock:
+                        lista_final=[]; lista_orig=[]; bar=st.progress(0)
+                        for j in range(juegos):
+                            cartas=generar_logica_5x5(files)
+                            if not cartas: continue
+                            orig=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,None,W_usar)
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
+                            lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
+                        st.session_state["lista_final5"]=lista_final; st.session_state["lista_orig5"]=lista_orig
+            if "prev_final5" in st.session_state: st.image(st.session_state["prev_final5"], caption="Vista previa", use_container_width=True)
+            if "lista_final5" in st.session_state and st.session_state["lista_final5"]:
+                finales=st.session_state["lista_final5"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig5"]
+                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
+                pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
+                zip_bytes=io.BytesIO()
+                with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for i, im in enumerate(finales):
+                        b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_5x5_{i+1:02d}.jpg", b.getvalue())
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
+    st.stop()
+if st.session_state.vista=="10dobles":
+    registrar_entrada_generador("10dobles")
+    if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
+    st.markdown(banner_top("10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2)"), unsafe_allow_html=True)
+    st.markdown(banner_facebook(), unsafe_allow_html=True); copiar_clabe_component()
+    st.caption(f"👀 {get_contador('visita_10dobles')} | 🎰 {get_contador('10dobles')}")
+    st.markdown(instrucciones_html("10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2)"), unsafe_allow_html=True)
+    barajas=listar_barajas(); col1,col2=st.columns([1,2.5])
+    with col1:
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo10")
+        files=None; nombre_baraja="Baraja_Personalizada"
+        if modo=="Integrada" and barajas:
+            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel10")
+            path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
+            files=cargar_files(path_sel); nombre_baraja=sel
+        elif "ZIP" in modo:
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip10")
+            if up: files=cargar_zip_temporal(up, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs"); nombre_baraja=up.name
+        else:
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs10")
+            if ups: files=cargar_imagenes_sueltas(ups, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs")
+        layout=st.selectbox("LAYOUT", ["5x2","2x5"], key="layout10")
+        div=st.number_input("Div", value=1, key="div10"); sep_v=st.number_input("Sep V", value=40, key="sepv10"); sep_h=st.number_input("Sep H", value=40, key="seph10"); marco=st.number_input("Marco", value=4, key="marco10")
+        color=st.color_picker("Color", "#FF00FF", key="color10")
+        ancho=st.text_input("Ancho cm","54", key="ancho10"); alto=st.text_input("Alto cm","35", key="alto10"); dpi=st.text_input("DPI","300", key="dpi10")
+        ciclos=st.number_input("Ciclos (1 ciclo=6 hojas)", value=1, min_value=1, max_value=10, key="ciclos10")
+        st.info(f"💡 1 ciclo = 6 hojas para completar las 54 dobles. Aquí limitado a {ciclos} ciclo(s). ¿Necesitas más? Versión COMPLETA sin límites para PC disponible por WhatsApp.")
+        tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out10")
+    with col2:
+        if files:
+            asp=get_aspecto(files)
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁️ VISTA PREVIA 10C FULL", use_container_width=True, key="prev10"):
+                    with lock:
+                        st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
+                        cartas,dups=generar_logica_10_cartas_54(files, es_nuevo_juego=True)
+                        if cartas:
+                            orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
+                            st.session_state["prev_orig10"]=orig; st.session_state["prev_final10"]=final
+            with cgen:
+                if st.button(f"🎰 GENERAR {ciclos} CICLOS - 54xHOJA", type="primary", use_container_width=True, key="gen10"):
+                    inc_contador("10dobles", 1); inc_baraja(nombre_baraja, "10dobles")
+                    with lock:
+                        lista_final=[]; lista_orig=[]; st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
+                        bar=st.progress(0); total_h = ciclos*6; cnt=0
+                        for ciclo in range(1, ciclos+1):
+                            st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
+                            for h in range(1,7):
+                                cartas,dups=generar_logica_10_cartas_54(files, es_nuevo_juego=(h==1))
+                                if not cartas: continue
+                                orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
+                                lista_orig.append(orig); lista_final.append(final); cnt+=1; bar.progress(cnt/total_h)
+                        st.session_state["lista_final10"]=lista_final; st.session_state["lista_orig10"]=lista_orig
+            if "prev_final10" in st.session_state: st.image(st.session_state["prev_final10"], caption=f"Vista previa {layout} - 10C FULL 54xHOJA", use_container_width=True)
+            if "lista_final10" in st.session_state and st.session_state["lista_final10"]:
+                finales=st.session_state["lista_final10"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig10"]
+                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1} - 10 Cartas", use_container_width=True)
+                pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
+                zip_bytes=io.BytesIO()
+                with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for i, im in enumerate(finales):
+                        b=io.BytesIO(); im.save(b, format="JPEG", quality=95); zf.writestr(f"10C_FULL_{layout}_H{i+1:02d}.jpg", b.getvalue())
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.zip", "application/zip", use_container_width=True)
+    st.stop()
+if st.session_state.vista=="12portada":
+    registrar_entrada_generador("12portada")
+    if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
+    st.markdown(banner_top("GENERADOR 12 CARTAS CON PORTADA"), unsafe_allow_html=True)
+    st.markdown(banner_facebook(), unsafe_allow_html=True); copiar_clabe_component()
+    st.caption(f"👀 {get_contador('visita_12portada')} | 🎰 {get_contador('12portada')}")
+    st.markdown(instrucciones_html("12 CON PORTADA"), unsafe_allow_html=True)
+    barajas=listar_barajas(); col1,col2=st.columns([1,2.5])
+    with col1:
+        modo_baraja=st.radio("Fuente", ["INCLUIDAS","IMPORTADAS ZIP"], key="fuente12")
+        baraja_files=[]; portada_files=[]; baraja_nombre="baraja"; portada_nombre="portada"; nombre_baraja="Baraja_Personalizada"
+        if modo_baraja=="INCLUIDAS":
+            if barajas:
+                sel_b=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel_b_12")
+                path_b=[p for p in barajas if os.path.basename(p)==sel_b][0]
+                baraja_files=cargar_files(path_b,54); baraja_nombre=sel_b; nombre_baraja=sel_b
+            if os.path.exists("portadas"):
+                port_dirs=[os.path.join("portadas",d) for d in os.listdir("portadas") if os.path.isdir(os.path.join("portadas",d))]
+                if port_dirs:
+                    sel_p=st.selectbox("Portada", [os.path.basename(p) for p in port_dirs], key="sel_p_12")
+                    path_p=[p for p in port_dirs if os.path.basename(p)==sel_p][0]
+                    portada_files=cargar_files(path_p,54); portada_nombre=sel_p
+        else:
+            zb=st.file_uploader("ZIP Baraja 54", type=["zip"], key="zip_b_12")
+            if zb: baraja_files=cargar_zip_temporal(zb, tempfile.mkdtemp(), 54); nombre_baraja=zb.name
+            zp=st.file_uploader("ZIP Portada 54", type=["zip"], key="zip_p_12")
+            if zp: portada_files=cargar_zip_temporal(zp, tempfile.mkdtemp(), 54)
+        modo_gen=st.radio("Modo", ["UNA - Solo 1 hoja","TODAS - 54 hojas"], key="modo_gen_12")
+        st.info("💡 En modo GRATIS puedes generar 1 hoja o las 54 de un jalón. Si necesitas hacer cientos sin internet, tenemos la versión COMPLETA para computadora. ¡Pregunta por WhatsApp!")
+        num_fav=st.number_input("Número favorita (1-54)", value=46, min_value=1, max_value=54, key="num_fav_12")
+        lista_excel=[f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()]
+        sel_excel=st.selectbox("Color Excel", lista_excel, index=2, key="excel_12")
+        hex_excel=EXCEL_COLORS.get(int(sel_excel.split("-")[0].strip()), "#FF0000")
+        color_entre=st.color_picker("Color HEX", hex_excel, key="color_12")
+        div_interno=st.number_input("Div. interna", value=8, key="div_12")
+        sep_entre=st.number_input("Sep. entre cartas", value=40, key="sep_12")
+        ancho=st.text_input("Ancho cm tabloide","28", key="ancho12"); alto=st.text_input("Alto cm tabloide","43", key="alto12"); dpi=st.text_input("DPI","300", key="dpi12")
+    with col2:
+        if baraja_files and portada_files:
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁 VISTA PREVIA", use_container_width=True, key="prev12"):
+                    with lock:
+                        idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
+                        sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_entre, div_interno, sep_entre)
+                        if sheet:
+                            st.session_state["orig12"]=sheet
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            st.session_state["final12"]=sheet.resize((Wf,Hf), Image.LANCZOS)
+            with cgen:
+                if st.button("🖼 EXPORTAR TABLOIDE", type="primary", use_container_width=True, key="gen12"):
+                    inc_contador("12portada", 1); inc_baraja(nombre_baraja, "12portada")
+                    with lock:
+                        lista_final=[]; lista_nombres=[]; bar=st.progress(0)
+                        if "UNA" in modo_gen:
+                            idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
+                            lista=[(portada_files[idx], baraja_files[idx])]
+                        else:
+                            n=min(len(baraja_files), len(portada_files),54)
+                            lista=[(portada_files[i], baraja_files[i]) for i in range(n)]
+                        for i,(cover_path,fav_path) in enumerate(lista,1):
+                            sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, cover_path, fav_path, color_entre, div_interno, sep_entre)
+                            if not sheet: continue
+                            Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
+                            final=sheet.resize((Wf,Hf), Image.LANCZOS)
+                            lista_final.append(final); lista_nombres.append(limpiar_nombre(fav_path,i))
+                            bar.progress(i/len(lista))
+                        st.session_state["lista_final12"]=lista_final; st.session_state["lista_nombres12"]=lista_nombres
+            if "orig12" in st.session_state: st.image(st.session_state["final12"], caption="Vista previa - Alta Calidad Final", use_container_width=True)
+            if "lista_final12" in st.session_state and st.session_state["lista_final12"]:
+                finales=st.session_state["lista_final12"]; nombres=st.session_state["lista_nombres12"]
+                for i,im in enumerate(finales): st.image(im, caption=f"{i+1:02d} - {nombres[i]}", use_container_width=True)
+                pdf_bytes=io.BytesIO()
+                if len(finales)==1: finales[0].save(pdf_bytes, format="PDF", resolution=300, quality=95)
+                else: finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], resolution=300, quality=95)
+                zip_bytes=io.BytesIO()
+                with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
+                    fecha=datetime.datetime.now().strftime("%Y%m%d_%H%M")
+                    for i,im in enumerate(finales):
+                        b=io.BytesIO(); im.save(b, format="JPEG", quality=95, dpi=(300,300))
+                        zf.writestr(f"{i+1:02d} - {nombres[i]} - {fecha}.jpg", b.getvalue())
+                d1,d2=st.columns(2)
+                with d1: st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"TABLOIDE_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
+                with d2: st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"TABLOIDE_{len(finales)}.zip", "application/zip", use_container_width=True)
+    st.stop()
+if st.session_state.vista=="4x4doblesfix":
+    registrar_entrada_generador("4x4doblesfix")
+    if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
+    st.markdown(banner_top("🆕 4x4 DOBLES AL CENTRO - 54 DOBLES FIX"), unsafe_allow_html=True)
+    st.markdown(banner_facebook(), unsafe_allow_html=True); copiar_clabe_component()
+    st.caption(f"👀 {get_contador('visita_4x4doblesfix')} | 🎰 {get_contador('4x4doblesfix')}")
+    st.markdown(instrucciones_html("4x4 DOBLES AL CENTRO FIX - 54 DOBLES"), unsafe_allow_html=True)
+    if os.path.exists("portadas/portada_4x4-dobles-al-centro.jpg"): st.image("portadas/portada_4x4-dobles-al-centro.jpg", use_container_width=False)
+    elif os.path.exists("portada_4x4-dobles-al-centro.jpg"): st.image("portada_4x4-dobles-al-centro.jpg", use_container_width=False)
+    barajas=listar_barajas(); col1,col2=st.columns([1,2.5])
+    with col1:
+        modo=st.radio("Baraja", ["Integrada","Subir ZIP","Subir Fotos Sueltas"], key="modo4dobfix")
+        files=None; nombre_baraja="Baraja_Personalizada"
+        if modo=="Integrada" and barajas:
+            sel=st.selectbox("Baraja", [os.path.basename(p) for p in barajas], key="sel4dobfix")
+            path_sel=[p for p in barajas if os.path.basename(p)==sel][0]
+            files=cargar_files(path_sel); nombre_baraja=sel
+        elif "ZIP" in modo:
+            up=st.file_uploader("ZIP 54 fotos", type=["zip"], key="zip4dobfix")
+            if up: files=cargar_zip_temporal(up, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs"); nombre_baraja=up.name
+        else:
+            ups=st.file_uploader("54 fotos sueltas", type=["jpg","jpeg","png","webp"], accept_multiple_files=True, key="imgs4dobfix")
+            if ups: files=cargar_imagenes_sueltas(ups, tempfile.mkdtemp(), 54); st.success(f"{len(files)} imgs")
+        st.divider()
+        layout=st.selectbox("LAYOUT", ["2x2","1x4"], key="layout4dobfix")
+        div=st.number_input("Div", value=1, key="div4dobfix"); sep_v=st.number_input("Sep V", value=80, key="sepv4dobfix"); sep_h=st.number_input("Sep H", value=80, key="seph4dobfix"); marco=st.number_input("Marco", value=6, key="marco4dobfix")
+        color=st.color_picker("Color entre cartas", "#FF00FF", key="color4dobfix")
+        ancho=st.text_input("Ancho cm (resize)","21", key="ancho4dobfix"); alto=st.text_input("Alto cm (resize)","28", key="alto4dobfix"); dpi=st.text_input("DPI","300", key="dpi4dobfix")
+        st.info("💡 Limitado a 1 ciclo = 14 hojas. 54 dobles garantizadas + 2 repetidas. Fix sin huecos rosas, marco parejo 4 lados. Con PDF + JPG + info_54_dobles.txt")
+        tipo_salida=st.radio("Salida", ["RESIZE cm","ORIGINAL"], horizontal=True, key="out4dobfix")
+    with col2:
+        if files:
+            asp=get_aspecto(files)
+            cprev,cgen=st.columns(2)
+            with cprev:
+                if st.button("👁️ VISTA PREVIA - 2 PREVIEWS", use_container_width=True, key="prev4dobfix"):
+                    with lock:
+                        hojas_ciclo, dobles, repetidas = generar_ciclo_54_dobles_4x4dob(files)
+                        primera = hojas_ciclo[0]
+                        orig, final = generar_con_resize_4x4dob(primera, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
+                        st.session_state["prev_orig4dobfix"]=orig; st.session_state["prev_final4dobfix"]=final
+                        st.session_state["hojas4dobfix"]=hojas_ciclo; st.session_state["dobles4dobfix"]=dobles; st.session_state["repetidas4dobfix"]=repetidas
+            with cgen:
+                if st.button(f"🎰 GENERAR CICLO 14 HOJAS + PDF", type="primary", use_container_width=True, key="gen4dobfix"):
+                    inc_contador("4x4doblesfix", 1); inc_baraja(nombre_baraja, "4x4doblesfix")
+                    with lock:
+                        hojas_ciclo, dobles, repetidas = generar_ciclo_54_dobles_4x4dob(files)
+                        originales=[]; resizes=[]; bar=st.progress(0)
+                        for idx, hoja in enumerate(hojas_ciclo,1):
+                            o,f = generar_con_resize_4x4dob(hoja, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
+                            originales.append(o); resizes.append(f); bar.progress(idx/len(hojas_ciclo))
+                        st.session_state["lista_orig4dobfix"]=originales; st.session_state["lista_final4dobfix"]=resizes
+                        st.session_state["hojas4dobfix"]=hojas_ciclo; st.session_state["dobles4dobfix"]=dobles; st.session_state["repetidas4dobfix"]=repetidas
+            if "prev_final4dobfix" in st.session_state:
+                c1p,c2p=st.columns(2)
+                with c1p: st.image(st.session_state["prev_orig4dobfix"], caption=f"1- ORIGINAL FIJO {st.session_state['prev_orig4dobfix'].size}", use_container_width=True)
+                with c2p: st.image(st.session_state["prev_final4dobfix"], caption=f"2- RESIZE {st.session_state['prev_final4dobfix'].size}", use_container_width=True)
+            if "lista_final4dobfix" in st.session_state and st.session_state["lista_final4dobfix"]:
+                finales = st.session_state["lista_final4dobfix"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4dobfix"]
+                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1}/14", use_container_width=True)
+                pdf_orig = imagenes_a_pdf_4x4dob(st.session_state["lista_orig4dobfix"])
+                pdf_res = imagenes_a_pdf_4x4dob(st.session_state["lista_final4dobfix"])
+                lista_nombres = [os.path.basename(f) for f in st.session_state["dobles4dobfix"]]; rep_nombres = [os.path.basename(f) for f in st.session_state["repetidas4dobfix"]]
+                unicas = sorted(set(lista_nombres)); fecha=datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                info_text = f"""LOTERIA 4x4 DOBLES FIX - 54 DOBLES
+Fecha: {fecha}
+Layout: {layout}
+Div {div} SepV {sep_v} SepH {sep_h} Marco {marco} Color {color}
+Resize: {ancho}x{alto}cm {dpi}DPI - Sin huecos, marco parejo
 
-# NOTA: Pega aquí debajo tus otras vistas (4x4,5x5,10dobles,12portada,4x4doblesfix) que ya tenías, este archivo base ya trae todas las funciones.
+REPETIDAS:
+{chr(10).join([f"- {r}" for r in rep_nombres])}
+
+56 DOBLES:
+{chr(10).join([f"{i+1:02d}. {n}" for i,n in enumerate(lista_nombres)])}
+
+54 UNICAS:
+{chr(10).join([f"- {n}" for n in unicas])}
+Total: {len(unicas)}/54
+"""
+                zip_buf=io.BytesIO()
+                with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+                    for i,(o,r) in enumerate(zip(st.session_state["lista_orig4dobfix"], st.session_state["lista_final4dobfix"]),1):
+                        bo=io.BytesIO(); o.save(bo, format="JPEG", quality=95); zf.writestr(f"JPG_ORIGINAL_H{i:02d}.jpg", bo.getvalue())
+                        br=io.BytesIO(); r.save(br, format="JPEG", quality=95, dpi=(int(dpi),int(dpi))); zf.writestr(f"JPG_RESIZE_H{i:02d}.jpg", br.getvalue())
+                    zf.writestr(f"PDF_ORIGINAL_{layout}_{fecha}.pdf", pdf_orig)
+                    zf.writestr(f"PDF_RESIZE_{layout}_{fecha}.pdf", pdf_res)
+                    zf.writestr("info_54_dobles.txt", info_text)
+                c1d,c2d,c3d=st.columns(3)
+                with c1d: st.download_button(f"📦 ZIP TODO", zip_buf.getvalue(), f"4x4DOBLES_FIX_{layout}_{fecha}.zip", "application/zip", use_container_width=True, type="primary")
+                with c2d: st.download_button(f"📄 PDF ORIGINAL", pdf_orig, f"ORIGINAL_{layout}_{fecha}.pdf", "application/pdf", use_container_width=True)
+                with c3d: st.download_button(f"📄 PDF RESIZE", pdf_res, f"RESIZE_{layout}_{fecha}.pdf", "application/pdf", use_container_width=True)
+    st.stop()
