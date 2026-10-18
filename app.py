@@ -543,6 +543,21 @@ if st.session_state.vista=="catalogo":
         st.markdown("<span style='background:purple;color:white;padding:4px 8px;border-radius:10px;font-size:12px'>NUEVO - SIN HUECOS - PDF</span>", unsafe_allow_html=True)
         if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", width=170, type="primary"): ir_a("4x4doblesfix")
     st.stop()
+
+    # --- SEGUNDA FILA - NUEVOS GENERADORES ---
+    st.markdown("---")
+    st.subheader("✨ Nuevos generadores")
+    colA, colB, colC, colD = st.columns(4)
+    with colA:
+        st.markdown('<div class="cat-thumb">', unsafe_allow_html=True)
+        st.image("portadas/portada_10-4x4-dobles.jpg", width=170)
+        st.markdown('<p><b>10 CARTAS 4x4<br>SIN DOBLES</b><br>Balance 2-3 veces</p>', unsafe_allow_html=True)
+        if st.button("🎲 Generar 10 SIN DOBLES", key="go10sin2"):
+            st.session_state.vista="10_sin_dobles"
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+
+
 if st.session_state.vista=="4x4":
     registrar_entrada_generador("4x4")
     if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
