@@ -456,6 +456,7 @@ def limpiar_nombre(path_img, idx):
     if not clean: clean=f"CARTA {idx}"
     return clean
 if st.session_state.vista=="catalogo":
+    st.markdown("""<style>.cat-thumb img{max-height:170px !important; object-fit:contain;} .cat-thumb{text-align:center;}</style>""", unsafe_allow_html=True)
     st.markdown(banner_top("CATALOGO LOTERIA ELIUD PRO"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
@@ -470,32 +471,32 @@ if st.session_state.vista=="catalogo":
     st.markdown(banner_venta_offline(), unsafe_allow_html=True)
     c1,c2,c3,c4,c5=st.columns(5)
     with c1:
-        if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", use_container_width=True)
+        if os.path.exists("portadas/portada_4x4.jpg"): st.image("portadas/portada_4x4.jpg", width=170)
         st.markdown("### 4 Cartas 4x4 sencillas")
         st.caption(f"👀 {get_contador('visita_4x4')} | 🎰 {get_contador('4x4')}")
-        if st.button("🎰 ENTRAR A 4x4", use_container_width=True, type="primary"): ir_a("4x4")
+        if st.button("🎰 ENTRAR A 4x4", width=170, type="primary"): ir_a("4x4")
     with c2:
-        if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", use_container_width=True)
+        if os.path.exists("portadas/portada_5x5.jpg"): st.image("portadas/portada_5x5.jpg", width=170)
         st.markdown("### 4 Cartas 5x5 sencillas")
         st.caption(f"👀 {get_contador('visita_5x5')} | 🎰 {get_contador('5x5')}")
-        if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
+        if st.button("🎰 ENTRAR A 5x5", width=170): ir_a("5x5")
     with c3:
-        if os.path.exists("portadas/portada_10-4x4-dobles.jpg"): st.image("portadas/portada_10-4x4-dobles.jpg", use_container_width=True)
+        if os.path.exists("portadas/portada_10-4x4-dobles.jpg"): st.image("portadas/portada_10-4x4-dobles.jpg", width=170)
         st.markdown("### 10 Cartas 4x4 con Dobles - 54 por Hoja")
         st.caption(f"👀 {get_contador('visita_10dobles')} | 🎰 {get_contador('10dobles')}")
-        if st.button("🎰 ENTRAR A 10 CARTAS DOBLES", use_container_width=True): ir_a("10dobles")
+        if st.button("🎰 ENTRAR A 10 CARTAS DOBLES", width=170): ir_a("10dobles")
     with c4:
-        if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
+        if os.path.exists("portadas/1-portada-12-cartas.jpg"): st.image("portadas/1-portada-12-cartas.jpg", width=170)
         st.markdown("### 12 CARTAS CON 1 PORTADA")
         st.caption(f"👀 {get_contador('visita_12portada')} | 🎰 {get_contador('12portada')}")
-        if st.button("🎰 ENTRAR A 12 CON PORTADA", use_container_width=True): ir_a("12portada")
+        if st.button("🎰 ENTRAR A 12 CON PORTADA", width=170): ir_a("12portada")
     with c5:
-        if os.path.exists("portadas/portada_4x4-dobles-al-centro.jpg"): st.image("portadas/portada_4x4-dobles-al-centro.jpg", use_container_width=True)
-        elif os.path.exists("portada_4x4-dobles-al-centro.jpg"): st.image("portada_4x4-dobles-al-centro.jpg", use_container_width=True)
+        if os.path.exists("portadas/portada_4x4-dobles-al-centro.jpg"): st.image("portadas/portada_4x4-dobles-al-centro.jpg", width=170)
+        elif os.path.exists("portada_4x4-dobles-al-centro.jpg"): st.image("portada_4x4-dobles-al-centro.jpg", width=170)
         st.markdown("### 🆕 4x4 DOBLES AL CENTRO - 54 DOBLES FIX")
         st.caption(f"👀 {get_contador('visita_4x4doblesfix')} | 🎰 {get_contador('4x4doblesfix')}")
         st.markdown("<span style='background:purple;color:white;padding:4px 8px;border-radius:10px;font-size:12px'>NUEVO - SIN HUECOS - PDF</span>", unsafe_allow_html=True)
-        if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", use_container_width=True, type="primary"): ir_a("4x4doblesfix")
+        if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", width=170, type="primary"): ir_a("4x4doblesfix")
     st.stop()
 if st.session_state.vista=="4x4":
     registrar_entrada_generador("4x4")
@@ -530,7 +531,7 @@ if st.session_state.vista=="4x4":
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev4"):
+                if st.button("👁️ VISTA PREVIA", width=170, key="prev4"):
                     with lock:
                         cartas=generar_logica_4x4(files)
                         if cartas:
@@ -538,7 +539,7 @@ if st.session_state.vista=="4x4":
                             final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             st.session_state["prev_final4"]=final
             with cgen:
-                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen4"):
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", width=170, key="gen4"):
                     inc_contador("4x4", 1); inc_baraja(nombre_baraja, "4x4")
                     with lock:
                         lista_final=[]; lista_orig=[]; bar=st.progress(0)
@@ -550,17 +551,17 @@ if st.session_state.vista=="4x4":
                             final=generar_hoja_4x4(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
                         st.session_state["lista_final4"]=lista_final; st.session_state["lista_orig4"]=lista_orig
-            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa", use_container_width=True)
+            if "prev_final4" in st.session_state: st.image(st.session_state["prev_final4"], caption="Vista previa", width=170)
             if "lista_final4" in st.session_state and st.session_state["lista_final4"]:
                 finales=st.session_state["lista_final4"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4"]
-                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
+                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", width=170)
                 pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_4x4_{len(finales)}.pdf", "application/pdf", width=170, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_4x4_{len(finales)}.zip", "application/zip", width=170)
     st.stop()
 if st.session_state.vista=="5x5":
     registrar_entrada_generador("5x5")
@@ -595,7 +596,7 @@ if st.session_state.vista=="5x5":
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA", use_container_width=True, key="prev5"):
+                if st.button("👁️ VISTA PREVIA", width=170, key="prev5"):
                     with lock:
                         cartas=generar_logica_5x5(files)
                         if cartas:
@@ -603,7 +604,7 @@ if st.session_state.vista=="5x5":
                             final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             st.session_state["prev_final5"]=final
             with cgen:
-                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", use_container_width=True, key="gen5"):
+                if st.button(f"🎰 GENERAR {juegos} JUEGOS", type="primary", width=170, key="gen5"):
                     inc_contador("5x5", 1); inc_baraja(nombre_baraja, "5x5")
                     with lock:
                         lista_final=[]; lista_orig=[]; bar=st.progress(0)
@@ -615,17 +616,17 @@ if st.session_state.vista=="5x5":
                             final=generar_hoja_5x5(cartas,color,div,sep_v,sep_h,marco,asp,(Wf,Hf),W_usar)
                             lista_orig.append(orig); lista_final.append(final); bar.progress((j+1)/juegos)
                         st.session_state["lista_final5"]=lista_final; st.session_state["lista_orig5"]=lista_orig
-            if "prev_final5" in st.session_state: st.image(st.session_state["prev_final5"], caption="Vista previa", use_container_width=True)
+            if "prev_final5" in st.session_state: st.image(st.session_state["prev_final5"], caption="Vista previa", width=170)
             if "lista_final5" in st.session_state and st.session_state["lista_final5"]:
                 finales=st.session_state["lista_final5"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig5"]
-                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", use_container_width=True)
+                for i,im in enumerate(finales): st.image(im, caption=f"Juego {i+1}", width=170)
                 pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=92); zf.writestr(f"juego_5x5_{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"loteria_5x5_{len(finales)}.pdf", "application/pdf", width=170, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"loteria_5x5_{len(finales)}.zip", "application/zip", width=170)
     st.stop()
 if st.session_state.vista=="10dobles":
     registrar_entrada_generador("10dobles")
@@ -660,15 +661,15 @@ if st.session_state.vista=="10dobles":
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA 10C FULL", use_container_width=True, key="prev10"):
+                if st.button("👁️ VISTA PREVIA 10C FULL", width=170, key="prev10"):
                     with lock:
                         st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
                         cartas,dups=generar_logica_10_cartas_54(files, es_nuevo_juego=True)
                         if cartas:
                             orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
-                            st.session_state["prev_orig10"]=orig; st.session_state["prev_final10"]=final
+                            st.session_state["prev_final10"]=final  # solo FINAL; st.session_state["prev_final10"]=final
             with cgen:
-                if st.button(f"🎰 GENERAR {ciclos} CICLOS - 54xHOJA", type="primary", use_container_width=True, key="gen10"):
+                if st.button(f"🎰 GENERAR {ciclos} CICLOS - 54xHOJA", type="primary", width=170, key="gen10"):
                     inc_contador("10dobles", 1); inc_baraja(nombre_baraja, "10dobles")
                     with lock:
                         lista_final=[]; lista_orig=[]; st.session_state["uso_global_10"]={}; st.session_state["uso_como_dup_10"]={}; st.session_state["hash_10"]=set()
@@ -681,17 +682,17 @@ if st.session_state.vista=="10dobles":
                                 orig, final = generar_con_resize_10(cartas, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
                                 lista_orig.append(orig); lista_final.append(final); cnt+=1; bar.progress(cnt/total_h)
                         st.session_state["lista_final10"]=lista_final; st.session_state["lista_orig10"]=lista_orig
-            if "prev_final10" in st.session_state: st.image(st.session_state["prev_final10"], caption=f"Vista previa {layout} - 10C FULL 54xHOJA", use_container_width=True)
+            if "prev_final10" in st.session_state: st.image(st.session_state["prev_final10"], caption=f"Vista previa {layout} - 10C FULL 54xHOJA", width=170)
             if "lista_final10" in st.session_state and st.session_state["lista_final10"]:
                 finales=st.session_state["lista_final10"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig10"]
-                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1} - 10 Cartas", use_container_width=True)
+                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1} - 10 Cartas", width=170)
                 pdf_bytes=io.BytesIO(); finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], quality=92)
                 zip_bytes=io.BytesIO()
                 with zipfile.ZipFile(zip_bytes, "w", zipfile.ZIP_DEFLATED) as zf:
                     for i, im in enumerate(finales):
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=95); zf.writestr(f"10C_FULL_{layout}_H{i+1:02d}.jpg", b.getvalue())
-                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.zip", "application/zip", use_container_width=True)
+                st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.pdf", "application/pdf", width=170, type="primary")
+                st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"10C_FULL_{layout}_{len(finales)}.zip", "application/zip", width=170)
     st.stop()
 if st.session_state.vista=="12portada":
     registrar_entrada_generador("12portada")
@@ -734,7 +735,7 @@ if st.session_state.vista=="12portada":
         if baraja_files and portada_files:
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁 VISTA PREVIA", use_container_width=True, key="prev12"):
+                if st.button("👁 VISTA PREVIA", width=170, key="prev12"):
                     with lock:
                         idx=max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
                         sheet=generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_entre, div_interno, sep_entre)
@@ -743,7 +744,7 @@ if st.session_state.vista=="12portada":
                             Wf=cm_to_px(ancho,int(dpi)); Hf=cm_to_px(alto,int(dpi))
                             st.session_state["final12"]=sheet.resize((Wf,Hf), Image.LANCZOS)
             with cgen:
-                if st.button("🖼 EXPORTAR TABLOIDE", type="primary", use_container_width=True, key="gen12"):
+                if st.button("🖼 EXPORTAR TABLOIDE", type="primary", width=170, key="gen12"):
                     inc_contador("12portada", 1); inc_baraja(nombre_baraja, "12portada")
                     with lock:
                         lista_final=[]; lista_nombres=[]; bar=st.progress(0)
@@ -761,10 +762,10 @@ if st.session_state.vista=="12portada":
                             lista_final.append(final); lista_nombres.append(limpiar_nombre(fav_path,i))
                             bar.progress(i/len(lista))
                         st.session_state["lista_final12"]=lista_final; st.session_state["lista_nombres12"]=lista_nombres
-            if "orig12" in st.session_state: st.image(st.session_state["final12"], caption="Vista previa - Alta Calidad Final", use_container_width=True)
+            if "orig12" in st.session_state: st.image(st.session_state["final12"], caption="Vista previa - Alta Calidad Final", width=170)
             if "lista_final12" in st.session_state and st.session_state["lista_final12"]:
                 finales=st.session_state["lista_final12"]; nombres=st.session_state["lista_nombres12"]
-                for i,im in enumerate(finales): st.image(im, caption=f"{i+1:02d} - {nombres[i]}", use_container_width=True)
+                for i,im in enumerate(finales): st.image(im, caption=f"{i+1:02d} - {nombres[i]}", width=170)
                 pdf_bytes=io.BytesIO()
                 if len(finales)==1: finales[0].save(pdf_bytes, format="PDF", resolution=300, quality=95)
                 else: finales[0].save(pdf_bytes, format="PDF", save_all=True, append_images=finales[1:], resolution=300, quality=95)
@@ -775,8 +776,8 @@ if st.session_state.vista=="12portada":
                         b=io.BytesIO(); im.save(b, format="JPEG", quality=95, dpi=(300,300))
                         zf.writestr(f"{i+1:02d} - {nombres[i]} - {fecha}.jpg", b.getvalue())
                 d1,d2=st.columns(2)
-                with d1: st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"TABLOIDE_{len(finales)}.pdf", "application/pdf", use_container_width=True, type="primary")
-                with d2: st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"TABLOIDE_{len(finales)}.zip", "application/zip", use_container_width=True)
+                with d1: st.download_button(f"⬇️ PDF {len(finales)}", pdf_bytes.getvalue(), f"TABLOIDE_{len(finales)}.pdf", "application/pdf", width=170, type="primary")
+                with d2: st.download_button(f"⬇️ ZIP {len(finales)}", zip_bytes.getvalue(), f"TABLOIDE_{len(finales)}.zip", "application/zip", width=170)
     st.stop()
 if st.session_state.vista=="4x4doblesfix":
     registrar_entrada_generador("4x4doblesfix")
@@ -813,15 +814,15 @@ if st.session_state.vista=="4x4doblesfix":
             asp=get_aspecto(files)
             cprev,cgen=st.columns(2)
             with cprev:
-                if st.button("👁️ VISTA PREVIA - 2 PREVIEWS", use_container_width=True, key="prev4dobfix"):
+                if st.button("👁️ VISTA PREVIA - 2 PREVIEWS", width=170, key="prev4dobfix"):
                     with lock:
                         hojas_ciclo, dobles, repetidas = generar_ciclo_54_dobles_4x4dob(files)
                         primera = hojas_ciclo[0]
                         orig, final = generar_con_resize_4x4dob(primera, color, div, sep_v, sep_h, marco, ancho, alto, dpi, asp, layout)
-                        st.session_state["prev_orig4dobfix"]=orig; st.session_state["prev_final4dobfix"]=final
+                        # eliminado orig; st.session_state["prev_final4dobfix"]=final
                         st.session_state["hojas4dobfix"]=hojas_ciclo; st.session_state["dobles4dobfix"]=dobles; st.session_state["repetidas4dobfix"]=repetidas
             with cgen:
-                if st.button(f"🎰 GENERAR CICLO 14 HOJAS + PDF", type="primary", use_container_width=True, key="gen4dobfix"):
+                if st.button(f"🎰 GENERAR CICLO 14 HOJAS + PDF", type="primary", width=170, key="gen4dobfix"):
                     inc_contador("4x4doblesfix", 1); inc_baraja(nombre_baraja, "4x4doblesfix")
                     with lock:
                         hojas_ciclo, dobles, repetidas = generar_ciclo_54_dobles_4x4dob(files)
@@ -833,11 +834,11 @@ if st.session_state.vista=="4x4doblesfix":
                         st.session_state["hojas4dobfix"]=hojas_ciclo; st.session_state["dobles4dobfix"]=dobles; st.session_state["repetidas4dobfix"]=repetidas
             if "prev_final4dobfix" in st.session_state:
                 c1p,c2p=st.columns(2)
-                with c1p: st.image(st.session_state["prev_orig4dobfix"], caption=f"1- ORIGINAL FIJO {st.session_state['prev_orig4dobfix'].size}", use_container_width=True)
-                with c2p: st.image(st.session_state["prev_final4dobfix"], caption=f"2- RESIZE {st.session_state['prev_final4dobfix'].size}", use_container_width=True)
+                with c1p: st.image(st.session_state["prev_orig4dobfix"], caption=f"1- ORIGINAL FIJO {st.session_state['prev_orig4dobfix'].size}", width=170)
+                with c2p: st.image(st.session_state["prev_final4dobfix"], caption=f"2- RESIZE {st.session_state['prev_final4dobfix'].size}", width=170)
             if "lista_final4dobfix" in st.session_state and st.session_state["lista_final4dobfix"]:
                 finales = st.session_state["lista_final4dobfix"] if tipo_salida=="RESIZE cm" else st.session_state["lista_orig4dobfix"]
-                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1}/14", use_container_width=True)
+                for i,im in enumerate(finales): st.image(im, caption=f"Hoja {i+1}/14", width=170)
                 pdf_orig = imagenes_a_pdf_4x4dob(st.session_state["lista_orig4dobfix"])
                 pdf_res = imagenes_a_pdf_4x4dob(st.session_state["lista_final4dobfix"])
                 lista_nombres = [os.path.basename(f) for f in st.session_state["dobles4dobfix"]]; rep_nombres = [os.path.basename(f) for f in st.session_state["repetidas4dobfix"]]
@@ -867,7 +868,7 @@ Total: {len(unicas)}/54
                     zf.writestr(f"PDF_RESIZE_{layout}_{fecha}.pdf", pdf_res)
                     zf.writestr("info_54_dobles.txt", info_text)
                 c1d,c2d,c3d=st.columns(3)
-                with c1d: st.download_button(f"📦 ZIP TODO", zip_buf.getvalue(), f"4x4DOBLES_FIX_{layout}_{fecha}.zip", "application/zip", use_container_width=True, type="primary")
-                with c2d: st.download_button(f"📄 PDF ORIGINAL", pdf_orig, f"ORIGINAL_{layout}_{fecha}.pdf", "application/pdf", use_container_width=True)
-                with c3d: st.download_button(f"📄 PDF RESIZE", pdf_res, f"RESIZE_{layout}_{fecha}.pdf", "application/pdf", use_container_width=True)
+                with c1d: st.download_button(f"📦 ZIP TODO", zip_buf.getvalue(), f"4x4DOBLES_FIX_{layout}_{fecha}.zip", "application/zip", width=170, type="primary")
+                with c2d: st.download_button(f"📄 PDF ORIGINAL", pdf_orig, f"ORIGINAL_{layout}_{fecha}.pdf", "application/pdf", width=170)
+                with c3d: st.download_button(f"📄 PDF RESIZE", pdf_res, f"RESIZE_{layout}_{fecha}.pdf", "application/pdf", width=170)
     st.stop()
