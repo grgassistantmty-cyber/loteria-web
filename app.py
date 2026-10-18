@@ -97,9 +97,17 @@ def instrucciones_html(vista="general"):
         return aviso + f'<div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black;font-size:17px"><h3>💡 PARA QUE ES CADA COSA - {vista}</h3><b>Primero ajusta TODO y luego GENERAR VISTA PREVIA</b></div><br>'
 
 def listar_barajas():
-    if not os.path.exists("barajas"): return []
+    if not os.path.exists("barajas"): 
+        return []
     return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
-    def cargar_files(path, limite=54):
+
+def cargar_files(path, limite=54):
+    exts=(".png",".jpg",".jpeg",".webp",".jfif")
+    if not path or not os.path.exists(path): 
+        return []
+    files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
+    files.sort()
+    return files[:limite]
     exts=(".png",".jpg",".jpeg",".webp",".jfif")
     if not path or not os.path.exists(path): return []
     files=[os.path.join(path,f) for f in os.listdir(path) if f.lower().endswith(exts)]
