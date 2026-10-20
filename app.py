@@ -1,28 +1,37 @@
-import streamlit as st, importlib.util, os, glob
+import streamlit as st
+import importlib.util
+from pathlib import Path
 
-st.set_page_config(page_title="BINGO GENERADORES", layout="wide", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Loteria Eliud PRO", layout="wide", page_icon="🎰")
 
-# init contadores sin importar como paquete
-spec_cfg = importlib.util.spec_from_file_location("config", "utils/config.py")
-config = importlib.util.module_from_spec(spec_cfg)
-spec_cfg.loader.exec_module(config)
-config.init_contadores()
+# Inicializa contadores base
+from utils.config import init_session
 
-if "pagina" not in st.session_state: st.session_state["pagina"]="catalogo"
-pagina = st.session_state["pagina"]
+init_session()
 
-def load_and_render(path):
-    spec = importlib.util.spec_from_file_location("mod", path)
+VISTAS = {
+    "catalogo": "vistas/vista_catalogo.py",
+    "4x4": "vistas/vista_4x4.py",
+    "5x5": "vistas/vista_5x5.py",
+    "10dobles": "vistas/vista_10dobles.py",
+    "12portada": "vistas/vista_12portada.py",
+    "4x4doblesfix": "vistas/vista_4x4doblesfix.py",
+}
+
+def load_and_render(ruta):
+    spec = importlib.util.spec_from_file_location("mod", ruta)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    mod.render()
-
-if pagina == "catalogo":
-    load_and_render("vistas/catalogo.py")
-else:
-    ruta = f"vistas/vista_{pagina}.py"
-    if os.path.exists(ruta):
-        load_and_render(ruta)
+    if hasattr(mod, "render"):
+        mod.render()
     else:
-        st.session_state["pagina"]="catalogo"
-        st.rerun()
+        st.error(f"{ruta} no tiene render()")
+
+vista = st.session_state.get("vista", "catalogo")
+params = st.query_params
+if "vista" in params and params["vista"] in VISTAS:
+    vista = params["vista"]
+    st.session_state["vista"] = vista
+
+ruta = VISTAS.get(vista, VISTAS["catalogo"])
+load_and_render(ruta)
