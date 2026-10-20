@@ -1,23 +1,28 @@
-import streamlit as st, importlib, os, glob
-from utils.config import init_contadores
+import streamlit as st, importlib.util, os, glob
 
 st.set_page_config(page_title="BINGO GENERADORES", layout="wide", initial_sidebar_state="collapsed")
-init_contadores()
+
+# init contadores sin importar como paquete
+spec_cfg = importlib.util.spec_from_file_location("config", "utils/config.py")
+config = importlib.util.module_from_spec(spec_cfg)
+spec_cfg.loader.exec_module(config)
+config.init_contadores()
 
 if "pagina" not in st.session_state: st.session_state["pagina"]="catalogo"
 pagina = st.session_state["pagina"]
 
-vistas_disponibles = {}
-for path in glob.glob("vistas/vista_*.py"):
-    nombre = os.path.basename(path).replace("vista_","").replace(".py","")
-    vistas_disponibles[nombre] = f"vistas.vista_{nombre}"
+def load_and_render(path):
+    spec = importlib.util.spec_from_file_location("mod", path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    mod.render()
 
 if pagina == "catalogo":
-    from vistas.catalogo import render
-    render()
-elif pagina in vistas_disponibles:
-    modulo = importlib.import_module(vistas_disponibles[pagina])
-    modulo.render()
+    load_and_render("vistas/catalogo.py")
 else:
-    st.session_state["pagina"]="catalogo"
-    st.rerun()
+    ruta = f"vistas/vista_{pagina}.py"
+    if os.path.exists(ruta):
+        load_and_render(ruta)
+    else:
+        st.session_state["pagina"]="catalogo"
+        st.rerun()
