@@ -1,35 +1,30 @@
 import streamlit as st
-import streamlit.components.v1 as components
 
-def banner_top():
-    st.markdown("""
-    <div style='background:#111;padding:10px;border-radius:10px;text-align:center;color:white'>
-    Lotería Mexicana - Generador Profesional
+def banner_top(texto=""):
+    if texto == "":
+        texto = "Lotería Mexicana - Generador Profesional"
+    return f"""
+    <div style='background:linear-gradient(90deg,#111,#333);padding:14px;border-radius:10px;text-align:center;color:white;font-weight:bold;border:1px solid #00FF88'>
+    {texto}
     </div>
-    """, unsafe_allow_html=True)
+    """
 
 def banner_facebook():
+    return """
+    <div style='background:#1877F2;padding:10px;border-radius:8px;text-align:center;color:white;margin:10px 0'>
+    📘 Síguenos en Facebook - Lotería Profesional
+    </div>
+    """
+
+def copiar_clabe_component():
     st.markdown("""
-    <div style='background:#1877F2;padding:8px;border-radius:8px;text-align:center;color:white'>
-    Síguenos en Facebook - Lotería Profesional
+    <div style='background:#222;padding:10px;border-radius:8px;text-align:center;color:#00FF88'>
+    CLABE: 012180015849123456
     </div>
     """, unsafe_allow_html=True)
 
 def banner_venta_offline():
-    st.markdown("""
-    <div style='background:#25D366;padding:8px;border-radius:8px;text-align:center;color:white'>
-    Venta Offline - WhatsApp
-    </div>
-    """, unsafe_allow_html=True)
-
-def copiar_clabe_component():
-    clabe = "012180015849123456"
-    components.html(f"""
-    <div>
-    <input type="text" value="{clabe}" id="clabe" style="width:100%">
-    <button onclick="navigator.clipboard.writeText('{clabe}')">Copiar CLABE</button>
-    </div>
-    """, height=80)
+    return "<div></div>"
 
 def instrucciones_html():
-    return "<div>Instrucciones de impresión</div>"
+    return "<div></div>"
