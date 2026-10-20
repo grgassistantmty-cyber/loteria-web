@@ -1,14 +1,21 @@
 import streamlit as st
 import importlib.util
-from pathlib import Path
+import os
+import sys
 
-st.set_page_config(page_title="Loteria Eliud PRO", layout="wide", page_icon="🎰")
+# Asegura que /app esté en path
+sys.path.append("/app")
 
-# Inicializa contadores base
+# === IMPORTS QUE SI EXISTEN ===
 from utils.config import init_session
+from utils.banners import banner_top
+
+st.set_page_config(page_title="Lotería Profesional", layout="wide", initial_sidebar_state="collapsed")
 
 init_session()
+banner_top()
 
+# === RUTAS DE VISTAS ===
 VISTAS = {
     "catalogo": "vistas/vista_catalogo.py",
     "4x4": "vistas/vista_4x4.py",
@@ -19,19 +26,16 @@ VISTAS = {
 }
 
 def load_and_render(ruta):
-    spec = importlib.util.spec_from_file_location("mod", ruta)
+    if not os.path.exists(ruta):
+        st.error(f"No existe: {ruta}")
+        st.write("Archivos en vistas:", os.listdir("vistas") if os.path.exists("vistas") else "no existe vistas/")
+        return
+    spec = importlib.util.spec_from_file_location("vista", ruta)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    if hasattr(mod, "render"):
-        mod.render()
-    else:
-        st.error(f"{ruta} no tiene render()")
 
-vista = st.session_state.get("vista", "catalogo")
-params = st.query_params
-if "vista" in params and params["vista"] in VISTAS:
-    vista = params["vista"]
-    st.session_state["vista"] = vista
+# Vista actual
+vista_actual = st.session_state.get("vista_actual", "catalogo")
+ruta = VISTAS.get(vista_actual, VISTAS["catalogo"])
 
-ruta = VISTAS.get(vista, VISTAS["catalogo"])
 load_and_render(ruta)
