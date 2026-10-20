@@ -4,16 +4,18 @@ from PIL import Image
 _lock = threading.Lock()
 def get_lock(): return _lock
 
-# constantes que usan tus cores
-RIGHT4 = LEFT4 = TOP4 = BOTTOM4 = 0
-RIGHT = LEFT = TOP = BOTTOM = 0
-
 def no_chocan(x, y, w, h, ocupados, margen=0):
     x2, y2 = x+w+margen, y+h+margen
     for ox, oy, ow, oh in ocupados:
         if not (x2 < ox or x > ox+ow or y2 < oy or y > oy+oh):
             return False
     return True
+
+# Esto arregla RIGHT5, LEFT5, RIGHT4, LEFT4, etc para TODOS los cores
+def __getattr__(name):
+    if name.startswith(("RIGHT","LEFT","TOP","BOTTOM")):
+        return 0
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 def listar_barajas(carpeta="barajas"):
     if not os.path.exists(carpeta): return []
