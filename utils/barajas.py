@@ -1,28 +1,51 @@
-import os, glob, tempfile, shutil
+import os, glob
 from PIL import Image
+import threading
 
-def listar_barajas():
-    return glob.glob("barajas/*") + glob.glob("baraja/*")
+_lock = threading.Lock()
 
-def cargar_files(path):
-    return sorted(glob.glob(os.path.join(path, "*.jpg")) + glob.glob(os.path.join(path, "*.png")) + glob.glob(os.path.join(path, "*.jpeg")) + glob.glob(os.path.join(path, "*.webp")))
+def get_lock():
+    return _lock
 
-def cargar_zip_temporal(up, tmpdir, min_imgs=54):
-    import zipfile; zpath=os.path.join(tmpdir, "b.zip"); open(zpath,"wb").write(up.getbuffer())
-    with zipfile.ZipFile(zpath) as z: z.extractall(tmpdir)
-    return cargar_files(tmpdir)
+def listar_barajas(carpeta="barajas"):
+    if not os.path.exists(carpeta): return []
+    return [d for d in os.listdir(carpeta) if os.path.isdir(os.path.join(carpeta, d))]
 
-def cargar_imagenes_sueltas(ups, tmpdir, min_imgs=54):
-    files=[]
-    for up in ups:
-        p=os.path.join(tmpdir, up.name); open(p,"wb").write(up.getbuffer()); files.append(p)
-    return files
-
-def get_aspecto(files):
+def get_aspecto(ruta_img):
     try:
-        with Image.open(files[0]) as im: w,h=im.size; return h/w
-    except: return 1.5
+        with Image.open(ruta_img) as im:
+            w, h = im.size
+            return w / h if h else 1.0
+    except:
+        return 1.0
 
-def cm_to_px(cm, dpi):
-    try: return int(float(cm)/2.54 * float(dpi))
-    except: return 1000
+def cm_to_px(cm, dpi=300):
+    return int(cm / 2.54 * dpi)
+
+def cargar_files(lista_paths):
+    return [p for p in lista_paths if os.path.exists(p)]
+
+def cargar_zip_temporal(uploaded_file, temp_dir="/tmp/baraja_temp"):
+    import zipfile
+    os.makedirs(temp_dir, exist_ok=True)
+    path_zip = os.path.join(temp_dir, uploaded_file.name)
+    with open(path_zip, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    archivos=[]
+    with zipfile.ZipFile(path_zip, 'r') as zip_ref:
+        zip_ref.extractall(temp_dir)
+        for root, _, files in os.walk(temp_dir):
+            for file in files:
+                if file.lower().endswith(('.png','.jpg','.jpeg','.webp')):
+                    archivos.append(os.path.join(root, file))
+    return archivos
+
+def cargar_imagenes_sueltas(uploaded_files, temp_dir="/tmp/baraja_suelta"):
+    os.makedirs(temp_dir, exist_ok=True)
+    archivos=[]
+    for uf in uploaded_files:
+        path = os.path.join(temp_dir, uf.name)
+        with open(path, "wb") as f:
+            f.write(uf.getbuffer())
+        archivos.append(path)
+    return archivos
