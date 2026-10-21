@@ -5,7 +5,6 @@ import streamlit as st
 
 try:
     from app import BASE_PATH, EXCEL_COLORS, get_contador, inc_contador, inc_baraja, banner_top, banner_facebook, banner_venta_offline, copiar_clabe_component, instrucciones_html, ir_a, listar_barajas
-    def get_base_path(): return BASE_PATH
 except:
     BASE_PATH = Path(".")
     EXCEL_COLORS = {1:"#000000",2:"#FFFFFF",3:"#FF0000",4:"#00FF00",5:"#0000FF",6:"#FFFF00",7:"#FF00FF",8:"#00FFFF",9:"#800000",10:"#008000",11:"#000080",12:"#808000",13:"#800080",14:"#008080",15:"#C0C0C0",16:"#808080",17:"#9999FF",18:"#993366",19:"#FFFFCC",20:"#CCFFFF",21:"#660066",22:"#FF8080",23:"#0066CC",24:"#CCCCFF",25:"#000080",26:"#FF00FF",27:"#FFFF00",28:"#00FFFF",29:"#800080",30:"#800000",31:"#008080",32:"#0000FF",33:"#00CCFF",34:"#CCFFCC",35:"#FFFF99",36:"#99CCFF",37:"#FF99CC",38:"#CC99FF",39:"#FFCC99",40:"#3366FF",41:"#33CCCC",42:"#99CC00",43:"#FFCC00",44:"#FF9900",45:"#FF6600",46:"#666699",47:"#969696",48:"#003366",49:"#339966",50:"#003300",51:"#333300",52:"#993300",53:"#993366",54:"#333399",55:"#333333",56:"#000000"}
@@ -21,6 +20,14 @@ except:
     def listar_barajas():
         if not os.path.exists("barajas"): return []
         return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d))])
+
+# === VALORES FIJOS - MEJOR POSICION - NO EDITABLE ===
+FONT_NUM_FIJO = 151
+FONT_TXT_FIJO = 91
+TXT_PREF_FIJO = "PREFERIDA"
+TXT_CARTAS_FIJO = "CARTAS"
+OFFSET_TOP_FIJO = 100
+OFFSET_BOTTOM_FIJO = 100
 
 CARTAS_UNICAS_GLOBAL_JUEGO = set()
 USADOS_POR_POSICION_HOJA = {}
@@ -87,8 +94,7 @@ def crear_panel_con_texto_editable(portada_path, w, h, color_fondo, font_num_siz
         x=(w - w_target)//2
         y=top_h + (middle_h - h_target)//2
         panel.paste(img_pref,(x,y))
-    except Exception as e:
-        print(f"Error portada: {e}")
+    except:
         pass
     draw.text((w//2, top_h*0.28 + offset_top), "1", fill="white", anchor="mm", font=font_num, stroke_width=3, stroke_fill="black")
     draw.text((w//2, top_h*0.72 + offset_top), txt_pref, fill="white", anchor="mm", font=font_txt, stroke_width=2, stroke_fill="black")
@@ -209,7 +215,7 @@ def render():
     st.markdown(instrucciones_html("1 PREFERIDA + 10 CARTAS DOBLES 6 Y 7"), unsafe_allow_html=True)
     barajas_paths = listar_barajas()
     if not barajas_paths:
-        st.error("No hay barajas en carpeta barajas/")
+        st.error("No hay barajas")
         if st.button("⬅️ Volver"): ir_a("catalogo")
         return
     portadas_root = "portadas"
@@ -223,33 +229,21 @@ def render():
         portada_path_root = os.path.join(portadas_root, portada_sel) if portadas_list else portadas_root
     with c3:
         ori = st.selectbox("ORIENTACION:", ["5x2 HORIZONTAL","2x5 VERTICAL","HORIZONTAL (10x1)","VERTICAL (1x10)"], index=0)
-    c4,c5,c6,c7 = st.columns(4)
+    c4,c5,c6 = st.columns(3)
     with c4:
         div_int = st.number_input("Div interno", 0, 20, 1)
     with c5:
         sep = st.number_input("Separacion", 0, 200, 50)
     with c6:
         color_hex = st.color_picker("Color fondo", "#FF00FF")
-    with c7:
+    with c6:
         juegos = st.number_input("Juegos de 54 hojas", 1, 10, 1)
-    ce1, ce2, ce3, ce4 = st.columns(4)
-    with ce1:
-        font_num = st.number_input("Num 72", 20, 200, 72)
-    with ce2:
-        font_txt = st.number_input("Txt 48", 10, 120, 48)
-    with ce3:
-        txt_pref = st.text_input("Texto arriba", "PREFERIDA")
-    with ce4:
-        txt_cart = st.text_input("Texto abajo", "CARTAS")
-    co1, co2 = st.columns(2)
-    with co1:
-        off_top = st.slider("Offset top", -100, 100, 0)
-    with co2:
-        off_bot = st.slider("Offset bottom", -100, 100, 0)
+
     files_baraja = cargar_imagenes(baraja_path)
     files_portada = cargar_imagenes(portada_path_root)
-    st.info(f"Baraja: {len(files_baraja)} imgs | Portadas: {len(files_portada)} imgs - Dobles en 6 y 7 - Baja res sin deformar")
-    if st.button("👁️ VISTA PREVIA 1 HOJA", use_container_width=True):
+    st.info(f"Baraja: {len(files_baraja)} | Portadas: {len(files_portada)} | POSICION FIJA {FONT_NUM_FIJO}/{FONT_TXT_FIJO} OFFSET {OFFSET_TOP_FIJO}/{OFFSET_BOTTOM_FIJO}")
+
+    if st.button("👁️ VISTA PREVIA 1 HOJA - POSICION FIJA", use_container_width=True):
         if len(files_baraja)<54 or len(files_portada)<54:
             st.error("Faltan imagenes")
         else:
@@ -257,10 +251,11 @@ def render():
             dups_preview = random.sample(files_baraja[:54], 10)
             random.shuffle(files_portada)
             pref = files_portada[0]
-            with st.spinner("Generando preview baja res sin deformar..."):
-                sheet = generar_10_balanceado(files_baraja[:54], pref, color_hex, div_int, sep, ori, dups_preview, font_num, font_txt, txt_pref.upper(), txt_cart.upper(), off_top, off_bot)
-                st.image(sheet, caption=f"Preview - Dobles en 6 y 7 - Preferida {os.path.basename(pref)} - Baja res sin deformar", use_container_width=True)
-    if st.button("🎰 GENERAR 54 HOJAS x JUEGO + ZIP", type="primary", use_container_width=True):
+            with st.spinner("Generando preview con posicion fija..."):
+                sheet = generar_10_balanceado(files_baraja[:54], pref, color_hex, div_int, sep, ori, dups_preview, FONT_NUM_FIJO, FONT_TXT_FIJO, TXT_PREF_FIJO, TXT_CARTAS_FIJO, OFFSET_TOP_FIJO, OFFSET_BOTTOM_FIJO)
+                st.image(sheet, caption=f"Preview FIJO - {os.path.basename(pref)}", use_container_width=True)
+
+    if st.button("🎰 GENERAR 54 HOJAS x JUEGO + ZIP - POSICION FIJA", type="primary", use_container_width=True):
         if len(files_baraja)<54 or len(files_portada)<54:
             st.error("Faltan 54 imagenes")
             return
@@ -302,17 +297,17 @@ def render():
                         dups_hoja=grupos[hoja_in_bloque]
                         preferida_portada=portadas_juego[hoja_global-1]
                         gen+=1
-                        status.text(f"Juego {juego} Hoja {hoja_global}/54 - {gen}/{total}")
+                        status.text(f"Juego {juego} Hoja {hoja_global}/54")
                         progress.progress(gen/total)
-                        sheet = generar_10_balanceado(files_baraja[:54], preferida_portada, color_hex, div_int, sep, ori, dups_hoja, font_num, font_txt, txt_pref.upper(), txt_cart.upper(), off_top, off_bot)
+                        sheet = generar_10_balanceado(files_baraja[:54], preferida_portada, color_hex, div_int, sep, ori, dups_hoja, FONT_NUM_FIJO, FONT_TXT_FIJO, TXT_PREF_FIJO, TXT_CARTAS_FIJO, OFFSET_TOP_FIJO, OFFSET_BOTTOM_FIJO)
                         buf=io.BytesIO()
                         sheet.save(buf, format="JPEG", quality=85, optimize=True)
-                        zf.writestr(f"{baraja_sel}_{portada_sel}_J{juego}_HOJA_{hoja_global:02d}_{Path(preferida_portada).stem}.jpg", buf.getvalue())
+                        zf.writestr(f"{baraja_sel}_{portada_sel}_J{juego}_HOJA_{hoja_global:02d}.jpg", buf.getvalue())
                         del sheet, buf
                         gc.collect()
         progress.empty()
-        status.success(f"¡{total} hojas generadas - Dobles en 6 y 7 - Baja res sin deformar!")
-        st.download_button("📥 DESCARGAR ZIP", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_10cartas_DOBLES_6y7_baja_res.zip", mime="application/zip", use_container_width=True)
+        status.success(f"¡{total} hojas - Posicion fija!")
+        st.download_button("📥 DESCARGAR ZIP - POSICION FIJA", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_FIJO.zip", mime="application/zip", use_container_width=True)
         st.markdown(banner_venta_offline(), unsafe_allow_html=True)
     if st.button("⬅️ Volver al Catalogo"):
         ir_a("catalogo")
