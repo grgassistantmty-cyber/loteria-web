@@ -15,7 +15,6 @@ def get_base_path():
         if p.exists() and os.access(p, os.W_OK): return p
     except: pass
     return Path(".")
-
 BASE_PATH = get_base_path()
 BASE_PATH.mkdir(exist_ok=True)
 CONTADOR_VISITAS = BASE_PATH / "visitas.txt"
@@ -64,19 +63,6 @@ def inc_baraja(baraja_nombre, generador):
             path_gen.write_text(str(b+1))
     except: pass
 
-def get_ranking_barajas():
-    patron = str(BASE_PATH / "contador_baraja_*.txt")
-    files = [f for f in glob.glob(patron) if not any(f.endswith(f"_{x}.txt") for x in ["4x4","5x5","10dobles","12portada","4x4doblesfix"])]
-    ranking=[]
-    for fp in files:
-        try:
-            nombre = os.path.basename(fp).replace("contador_baraja_","").replace(".txt","").replace("_"," ")
-            cnt = safe_int(open(fp,"r", encoding="utf-8", errors="ignore").read())
-            ranking.append((nombre,cnt))
-        except: pass
-    ranking.sort(key=lambda x: x[1], reverse=True)
-    return ranking[:15]
-
 def registrar_entrada_generador(nombre):
     key = f"entrada_registrada_{nombre}"
     if key not in st.session_state:
@@ -112,12 +98,86 @@ def instrucciones_html(vista="general"):
     if vista=="catalogo": return """<div style="background:#fffbe6;border:3px dashed #ffaa00;padding:20px;border-radius:14px;color:black; font-size:18px"><h2 style="text-align:center">📋 CÓMO USAR</h2><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid green; margin-bottom:10px"><b>1) 4x4 - 16 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid blue; margin-bottom:10px"><b>2) 5x5 - 25 figuras:</b> 4 cartas por hoja.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid gold;"><b>3) 10 Cartas 4x4 con Dobles - 54 por Hoja (3x -2):</b> 10 cartas por hoja, layout 5x2 / 2x5, ciclos 6 hojas.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid #cc0000;"><b>4) 12 CON PORTADA:</b> Tabloide 12 cartas + portada.</div><div style="background:white; padding:12px; border-radius:10px; border-left:6px solid purple;"><b>5) 4x4 DOBLES AL CENTRO FIX - 54 DOBLES:</b> 4 cartas por hoja, dobles en pos 6 y 7, 14 hojas = ciclo completo, sin huecos rosas, marco parejo 4 lados, con PDF.</div></div><br>"""
     else: return f"""<div style="background:#fffbe6;border:2px solid #ffaa00;padding:18px;border-radius:14px;color:black; font-size:17px"><h3>💡 PARA QUÉ ES CADA COSA - {vista}</h3><b>📁 Baraja:</b> Elige tus dibujos.<br><b>🎨 Div:</b> Grosor línea blanca DENTRO de la carta.<br><b>↔️ Sep V / Sep H:</b> Espacio ENTRE las cartas.<br><b>⬛ Marco:</b> Borde negro.<br><b>🎨 Color:</b> Fondo hoja.<br><br><b>👁️ Primero VISTA PREVIA, luego GENERAR y DESCARGAR</b></div><br>"""
 
-# --- AQUI TERMINA TU BASE ---
+def listar_barajas():
+    if not os.path.exists("barajas"): return []
+    return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
 
+# --- CATALOGO CON CARPETA MINIATURAS ---
 if st.session_state.vista=="catalogo":
-    st.markdown(banner_top("LOTERIA ELIUD PRO - BASE"), unsafe_allow_html=True)
+    st.markdown(banner_top("LOTERIA ELIUD PRO - CATALOGO"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
     st.markdown(instrucciones_html("catalogo"), unsafe_allow_html=True)
-    st.success("✅ Base lista - Ahora dime que generador le agregamos primero")
+
+    st.markdown("### 🎰 ELIGE TU GENERADOR")
+
+    # MINIATURAS - NUEVA CARPETA
+    miniaturas = {
+        "12portada": "miniaturas/miniatura-1-portada-12-cartas-sd.jpg",
+        "4x4": "miniaturas/miniatura-4x4-sd.jpg",
+        "5x5": "miniaturas/miniatura-5x5-sd.jpg",
+        "10dobles": "miniaturas/miniatura-10dobles-sd.jpg",
+        "4x4doblesfix": "miniaturas/miniatura-4x4doblesfix-sd.jpg",
+    }
+
+    c1,c2,c3 = st.columns(3)
+
+    with c1:
+        st.markdown("#### 📌 12 CARTAS + PORTADA")
+        thumb = miniaturas["12portada"]
+        if os.path.exists(thumb):
+            st.image(thumb, caption="Tabloide 12 + Portada", use_column_width=True)
+        else:
+            st.warning(f"Falta {thumb} - Crea carpeta miniaturas/ y mete la imagen")
+            st.info("Buscando en ruta vieja portadas/...")
+            if os.path.exists("portadas/1-portada-12-cartas.jpg"):
+                st.image("portadas/1-portada-12-cartas.jpg", use_column_width=True)
+        if st.button("🎰 ENTRAR A 12 + PORTADA", use_container_width=True, type="primary"):
+            ir_a("12portada")
+        st.caption(f"👀{get_contador('visita_12portada')} | 🎰{get_contador('12portada')}")
+
+    with c2:
+        st.markdown("#### 🔜 4x4 - 16 FIGURAS")
+        thumb2 = miniaturas["4x4"]
+        if os.path.exists(thumb2):
+            st.image(thumb2, use_column_width=True)
+        else:
+            st.image("https://via.placeholder.com/400x300?text=4x4+PROXIMAMENTE", use_column_width=True)
+        st.button("ENTRAR 4x4", use_container_width=True, disabled=True)
+
+    with c3:
+        st.markdown("#### 🔜 10 DOBLES")
+        thumb3 = miniaturas["10dobles"]
+        if os.path.exists(thumb3):
+            st.image(thumb3, use_column_width=True)
+        else:
+            st.image("https://via.placeholder.com/400x300?text=10+DOBLES+PROX", use_column_width=True)
+        st.button("ENTRAR 10 DOBLES", use_container_width=True, disabled=True)
+
+    st.markdown("---")
+    c4,c5 = st.columns(2)
+    with c4:
+        st.markdown("#### 🔜 5x5")
+        st.button("ENTRAR 5x5", disabled=True)
+    with c5:
+        st.markdown("#### 🔜 4x4 DOBLES FIX")
+        st.button("ENTRAR 4x4 DOBLES FIX", disabled=True)
+
+    st.stop()
+
+# --- ROUTER A GENERATORS ---
+if st.session_state.vista=="12portada":
+    try:
+        import generators.portada12 as gen12
+        gen12.render()
+    except Exception as e:
+        st.error(f"Error cargando generators/12portada.py: {e}")
+        import traceback; st.code(traceback.format_exc())
+        if st.button("⬅️ Volver"): ir_a("catalogo")
+    st.stop()
+
+if st.session_state.vista in ["4x4","5x5","10dobles","4x4doblesfix"]:
+    st.markdown(banner_top(f"GENERADOR {st.session_state.vista.upper()}"), unsafe_allow_html=True)
+    st.warning("Este generador aún no está migrado. Está en construcción.")
+    if st.button("⬅️ Volver al Catalogo"): ir_a("catalogo")
     st.stop()
