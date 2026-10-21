@@ -3,7 +3,6 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 import streamlit as st
 
-# Usamos los contadores y paths del app.py principal
 try:
     from app import BASE_PATH, EXCEL_COLORS, get_contador, inc_contador, inc_baraja, banner_top, banner_facebook, banner_venta_offline, copiar_clabe_component, instrucciones_html, ir_a, listar_barajas
     def get_base_path(): return BASE_PATH
@@ -71,20 +70,33 @@ def crear_panel_con_texto_editable(portada_path, w, h, color_fondo, font_num_siz
     top_h=int(h*0.14); bottom_h=int(h*0.14)
     middle_h=h-top_h-bottom_h
     try:
+        # === BAJA RESOLUCION SIN DEFORMAR ===
         img_pref=Image.open(portada_path).convert("RGB")
+        # Si la portada es de 3000px, la bajamos a max 600 de ancho para que pese menos
+        # thumbnail mantiene proporcion, NO deforma
+        MAX_PORTADA_W = 600
+        MAX_PORTADA_H = 750
+        if img_pref.width > MAX_PORTADA_W or img_pref.height > MAX_PORTADA_H:
+            img_pref.thumbnail((MAX_PORTADA_W, MAX_PORTADA_H), Image.LANCZOS)
+        
         w_target=w-8
-        ratio=w_target / img_pref.width
-        h_target=int(img_pref.height * ratio)
+        # Mantener aspecto
+        ratio = w_target / img_pref.width
+        h_target = int(img_pref.height * ratio)
         if h_target > middle_h-16:
             h_target=middle_h-16
+            ratio2 = h_target / img_pref.height
+            w_target=int(img_pref.width * ratio2)
             w_target=min(w_target, w-8)
-            img_pref=Image.open(portada_path).convert("RGB").resize((w_target, h_target), Image.LANCZOS)
+            img_pref=img_pref.resize((w_target, h_target), Image.LANCZOS)
         else:
             img_pref=img_pref.resize((w_target, h_target), Image.LANCZOS)
         x=(w - w_target)//2
         y=top_h + (middle_h - h_target)//2
         panel.paste(img_pref,(x,y))
-    except: pass
+    except Exception as e:
+        print(f"Error portada: {e}")
+        pass
     draw.text((w//2, top_h*0.28 + offset_top), "1", fill="white", anchor="mm", font=font_num, stroke_width=3, stroke_fill="black")
     draw.text((w//2, top_h*0.72 + offset_top), txt_pref, fill="white", anchor="mm", font=font_txt, stroke_width=2, stroke_fill="black")
     draw.text((w//2, h-bottom_h + bottom_h*0.28 - offset_bottom), "10", fill="white", anchor="mm", font=font_num, stroke_width=3, stroke_fill="black")
@@ -135,7 +147,7 @@ def generar_10_balanceado(baraja_files, preferida_portada_path, color_entre, div
             if intentos_carta>60:
                 USADOS_POR_POSICION_HOJA = {i:set() for i in range(16)}
                 intentos_carta=0
-            top=[None]*16; top[5]=dup; top[6]=dup
+            top=[None]*16; top[5]=dup; top[6]=dup # POS 6 Y 7 PARA CLIENTE
             pp=posiciones_preferida[idx_carta]; top[pp]=pref_baraja
             usados=set([dup, pref_baraja]); usados_nombres=set([dup_name, pref_name])
             for extra_path in plan_extra[idx_carta]:
@@ -194,14 +206,14 @@ def generar_10_balanceado(baraja_files, preferida_portada_path, color_entre, div
     return sheet_final
 
 def render():
-    st.markdown(banner_top("10 CARTAS DOBLES POZO H + PORTADA"), unsafe_allow_html=True)
+    st.markdown(banner_top("1 PREFERIDA + 10 CARTAS - DOBLES EN 6 Y 7"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
     if "entrada_registrada_10portada" not in st.session_state:
         inc_contador("visita_10portada")
         st.session_state["entrada_registrada_10portada"]=True
 
-    st.markdown(instrucciones_html("10 CARTAS DOBLES POZO"), unsafe_allow_html=True)
+    st.markdown(instrucciones_html("1 PREFERIDA + 10 CARTAS DOBLES 6 Y 7"), unsafe_allow_html=True)
 
     barajas_paths = listar_barajas()
     if not barajas_paths:
@@ -229,13 +241,6 @@ def render():
         sep = st.number_input("Separacion", 0, 200, 50)
     with c6:
         color_hex = st.color_picker("Color fondo", "#FF00FF")
-        # Excel color
-        excel_keys = list(EXCEL_COLORS.keys())
-        excel_sel = st.selectbox("Excel:", [f"{k:02d} - {EXCEL_COLORS[k]}" for k in excel_keys], index=6)
-        try:
-            num=int(excel_sel.split("-")[0].strip())
-            color_hex = EXCEL_COLORS.get(num, color_hex)
-        except: pass
     with c7:
         juegos = st.number_input("Juegos de 54 hojas", 1, 10, 1)
 
@@ -269,9 +274,9 @@ def render():
             dups_preview = random.sample(files_baraja[:54], 10)
             random.shuffle(files_portada)
             pref = files_portada[0]
-            with st.spinner("Generando preview..."):
+            with st.spinner("Generando preview baja res sin deformar..."):
                 sheet = generar_10_balanceado(files_baraja[:54], pref, color_hex, div_int, sep, ori, dups_preview, font_num, font_txt, txt_pref.upper(), txt_cart.upper(), off_top, off_bot)
-                st.image(sheet, caption=f"Preview - Preferida {os.path.basename(pref)}", use_column_width=True)
+                st.image(sheet, caption=f"Preview - Dobles en 6 y 7 - Preferida {os.path.basename(pref)} - Portada en baja res sin deformar", use_container_width=True)
 
     if st.button("🎰 GENERAR 54 HOJAS x JUEGO + ZIP", type="primary", use_container_width=True):
         if len(files_baraja)<54 or len(files_portada)<54:
@@ -320,13 +325,13 @@ def render():
                         progress.progress(gen/total)
                         sheet = generar_10_balanceado(files_baraja[:54], preferida_portada, color_hex, div_int, sep, ori, dups_hoja, font_num, font_txt, txt_pref.upper(), txt_cart.upper(), off_top, off_bot)
                         buf=io.BytesIO()
-                        sheet.save(buf, format="JPEG", quality=92)
+                        sheet.save(buf, format="JPEG", quality=85, optimize=True)
                         zf.writestr(f"{baraja_sel}_{portada_sel}_J{juego}_HOJA_{hoja_global:02d}_{Path(preferida_portada).stem}.jpg", buf.getvalue())
                         del sheet, buf
                         gc.collect()
         progress.empty()
-        status.success(f"¡{total} hojas generadas!")
-        st.download_button("📥 DESCARGAR ZIP", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_10cartas_dc.zip", mime="application/zip", use_container_width=True)
+        status.success(f"¡{total} hojas generadas - Portadas en baja res sin deformar!")
+        st.download_button("📥 DESCARGAR ZIP", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_10cartas_DOBLES_6y7.zip", mime="application/zip", use_container_width=True)
         st.markdown(banner_venta_offline(), unsafe_allow_html=True)
 
     if st.button("⬅️ Volver al Catalogo"):
