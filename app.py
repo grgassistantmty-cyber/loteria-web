@@ -1,57 +1,57 @@
 import streamlit as st
+st.set_page_config(page_title="Loteria Eliud PRO", layout="wide", page_icon="🎰")
 
-st.set_page_config(
-    page_title="En Mantenimiento",
-    page_icon="🛠️",
-    layout="centered"
-)
+from utils.counters import visitas_total, get_contador, registrar_entrada_generador
+from ui.banners import banner_top, copiar_clabe_component, banner_facebook, banner_venta_offline
+import streamlit.components.v1 as components
 
-st.markdown("""
-<style>
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-.stApp {background-color: #0B1020;}
-.whatsapp-btn {
-    display: inline-block;
-    background-color: #25D366;
-    color: white !important;
-    padding: 14px 28px;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 18px;
-    margin-top: 15px;
-    transition: 0.3s;
-}
-.whatsapp-btn:hover {
-    background-color: #128C7E;
-    transform: scale(1.05);
-}
-</style>
-""", unsafe_allow_html=True)
+if "vista" not in st.session_state: st.session_state["vista"]="catalogo"
+params=st.query_params
+if "vista" in params and params["vista"] in ["catalogo","4x4","5x5","12portada","10dobles","4x4doblesfix"]:
+    st.session_state["vista"]=params["vista"]
 
-st.image("mantenimiento.jpg", use_container_width=True)
+def ir_a(v): st.session_state["vista"]=v; st.query_params["vista"]=v; st.rerun()
 
-st.markdown("""
-<div style='text-align: center; padding: 20px; color: white;'>
-    <h1 style='color: white; font-size: 42px; margin-bottom: 10px;'>🛠️ Estamos en Mantenimiento</h1>
-    <p style='font-size: 20px; color: #D4AF37;'>
-        Estamos mejorando la plataforma para ti.<br>
-        ¡Tu generador de combinaciones volverá en unas horas con todo y mejoras!
-    </p>
-    <br>
-    <div style='background: #1a223f; border-radius: 15px; padding: 20px; border: 1px solid #D4AF37;'>
-        <p style='font-size: 16px; margin:0;'>⏰ Tiempo estimado: <b>Unas horas</b></p>
-        <p style='font-size: 16px; margin:0;'>Gracias por tu paciencia ❤️</p>
-    </div>
-    <br>
-    <a href="https://wa.me/528115566250?text=Hola!%20Vi%20que%20la%20app%20esta%20en%20mantenimiento" target="_blank" class="whatsapp-btn">
-        📱 Contáctanos: 811 556 6250
-    </a>
-    <br><br>
-    <p style='font-size: 13px; color: #888;'>Click en el botón para ir directo a WhatsApp</p>
-</div>
-""", unsafe_allow_html=True)
+# CATALOGO - LIGERO, NO CARGA GENERADORES
+if st.session_state["vista"]=="catalogo":
+    components.html(banner_top("LOTERIA ELIUD PRO - CATALOGO"), height=520)
+    copiar_clabe_component()
+    components.html(banner_facebook(), height=200)
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("🎰 ENTRAR A 4x4", use_container_width=True): ir_a("4x4")
+    with col2:
+        if st.button("🎰 ENTRAR A 5x5", use_container_width=True): ir_a("5x5")
+    with col3:
+        if st.button("🎰 ENTRAR A 12 PORTADA", use_container_width=True): ir_a("12portada")
+    col4, col5 = st.columns(2)
+    with col4:
+        if st.button("🎰 ENTRAR A 10 DOBLES", use_container_width=True): ir_a("10dobles")
+    with col5:
+        if st.button("🎰 ENTRAR A 4x4 DOBLES FIX", use_container_width=True): ir_a("4x4doblesfix")
+    
+    components.html(banner_venta_offline(), height=320)
+    st.stop()
 
-if st.button("🔄 Revisar si ya volvió", use_container_width=True):
-    st.rerun()
+# LAZY LOADING - SOLO CARGA EL GENERADOR QUE EL USUARIO ELIGIO
+if st.session_state["vista"]=="4x4":
+    registrar_entrada_generador("4x4")
+    from generators.gen_4x4 import render_4x4
+    render_4x4(ir_a)
+elif st.session_state["vista"]=="5x5":
+    registrar_entrada_generador("5x5")
+    from generators.gen_5x5 import render_5x5
+    render_5x5(ir_a)
+elif st.session_state["vista"]=="10dobles":
+    registrar_entrada_generador("10dobles")
+    from generators.gen_10dobles import render_10dobles
+    render_10dobles(ir_a)
+elif st.session_state["vista"]=="12portada":
+    registrar_entrada_generador("12portada")
+    from generators.gen_12portada import render_12portada
+    render_12portada(ir_a)
+elif st.session_state["vista"]=="4x4doblesfix":
+    registrar_entrada_generador("4x4doblesfix")
+    from generators.gen_4x4doblesfix import render_4x4doblesfix
+    render_4x4doblesfix(ir_a)
