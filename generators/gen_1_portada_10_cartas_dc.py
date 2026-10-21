@@ -21,7 +21,7 @@ except:
         if not os.path.exists("barajas"): return []
         return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d))])
 
-# === VALORES FIJOS - MEJOR POSICION - NO EDITABLE ===
+# === FIJOS - MEJOR POSICION ===
 FONT_NUM_FIJO = 151
 FONT_TXT_FIJO = 91
 TXT_PREF_FIJO = "PREFERIDA"
@@ -32,18 +32,38 @@ OFFSET_BOTTOM_FIJO = 100
 CARTAS_UNICAS_GLOBAL_JUEGO = set()
 USADOS_POR_POSICION_HOJA = {}
 
+def cargar_fuente(tam):
+    posibles = [
+        "arialbd.ttf", "arial.ttf",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf",
+        "/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf",
+        "DejaVuSans-Bold.ttf", "DejaVuSans.ttf"
+    ]
+    for f in posibles:
+        try:
+            return ImageFont.truetype(f, tam)
+        except:
+            continue
+    return ImageFont.load_default()
+
 def cargar_imagenes(carpeta):
     if not os.path.exists(carpeta): return []
-    files=[os.path.join(carpeta,f) for f in os.listdir(carpeta) if f.lower().endswith((".png",".jpg",".jpeg"))]
+    files=[os.path.join(carpeta,f) for f in os.listdir(carpeta) if f.lower().endswith((".png",".jpg",".jpeg",".webp"))]
     files.sort(key=lambda x: int(''.join(filter(str.isdigit, os.path.basename(x))) or 0))
     return files
 
-def crear_carta_imagen_rectangular(data16, card_w=600, card_h=850, div_interno=1):
+def crear_carta_imagen_rectangular(data16, card_w=600, card_h=850, div_interno=1, fast=False):
     cell_w=card_w//4; cell_h=card_h//4
     img=Image.new("RGB",(card_w,card_h), "black")
+    thumb_size = cell_w-div_interno if not fast else 120
     for idx, ruta in enumerate(data16):
         try:
-            im=Image.open(ruta).convert("RGB").resize((cell_w-div_interno, cell_h-div_interno), Image.LANCZOS)
+            im=Image.open(ruta).convert("RGB")
+            if fast:
+                im.thumbnail((thumb_size, thumb_size), Image.LANCZOS)
+                im = im.resize((cell_w-div_interno, cell_h-div_interno), Image.LANCZOS)
+            else:
+                im = im.resize((cell_w-div_interno, cell_h-div_interno), Image.LANCZOS)
         except:
             im=Image.new("RGB",(cell_w-div_interno, cell_h-div_interno),"white")
         col=idx%4; row=idx//4
@@ -65,22 +85,19 @@ def buscar_equivalente_baraja(portada_path, baraja_files):
             return f
     return None
 
-def crear_panel_con_texto_editable(portada_path, w, h, color_fondo, font_num_size, font_txt_size, txt_pref, txt_cartas, offset_top, offset_bottom):
+def crear_panel_con_texto_editable(portada_path, w, h, color_fondo, font_num_size, font_txt_size, txt_pref, txt_cartas, offset_top, offset_bottom, fast=False):
     panel=Image.new("RGB",(w,h), color_fondo)
     draw=ImageDraw.Draw(panel)
-    try:
-        font_num=ImageFont.truetype("arialbd.ttf", font_num_size)
-        font_txt=ImageFont.truetype("arialbd.ttf", font_txt_size)
-    except:
-        font_num=ImageFont.load_default()
-        font_txt=ImageFont.load_default()
+    font_num = cargar_fuente(font_num_size)
+    font_txt = cargar_fuente(font_txt_size)
     top_h=int(h*0.14); bottom_h=int(h*0.14)
     middle_h=h-top_h-bottom_h
     try:
         img_pref=Image.open(portada_path).convert("RGB")
-        MAX_W=600; MAX_H=750
-        if img_pref.width > MAX_W or img_pref.height > MAX_H:
-            img_pref.thumbnail((MAX_W, MAX_H), Image.LANCZOS)
+        if fast:
+            img_pref.thumbnail((400, 500), Image.LANCZOS)
+        elif img_pref.width > 600 or img_pref.height > 750:
+            img_pref.thumbnail((600, 750), Image.LANCZOS)
         w_target=w-8
         ratio=w_target / img_pref.width
         h_target=int(img_pref.height * ratio)
@@ -96,11 +113,33 @@ def crear_panel_con_texto_editable(portada_path, w, h, color_fondo, font_num_siz
         panel.paste(img_pref,(x,y))
     except:
         pass
-    draw.text((w//2, top_h*0.28 + offset_top), "1", fill="white", anchor="mm", font=font_num, stroke_width=3, stroke_fill="black")
-    draw.text((w//2, top_h*0.72 + offset_top), txt_pref, fill="white", anchor="mm", font=font_txt, stroke_width=2, stroke_fill="black")
-    draw.text((w//2, h-bottom_h + bottom_h*0.28 - offset_bottom), "10", fill="white", anchor="mm", font=font_num, stroke_width=3, stroke_fill="black")
-    draw.text((w//2, h-bottom_h + bottom_h*0.72 - offset_bottom), txt_cartas, fill="white", anchor="mm", font=font_txt, stroke_width=2, stroke_fill="black")
+    draw.text((w//2, top_h*0.28 + offset_top), "1", fill="white", anchor="mm", font=font_num, stroke_width=6, stroke_fill="black")
+    draw.text((w//2, top_h*0.72 + offset_top), txt_pref, fill="white", anchor="mm", font=font_txt, stroke_width=4, stroke_fill="black")
+    draw.text((w//2, h-bottom_h + bottom_h*0.28 - offset_bottom), "10", fill="white", anchor="mm", font=font_num, stroke_width=6, stroke_fill="black")
+    draw.text((w//2, h-bottom_h + bottom_h*0.72 - offset_bottom), txt_cartas, fill="white", anchor="mm", font=font_txt, stroke_width=4, stroke_fill="black")
     return panel
+
+def generar_10_balanceado_FAST_PREVIEW(baraja_files, preferida_portada_path, color_entre, div_interno, sep_entre, orientacion):
+    CW,CH=300,425
+    cols,rows=5,2
+    W=cols*CW+(cols-1)*sep_entre; H=rows*CH+(rows-1)*sep_entre
+    pref_baraja=buscar_equivalente_baraja(preferida_portada_path, baraja_files) or random.choice(baraja_files)
+    cartas_data=[]
+    for _ in range(10):
+        sample = random.sample(baraja_files, 16)
+        cartas_data.append(sample)
+    tablero=Image.new("RGB",(W,H), color_entre)
+    for idx,data16 in enumerate(cartas_data):
+        col=idx%cols; row=idx//cols
+        card_img=crear_carta_imagen_rectangular(data16, card_w=CW, card_h=CH, div_interno=div_interno, fast=True)
+        tablero.paste(card_img,(col*(CW+sep_entre), row*(CH+sep_entre)))
+    panel_w=CW
+    panel=crear_panel_con_texto_editable(preferida_portada_path, panel_w, H, color_entre, 80, 50, TXT_PREF_FIJO, TXT_CARTAS_FIJO, 50, 50, fast=True)
+    final_W=panel_w+sep_entre+W
+    sheet_final=Image.new("RGB",(final_W, H), color_entre)
+    sheet_final.paste(panel,(0,0))
+    sheet_final.paste(tablero,(panel_w+sep_entre,0))
+    return sheet_final
 
 def generar_10_balanceado(baraja_files, preferida_portada_path, color_entre, div_interno, sep_entre, orientacion, dups_de_esta_hoja, font_num_size, font_txt_size, txt_pref, txt_cartas, offset_top, offset_bottom):
     global CARTAS_UNICAS_GLOBAL_JUEGO, USADOS_POR_POSICION_HOJA
@@ -228,12 +267,12 @@ def render():
         portada_sel = st.selectbox("🎨 PORTADAS:", portadas_list) if portadas_list else st.selectbox("🎨 PORTADAS:", ["portadas"])
         portada_path_root = os.path.join(portadas_root, portada_sel) if portadas_list else portadas_root
     with c3:
-        ori = st.selectbox("ORIENTACION:", ["5x2 HORIZONTAL","2x5 VERTICAL","HORIZONTAL (10x1)","VERTICAL (1x10)"], index=0)
+        ori = st.selectbox("ORIENTACION:", ["5x2 HORIZONTAL","2x5 VERTICAL"], index=0)
     c4,c5,c6 = st.columns(3)
     with c4:
         div_int = st.number_input("Div interno", 0, 20, 1)
     with c5:
-        sep = st.number_input("Separacion", 0, 200, 50)
+        sep = st.number_input("Separacion", 0, 200, 30)
     with c6:
         color_hex = st.color_picker("Color fondo", "#FF00FF")
     with c6:
@@ -241,19 +280,17 @@ def render():
 
     files_baraja = cargar_imagenes(baraja_path)
     files_portada = cargar_imagenes(portada_path_root)
-    st.info(f"Baraja: {len(files_baraja)} | Portadas: {len(files_portada)} | POSICION FIJA {FONT_NUM_FIJO}/{FONT_TXT_FIJO} OFFSET {OFFSET_TOP_FIJO}/{OFFSET_BOTTOM_FIJO}")
+    st.info(f"Baraja: {len(files_baraja)} | Portadas: {len(files_portada)} | FIJO {FONT_NUM_FIJO}/{FONT_TXT_FIJO} - Preview rápido")
 
-    if st.button("👁️ VISTA PREVIA 1 HOJA - POSICION FIJA", use_container_width=True):
-        if len(files_baraja)<54 or len(files_portada)<54:
+    if st.button("👁️ VISTA PREVIA 1 HOJA - RÁPIDA 2 SEG", use_container_width=True):
+        if len(files_baraja)<10 or len(files_portada)<1:
             st.error("Faltan imagenes")
         else:
-            CARTAS_UNICAS_GLOBAL_JUEGO=set()
-            dups_preview = random.sample(files_baraja[:54], 10)
-            random.shuffle(files_portada)
-            pref = files_portada[0]
-            with st.spinner("Generando preview con posicion fija..."):
-                sheet = generar_10_balanceado(files_baraja[:54], pref, color_hex, div_int, sep, ori, dups_preview, FONT_NUM_FIJO, FONT_TXT_FIJO, TXT_PREF_FIJO, TXT_CARTAS_FIJO, OFFSET_TOP_FIJO, OFFSET_BOTTOM_FIJO)
-                st.image(sheet, caption=f"Preview FIJO - {os.path.basename(pref)}", use_container_width=True)
+            with st.spinner("Preview rápido..."):
+                pref = random.choice(files_portada)
+                sheet = generar_10_balanceado_FAST_PREVIEW(files_baraja, pref, color_hex, div_int, sep, ori)
+                st.image(sheet, caption=f"Preview rápido - {os.path.basename(pref)}", use_container_width=True)
+                st.caption("Este es preview rápido. El ZIP final sí usa el balanceo completo y letras 151/91 fijas")
 
     if st.button("🎰 GENERAR 54 HOJAS x JUEGO + ZIP - POSICION FIJA", type="primary", use_container_width=True):
         if len(files_baraja)<54 or len(files_portada)<54:
@@ -297,17 +334,17 @@ def render():
                         dups_hoja=grupos[hoja_in_bloque]
                         preferida_portada=portadas_juego[hoja_global-1]
                         gen+=1
-                        status.text(f"Juego {juego} Hoja {hoja_global}/54")
+                        status.text(f"Juego {juego} Hoja {hoja_global}/54 - {gen}/{total}")
                         progress.progress(gen/total)
                         sheet = generar_10_balanceado(files_baraja[:54], preferida_portada, color_hex, div_int, sep, ori, dups_hoja, FONT_NUM_FIJO, FONT_TXT_FIJO, TXT_PREF_FIJO, TXT_CARTAS_FIJO, OFFSET_TOP_FIJO, OFFSET_BOTTOM_FIJO)
                         buf=io.BytesIO()
                         sheet.save(buf, format="JPEG", quality=85, optimize=True)
-                        zf.writestr(f"{baraja_sel}_{portada_sel}_J{juego}_HOJA_{hoja_global:02d}.jpg", buf.getvalue())
+                        zf.writestr(f"{baraja_sel}_J{juego}_HOJA_{hoja_global:02d}.jpg", buf.getvalue())
                         del sheet, buf
                         gc.collect()
         progress.empty()
-        status.success(f"¡{total} hojas - Posicion fija!")
-        st.download_button("📥 DESCARGAR ZIP - POSICION FIJA", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_FIJO.zip", mime="application/zip", use_container_width=True)
+        status.success(f"¡{total} hojas - 151/91 fijo!")
+        st.download_button("📥 DESCARGAR ZIP", zip_buffer.getvalue(), file_name=f"{baraja_sel}_{portada_sel}_{juegos}juegos_FIJO.zip", mime="application/zip", use_container_width=True)
         st.markdown(banner_venta_offline(), unsafe_allow_html=True)
     if st.button("⬅️ Volver al Catalogo"):
         ir_a("catalogo")
