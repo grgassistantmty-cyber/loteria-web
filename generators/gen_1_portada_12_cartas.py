@@ -93,7 +93,13 @@ def generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_cover_path, fav
         sheet=Image.new("RGB",(W,H), color_entre)
         try:
             imc=Image.open(portada_cover_path).convert("RGB")
-            tw=2*card_w+sep_entre; th=2*card_h+sep_entre; sc=max(tw/imc.size[0], th/imc.size[1])
+            # === FIX BAJA RESOLUCION SIN DEFORMAR ===
+            # Si la portada viene de 3000px, la bajamos a 1000 max antes de procesar
+            if imc.width > 1200 or imc.height > 1200:
+                imc.thumbnail((1200, 1200), Image.LANCZOS) # mantiene proporcion, no deforma
+            
+            tw=2*card_w+sep_entre; th=2*card_h+sep_entre
+            sc=max(tw/imc.size[0], th/imc.size[1])
             imc=imc.resize((int(imc.size[0]*sc), int(imc.size[1]*sc)), Image.LANCZOS)
             imc=imc.crop(((imc.size[0]-tw)//2, (imc.size[1]-th)//2, (imc.size[0]-tw)//2+tw, (imc.size[1]-th)//2+th))
         except: imc=Image.new("RGB",(2*card_w+sep_entre, 2*card_h+sep_entre),"gold")
@@ -121,7 +127,7 @@ def render():
     if st.button("⬅️ Volver al Catalogo"):
         ir_a("catalogo")
 
-    st.markdown(banner_top("12 CARTAS + PORTADA - TABLOIDE"), unsafe_allow_html=True)
+    st.markdown(banner_top("1 PORTADA + 12 CARTAS - SD - BAJA RES SIN DEFORMAR"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
 
     BARAJAS_ROOT = "barajas"
@@ -151,7 +157,7 @@ def render():
         baraja_files = cargar_imagenes(baraja_path)
         portada_files = cargar_imagenes(portada_path)
 
-        st.write(f"Baraja: **{len(baraja_files)}** imgs | Portadas: **{len(portada_files)}** imgs")
+        st.write(f"Baraja: **{len(baraja_files)}** imgs | Portadas: **{len(portada_files)}** imgs | Baja res automática")
 
         if baraja_files:
             with st.expander("Ver 5 primeras de baraja"):
@@ -174,16 +180,16 @@ def render():
         num_fav = st.number_input("Número favorita (1-54)", 1, 54, 46)
 
     with col_prev:
-        st.subheader("👁️ VISTA PREVIA")
+        st.subheader("👁️ VISTA PREVIA - BAJA RES SIN DEFORMAR")
         if st.button("👁 Generar Vista Previa", type="primary", use_container_width=True):
             if len(baraja_files)<54 or not portada_files:
                 st.error(f"Necesitas 54 en baraja ({len(baraja_files)}) y al menos 1 portada ({len(portada_files)})")
             else:
                 idx = max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
-                with st.spinner(f"Generando con favorita {idx+1}..."):
+                with st.spinner(f"Generando con favorita {idx+1}... baja res"):
                     sheet = generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_hex, div, sep)
                 if sheet:
-                    st.image(sheet, caption=f"Favorita: {os.path.basename(baraja_files[idx])} | Portada: {os.path.basename(portada_files[idx])}", use_column_width=True)
+                    st.image(sheet, caption=f"Favorita: {os.path.basename(baraja_files[idx])} | Portada: {os.path.basename(portada_files[idx])} - Baja res sin deformar", use_container_width=True)
                     st.session_state["sheet_12portada"] = sheet
                     st.session_state["sheet_12portada_name"] = limpiar_nombre(baraja_files[idx], idx+1)
                 else:
@@ -192,8 +198,8 @@ def render():
         if "sheet_12portada" in st.session_state:
             sheet = st.session_state["sheet_12portada"]
             buf = io.BytesIO()
-            sheet.save(buf, format="JPEG", quality=95)
-            st.download_button("📥 Descargar JPG", buf.getvalue(), f"{st.session_state['sheet_12portada_name']}.jpg", "image/jpeg", use_container_width=True)
+            sheet.save(buf, format="JPEG", quality=85, optimize=True)
+            st.download_button("📥 Descargar JPG - Baja Res", buf.getvalue(), f"{st.session_state['sheet_12portada_name']}.jpg", "image/jpeg", use_container_width=True)
 
             if st.button("📄 Generar PDF Tabloide 33x51", use_container_width=True):
                 TAB_W, TAB_H = 3300, 5100
@@ -204,26 +210,26 @@ def render():
                 tabloide = Image.new("RGB", (TAB_W, TAB_H), "white")
                 tabloide.paste(sheet_r, ((TAB_W-nw)//2, (TAB_H-nh)//2))
                 buf_pdf = io.BytesIO()
-                tabloide.save(buf_pdf, format="PDF", resolution=300)
-                st.download_button("📥 Descargar PDF", buf_pdf.getvalue(), f"{st.session_state['sheet_12portada_name']}.pdf", "application/pdf", use_container_width=True)
+                tabloide.save(buf_pdf, format="PDF", resolution=200)
+                st.download_button("📥 Descargar PDF - Baja Res", buf_pdf.getvalue(), f"{st.session_state['sheet_12portada_name']}.pdf", "application/pdf", use_container_width=True)
                 inc_contador("12portada")
                 inc_baraja(os.path.basename(baraja_path), "12portada")
 
         st.divider()
         if modo=="Todas las 54 hojas":
-            if st.button("🖼️ EXPORTAR TODAS A ZIP (54 JPGs)", use_container_width=True):
+            if st.button("🖼️ EXPORTAR TODAS A ZIP (54 JPGs) - BAJA RES", use_container_width=True):
                 if len(baraja_files)<54 or not portada_files:
                     st.error("Faltan imagenes")
                 else:
                     n = min(len(baraja_files), len(portada_files), 54)
                     zip_buf = io.BytesIO()
-                    with zipfile.ZipFile(zip_buf, "w") as z:
+                    with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as z:
                         progress = st.progress(0)
                         for i in range(n):
                             sheet = generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[i], baraja_files[i], color_hex, div, sep)
                             if sheet:
                                 img_buf = io.BytesIO()
-                                sheet.save(img_buf, format="JPEG", quality=92)
+                                sheet.save(img_buf, format="JPEG", quality=85, optimize=True)
                                 z.writestr(f"{i+1:02d} - {limpiar_nombre(baraja_files[i], i+1)}.jpg", img_buf.getvalue())
                             progress.progress((i+1)/n)
-                    st.download_button("📥 Descargar ZIP 54", zip_buf.getvalue(), f"12portada_{os.path.basename(baraja_path)}_{os.path.basename(portada_path)}.zip", "application/zip", use_container_width=True)
+                    st.download_button("📥 Descargar ZIP 54 - Baja Res", zip_buf.getvalue(), f"12portada_{os.path.basename(baraja_path)}_{os.path.basename(portada_path)}_baja_res.zip", "application/zip", use_container_width=True)
