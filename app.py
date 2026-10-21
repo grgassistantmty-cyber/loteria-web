@@ -63,6 +63,34 @@ def inc_baraja(baraja_nombre, generador):
             path_gen.write_text(str(b+1))
     except: pass
 
+def get_ranking_barajas(top=10):
+    ranking=[]
+    generadores = ["12portada","10portada","4x4","5x5","10dobles","4x4doblesfix","visita_12portada","visita_10portada"]
+    for f in BASE_PATH.glob("contador_baraja_*.txt"):
+        name=f.name
+        if any(name.endswith(f"_{g}.txt") for g in generadores):
+            continue
+        try:
+            val=safe_int(f.read_text())
+            if val==0: continue
+            baraja_name=name.replace("contador_baraja_","").replace(".txt","")
+            ranking.append((baraja_name,val))
+        except: pass
+    ranking=sorted(ranking, key=lambda x: x[1], reverse=True)[:top]
+    return ranking
+
+def mostrar_ranking_html():
+    rank=get_ranking_barajas(10)
+    if not rank:
+        return '<div style="background:#111;color:#888;border:1px solid #333;padding:12px;border-radius:10px;text-align:center">Aún no hay barajas usadas - ¡Sé el primero! 🎰</div>'
+    html='<div style="background:#111;color:gold;border:2px solid gold;padding:14px;border-radius:12px;margin:14px 0"><h3 style="margin:0 0 10px 0;text-align:center">🏆 TOP 10 BARAJAS MAS USADAS</h3>'
+    medallas=["🥇","🥈","🥉"]
+    for i,(nom,usos) in enumerate(rank,1):
+        medal=medallas[i-1] if i<=3 else f"{i}."
+        html+=f'<div style="padding:8px;border-bottom:1px solid #333;display:flex;justify-content:space-between"><span>{medal} <b>{nom}</b></span><span style="background:gold;color:black;padding:2px 10px;border-radius:12px;font-weight:bold">🎰 {usos}</span></div>'
+    html+='</div>'
+    return html
+
 def registrar_entrada_generador(nombre):
     key = f"entrada_registrada_{nombre}"
     if key not in st.session_state:
@@ -100,7 +128,7 @@ def instrucciones_html(vista="general"):
 
 def listar_barajas():
     if not os.path.exists("barajas"): return []
-    return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d)) and d.lower().startswith("baraja")])
+    return sorted([os.path.join("barajas",d) for d in os.listdir("barajas") if os.path.isdir(os.path.join("barajas",d))])
 
 # --- CATALOGO ---
 if st.session_state.vista=="catalogo":
@@ -108,6 +136,10 @@ if st.session_state.vista=="catalogo":
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
     st.markdown(instrucciones_html("catalogo"), unsafe_allow_html=True)
+    
+    # AQUI ESTA EL RANKING NUEVO AMORSH
+    st.markdown(mostrar_ranking_html(), unsafe_allow_html=True)
+    
     st.markdown("### 🎰 ELIGE TU GENERADOR")
     miniaturas = {
         "12portada": "miniaturas/miniatura-1-portada-12-cartas-sd.jpg",
@@ -120,10 +152,7 @@ if st.session_state.vista=="catalogo":
         if os.path.exists(thumb):
             st.image(thumb, caption="Tabloide 12 + Portada", use_container_width=True)
         else:
-            if os.path.exists("portadas/1-portada-12-cartas.jpg"):
-                st.image("portadas/1-portada-12-cartas.jpg", use_container_width=True)
-            else:
-                st.warning(f"Falta {thumb}")
+            st.warning(f"Falta {thumb}")
         if st.button("🎰 ENTRAR A 12 + PORTADA", use_container_width=True, type="primary", key="btn12"):
             ir_a("12portada")
         st.caption(f"👀{get_contador('visita_12portada')} | 🎰{get_contador('12portada')}")
@@ -134,7 +163,7 @@ if st.session_state.vista=="catalogo":
         if os.path.exists(thumb2):
             st.image(thumb2, caption="10 + Portada Dobles Pozo", use_container_width=True)
         else:
-            st.warning(f"Falta {thumb2} - súbela a miniaturas/")
+            st.warning(f"Falta {thumb2}")
         if st.button("🎰 ENTRAR A 10 DOBLES POZO H", use_container_width=True, type="primary", key="btn10p"):
             ir_a("10portada")
         st.caption(f"👀{get_contador('visita_10portada')} | 🎰{get_contador('10portada')} - NUEVO desde 0")
