@@ -3,16 +3,17 @@ from PIL import Image
 import streamlit as st
 
 RIGHT=[3,7,11,15]; LEFT=[0,4,8,12]; TOP=[0,1,2,3]; BOTTOM=[12,13,14,15]
-
 EXCEL_COLORS = {1:"#000000",2:"#FFFFFF",3:"#FF0000",4:"#00FF00",5:"#0000FF",6:"#FFFF00",7:"#FF00FF",8:"#00FFFF",9:"#800000",10:"#008000",11:"#000080",12:"#808000",13:"#800080",14:"#008080",15:"#C0C0C0",16:"#808080",17:"#9999FF",18:"#993366",19:"#FFFFCC",20:"#CCFFFF",21:"#660066",22:"#FF8080",23:"#0066CC",24:"#CCCCFF",25:"#000080",26:"#FF00FF",27:"#FFFF00",28:"#00FFFF",29:"#800080",30:"#800000",31:"#008080",32:"#0000FF",33:"#00CCFF",34:"#CCFFCC",35:"#FFFF99",36:"#99CCFF",37:"#FF99CC",38:"#CC99FF",39:"#FFCC99",40:"#3366FF",41:"#33CCCC",42:"#99CC00",43:"#FFCC00",44:"#FF9900",45:"#FF6600",46:"#666699",47:"#969696",48:"#003366",49:"#339966",50:"#003300",51:"#333300",52:"#993300",53:"#993366",54:"#333399",55:"#333333",56:"#000000"}
 
-def listar(dir_root):
-    return sorted([d for d in os.listdir(dir_root) if os.path.isdir(os.path.join(dir_root,d))]) if os.path.isdir(dir_root) else []
+def listar_carpetas(dir_root):
+    if not os.path.isdir(dir_root): return []
+    return sorted([d for d in os.listdir(dir_root) if os.path.isdir(os.path.join(dir_root,d))])
 
 def cargar_imagenes(carpeta):
     if not carpeta or not os.path.isdir(carpeta): return []
-    files=[os.path.join(carpeta,f) for f in os.listdir(carpeta) if f.lower().endswith((".png",".jpg",".jpeg",".webp",".jfif"))]
-    files.sort(key=lambda x: int(''.join(filter(str.isdigit, os.path.basename(x))) or 0) if any(c.isdigit() for c in os.path.basename(x)) else os.path.basename(x))
+    exts=(".png",".jpg",".jpeg",".webp",".jfif")
+    files=[os.path.join(carpeta,f) for f in os.listdir(carpeta) if f.lower().endswith(exts)]
+    files.sort(key=lambda x: int(''.join(filter(str.isdigit, os.path.basename(x))) or 0) if any(c.isdigit() for c in os.path.basename(x)) else os.path.basename(x).lower())
     return files
 
 def no_chocan(a,b, la, lb):
@@ -114,68 +115,75 @@ def limpiar_nombre(path_img, idx):
     return clean
 
 def render():
-    from app import banner_top, banner_facebook, copiar_clabe_component, instrucciones_html, get_contador, inc_contador, inc_baraja, registrar_entrada_generador, ir_a, listar_barajas, cm_to_px, get_aspecto
-    import os
+    from app import banner_top, banner_facebook, copiar_clabe_component, instrucciones_html, get_contador, inc_contador, inc_baraja, registrar_entrada_generador, ir_a
 
     registrar_entrada_generador("12portada")
-    
     if st.button("⬅️ Volver al Catalogo"):
         ir_a("catalogo")
 
     st.markdown(banner_top("12 CARTAS + PORTADA - TABLOIDE"), unsafe_allow_html=True)
     st.markdown(banner_facebook(), unsafe_allow_html=True)
-    st.markdown(instrucciones_html("12portada"), unsafe_allow_html=True)
 
     BARAJAS_ROOT = "barajas"
     PORTADAS_ROOT = "portadas"
 
-    col_ctrl, col_prev = st.columns([1,1.5])
+    barajas_carpetas = listar_carpetas(BARAJAS_ROOT)
+    portadas_carpetas = listar_carpetas(PORTADAS_ROOT)
+
+    col_ctrl, col_prev = st.columns([1,1.6])
 
     with col_ctrl:
         st.subheader("📁 BARAJAS")
-        barajas_inc = listar(BARAJAS_ROOT) or []
-        portadas_inc = listar(PORTADAS_ROOT) or []
-        
-        if barajas_inc:
-            baraja_sel = st.selectbox("Baraja incluida:", barajas_inc, key="b12")
+        if barajas_carpetas:
+            baraja_sel = st.selectbox("Elige carpeta de baraja:", barajas_carpetas, key="b12_sel")
             baraja_path = os.path.join(BARAJAS_ROOT, baraja_sel)
         else:
-            baraja_path = st.text_input("Ruta baraja (54 imgs)", key="bp12")
-        
-        if portadas_inc:
-            portada_sel = st.selectbox("Portada incluida:", portadas_inc, key="p12")
+            baraja_path = st.text_input("Ruta baraja", "barajas/baraja01")
+
+        st.subheader("🖼️ PORTADAS")
+        st.caption("Toma las portadas de las carpetas dentro de portadas/")
+        if portadas_carpetas:
+            portada_sel = st.selectbox("Elige carpeta de portadas:", portadas_carpetas, key="p12_sel")
             portada_path = os.path.join(PORTADAS_ROOT, portada_sel)
         else:
-            portada_path = st.text_input("Ruta portadas", key="pp12")
+            portada_path = st.text_input("Ruta portadas", "portadas/portadas01")
 
+        baraja_files = cargar_imagenes(baraja_path)
+        portada_files = cargar_imagenes(portada_path)
+
+        st.write(f"Baraja: **{len(baraja_files)}** imgs | Portadas: **{len(portada_files)}** imgs")
+
+        if baraja_files:
+            with st.expander("Ver 5 primeras de baraja"):
+                for f in baraja_files[:5]: st.write(os.path.basename(f))
+        if portada_files:
+            with st.expander("Ver 5 primeras portadas"):
+                for f in portada_files[:5]: st.write(os.path.basename(f))
+
+        st.divider()
         st.subheader("🎨 AJUSTES")
-        color_opt = st.selectbox("Color fondo (Excel)", [f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()], index=2, key="col12")
+        color_opt = st.selectbox("Color fondo Excel", [f"{k:02d} - {v}" for k,v in EXCEL_COLORS.items()], index=2)
         num = int(color_opt.split("-")[0].strip())
         color_hex = EXCEL_COLORS.get(num, "#FF0000")
-        color_hex = st.color_picker("Color picker", color_hex, key="cp12")
-        
-        div = st.slider("Div interna", 1, 30, 8, key="div12")
-        sep = st.slider("Sep entre cartas", 0, 300, 40, key="sep12")
+        color_hex = st.color_picker("Color", color_hex)
+        div = st.slider("Div interna", 1, 30, 8)
+        sep = st.slider("Sep entre cartas", 0, 300, 40)
 
         st.subheader("🎯 MODO")
-        modo = st.radio("Modo", ["Solo 1 hoja", "Todas las 54 hojas"], key="modo12")
-        num_fav = st.number_input("Numero favorita (1-54)", 1, 54, 46, key="nfav12")
-
-        baraja_files = cargar_imagenes(baraja_path) if baraja_path else []
-        portada_files = cargar_imagenes(portada_path) if portada_path else []
-        st.write(f"Baraja: {len(baraja_files)} imgs | Portadas: {len(portada_files)}")
+        modo = st.radio("Modo", ["Solo 1 hoja", "Todas las 54 hojas"])
+        num_fav = st.number_input("Número favorita (1-54)", 1, 54, 46)
 
     with col_prev:
         st.subheader("👁️ VISTA PREVIA")
-        if st.button("👁 Generar Vista Previa", use_container_width=True):
+        if st.button("👁 Generar Vista Previa", type="primary", use_container_width=True):
             if len(baraja_files)<54 or not portada_files:
-                st.error(f"Necesitas 54 baraja y al menos 1 portada. Tienes {len(baraja_files)} y {len(portada_files)}")
+                st.error(f"Necesitas 54 en baraja ({len(baraja_files)}) y al menos 1 portada ({len(portada_files)})")
             else:
                 idx = max(0,min(num_fav-1, min(len(baraja_files),len(portada_files))-1))
-                with st.spinner("Generando tabloide pulido..."):
+                with st.spinner(f"Generando con favorita {idx+1}..."):
                     sheet = generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[idx], baraja_files[idx], color_hex, div, sep)
                 if sheet:
-                    st.image(sheet, caption=f"Preview: {os.path.basename(baraja_files[idx])} - Portada {idx+1}")
+                    st.image(sheet, caption=f"Favorita: {os.path.basename(baraja_files[idx])} | Portada: {os.path.basename(portada_files[idx])}", use_column_width=True)
                     st.session_state["sheet_12portada"] = sheet
                     st.session_state["sheet_12portada_name"] = limpiar_nombre(baraja_files[idx], idx+1)
                 else:
@@ -187,7 +195,6 @@ def render():
             sheet.save(buf, format="JPEG", quality=95)
             st.download_button("📥 Descargar JPG", buf.getvalue(), f"{st.session_state['sheet_12portada_name']}.jpg", "image/jpeg", use_container_width=True)
 
-            # PDF Tabloide
             if st.button("📄 Generar PDF Tabloide 33x51", use_container_width=True):
                 TAB_W, TAB_H = 3300, 5100
                 sr = sheet.size[0]/sheet.size[1]; tr = TAB_W/TAB_H
@@ -198,22 +205,25 @@ def render():
                 tabloide.paste(sheet_r, ((TAB_W-nw)//2, (TAB_H-nh)//2))
                 buf_pdf = io.BytesIO()
                 tabloide.save(buf_pdf, format="PDF", resolution=300)
-                st.download_button("📥 Descargar PDF Tabloide", buf_pdf.getvalue(), f"{st.session_state['sheet_12portada_name']}.pdf", "application/pdf", use_container_width=True)
+                st.download_button("📥 Descargar PDF", buf_pdf.getvalue(), f"{st.session_state['sheet_12portada_name']}.pdf", "application/pdf", use_container_width=True)
                 inc_contador("12portada")
                 inc_baraja(os.path.basename(baraja_path), "12portada")
 
-        st.markdown("---")
-        if st.button("🖼️ EXPORTAR TODAS A ZIP JPG", use_container_width=True) and modo=="Todas las 54 hojas":
-            if len(baraja_files)<54 or not portada_files:
-                st.error("Faltan imagenes")
-            else:
-                n = min(len(baraja_files), len(portada_files), 54)
-                zip_buf = io.BytesIO()
-                with zipfile.ZipFile(zip_buf, "w") as z:
-                    for i in range(n):
-                        sheet = generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[i], baraja_files[i], color_hex, div, sep)
-                        if sheet:
-                            img_buf = io.BytesIO()
-                            sheet.save(img_buf, format="JPEG", quality=95)
-                            z.writestr(f"{i+1:02d} - {limpiar_nombre(baraja_files[i], i+1)}.jpg", img_buf.getvalue())
-                st.download_button("📥 Descargar ZIP 54 JPGs", zip_buf.getvalue(), "tabloide_12portada_54.zip", "application/zip", use_container_width=True)
+        st.divider()
+        if modo=="Todas las 54 hojas":
+            if st.button("🖼️ EXPORTAR TODAS A ZIP (54 JPGs)", use_container_width=True):
+                if len(baraja_files)<54 or not portada_files:
+                    st.error("Faltan imagenes")
+                else:
+                    n = min(len(baraja_files), len(portada_files), 54)
+                    zip_buf = io.BytesIO()
+                    with zipfile.ZipFile(zip_buf, "w") as z:
+                        progress = st.progress(0)
+                        for i in range(n):
+                            sheet = generar_tabloide_12_con_portada_PULIDO(baraja_files, portada_files[i], baraja_files[i], color_hex, div, sep)
+                            if sheet:
+                                img_buf = io.BytesIO()
+                                sheet.save(img_buf, format="JPEG", quality=92)
+                                z.writestr(f"{i+1:02d} - {limpiar_nombre(baraja_files[i], i+1)}.jpg", img_buf.getvalue())
+                            progress.progress((i+1)/n)
+                    st.download_button("📥 Descargar ZIP 54", zip_buf.getvalue(), f"12portada_{os.path.basename(baraja_path)}_{os.path.basename(portada_path)}.zip", "application/zip", use_container_width=True)
