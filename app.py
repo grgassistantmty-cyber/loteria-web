@@ -108,10 +108,7 @@ if st.session_state.vista=="catalogo":
     st.markdown(banner_facebook(), unsafe_allow_html=True)
     copiar_clabe_component()
     st.markdown(instrucciones_html("catalogo"), unsafe_allow_html=True)
-
     st.markdown("### 🎰 ELIGE TU GENERADOR")
-
-    # MINIATURAS - NUEVA CARPETA
     miniaturas = {
         "12portada": "miniaturas/miniatura-1-portada-12-cartas-sd.jpg",
         "4x4": "miniaturas/miniatura-4x4-sd.jpg",
@@ -119,41 +116,32 @@ if st.session_state.vista=="catalogo":
         "10dobles": "miniaturas/miniatura-10dobles-sd.jpg",
         "4x4doblesfix": "miniaturas/miniatura-4x4doblesfix-sd.jpg",
     }
-
     c1,c2,c3 = st.columns(3)
-
     with c1:
         st.markdown("#### 📌 12 CARTAS + PORTADA")
         thumb = miniaturas["12portada"]
         if os.path.exists(thumb):
             st.image(thumb, caption="Tabloide 12 + Portada", use_column_width=True)
         else:
-            st.warning(f"Falta {thumb} - Crea carpeta miniaturas/ y mete la imagen")
-            st.info("Buscando en ruta vieja portadas/...")
             if os.path.exists("portadas/1-portada-12-cartas.jpg"):
                 st.image("portadas/1-portada-12-cartas.jpg", use_column_width=True)
+            else:
+                st.warning(f"Falta {thumb}")
         if st.button("🎰 ENTRAR A 12 + PORTADA", use_container_width=True, type="primary"):
             ir_a("12portada")
         st.caption(f"👀{get_contador('visita_12portada')} | 🎰{get_contador('12portada')}")
-
     with c2:
         st.markdown("#### 🔜 4x4 - 16 FIGURAS")
         thumb2 = miniaturas["4x4"]
-        if os.path.exists(thumb2):
-            st.image(thumb2, use_column_width=True)
-        else:
-            st.image("https://via.placeholder.com/400x300?text=4x4+PROXIMAMENTE", use_column_width=True)
+        if os.path.exists(thumb2): st.image(thumb2, use_column_width=True)
+        else: st.image("https://via.placeholder.com/400x300?text=4x4+PROXIMAMENTE", use_column_width=True)
         st.button("ENTRAR 4x4", use_container_width=True, disabled=True)
-
     with c3:
         st.markdown("#### 🔜 10 DOBLES")
         thumb3 = miniaturas["10dobles"]
-        if os.path.exists(thumb3):
-            st.image(thumb3, use_column_width=True)
-        else:
-            st.image("https://via.placeholder.com/400x300?text=10+DOBLES+PROX", use_column_width=True)
+        if os.path.exists(thumb3): st.image(thumb3, use_column_width=True)
+        else: st.image("https://via.placeholder.com/400x300?text=10+DOBLES+PROX", use_column_width=True)
         st.button("ENTRAR 10 DOBLES", use_container_width=True, disabled=True)
-
     st.markdown("---")
     c4,c5 = st.columns(2)
     with c4:
@@ -162,16 +150,15 @@ if st.session_state.vista=="catalogo":
     with c5:
         st.markdown("#### 🔜 4x4 DOBLES FIX")
         st.button("ENTRAR 4x4 DOBLES FIX", disabled=True)
-
     st.stop()
 
-# --- ROUTER A GENERATORS ---
+# --- ROUTER A GENERATORS - CON TU NOMBRE NUEVO ---
 if st.session_state.vista=="12portada":
     try:
-        import generators.portada12 as gen12
+        import generators.gen_1_portada_12_cartas as gen12
         gen12.render()
     except Exception as e:
-        st.error(f"Error cargando generators/12portada.py: {e}")
+        st.error(f"Error cargando generators/gen_1_portada_12_cartas.py: {e}")
         import traceback; st.code(traceback.format_exc())
         if st.button("⬅️ Volver"): ir_a("catalogo")
     st.stop()
