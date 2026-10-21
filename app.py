@@ -6,12 +6,27 @@ st.set_page_config(
     layout="centered"
 )
 
-# Ocultar menú de Streamlit
 st.markdown("""
 <style>
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
 .stApp {background-color: #0B1020;}
+.whatsapp-btn {
+    display: inline-block;
+    background-color: #25D366;
+    color: white !important;
+    padding: 14px 28px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 18px;
+    margin-top: 15px;
+    transition: 0.3s;
+}
+.whatsapp-btn:hover {
+    background-color: #128C7E;
+    transform: scale(1.05);
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -27,10 +42,14 @@ st.markdown("""
     <br>
     <div style='background: #1a223f; border-radius: 15px; padding: 20px; border: 1px solid #D4AF37;'>
         <p style='font-size: 16px; margin:0;'>⏰ Tiempo estimado: <b>Unas horas</b></p>
-        <p style='font-size: 16px; margin:0;'>📱 Cualquier duda: Contáctanos por WhatsApp</p>
+        <p style='font-size: 16px; margin:0;'>Gracias por tu paciencia ❤️</p>
     </div>
+    <br>
+    <a href="https://wa.me/528115566250?text=Hola!%20Vi%20que%20la%20app%20esta%20en%20mantenimiento" target="_blank" class="whatsapp-btn">
+        📱 Contáctanos: 811 556 6250
+    </a>
     <br><br>
-    <p style='font-size: 13px; color: #888;'>Gracias por tu paciencia ❤️</p>
+    <p style='font-size: 13px; color: #888;'>Click en el botón para ir directo a WhatsApp</p>
 </div>
 """, unsafe_allow_html=True)
 
